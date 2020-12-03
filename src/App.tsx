@@ -6,5 +6,5 @@ export default function App() {
     <div>
       <h1>Initialize</h1>
     </div>
-  );
+  )
 }
