@@ -1,22 +1,19 @@
 import React from 'react'
-import {Box, Grommet} from 'grommet'
+import {grommet, Grommet} from 'grommet'
 import Header from './components/main_page/header/Header'
+import MainBody from "./components/main_page/body/MainBody";
 
-const theme = {
-    global: {
-        font: {
-            family: 'Roboto',
-            size: '18px',
-            height: '20px',
-        }
-    }
-}
-
+/*
+    1. Форма регистрации
+    2. Остальные компоненты
+    3. Мемо
+    4. Тесты
+ */
 export default function App() {
     return (
-        <Grommet theme={theme}>
-
+        <Grommet theme={grommet}>
             <Header/>
+            <MainBody/>
         </Grommet>
     )
 }
