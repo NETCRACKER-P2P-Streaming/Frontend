@@ -23,21 +23,51 @@ const GoodMessage = () => {
 export function passValidate(value) {
     const reg = /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]/g
     if (!value.match(reg)) {
-        return <ErrorMessage
-            message={'Password must contain lowercase and uppercase characters, special characters and numbers'}
-        />
+        return {
+            message: <ErrorMessage
+                message={'Password must contain lowercase and uppercase characters, special characters and numbers'}
+            />,
+            status: 'error'
+        }
     }
-    return <GoodMessage/>
+    return {
+        message: <GoodMessage/>,
+        status: 'info'
+    }
+}
+
+export function repeatedPassValidate(primaryPass) {
+    return (repeatedPass) => {
+        if(repeatedPass !== primaryPass) {
+            return {
+                message: <ErrorMessage message={'Passwords must be equals'}/>,
+                status: 'error'
+            }
+        }
+        return {
+            message: <GoodMessage/>,
+            status: 'info'
+        }
+    }
 }
 
 export function lengthValidatorCreate(minLength, maxLength) {
     return (value) => {
         if (maxLength && value.length > maxLength) {
-            return <ErrorMessage message={`Value must be more than ${minLength} symbols`}/>
+            return {
+                message: <ErrorMessage message={`Value must be more than ${minLength} symbols`}/>,
+                status: 'error'
+            }
         }
         if (minLength && value.length < minLength) {
-            return <ErrorMessage message={`Value must be more than ${minLength} symbols`}/>
+            return {
+                message: <ErrorMessage message={`Value must be more than ${minLength} symbols`}/>,
+                status: 'error'
+            }
         }
-        return <GoodMessage/>
+        return {
+            message: <GoodMessage/>,
+            status: 'info'
+        }
     }
 }
