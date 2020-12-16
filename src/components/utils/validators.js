@@ -1,19 +1,22 @@
 import React from 'react'
-import {StatusGood} from "grommet-icons"
-import {Box, Paragraph} from "grommet"
+import {StatusGood, StatusCritical} from "grommet-icons"
+import {Box, Text} from "grommet"
 
 
 const ErrorMessage = ({message}) => {
     return (
-        <Box width={'small'} align={'center'}>
-            <Paragraph color={'status-error'}>{message}</Paragraph>
+        <Box direction={'row'} gap={'medium'}>
+            <Text color={'status-error'}>
+                {message}
+            </Text>
+            <StatusCritical color={'status-error'}/>
         </Box>
     )
 }
 
 const GoodMessage = () => {
     return (
-        <Box align={'end'}>
+        <Box justify={'between'}>
             <StatusGood color={'status-ok'}/>
         </Box>
     )
@@ -22,11 +25,11 @@ const GoodMessage = () => {
 
 export function passValidate(value) {
     const reg = /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]/g
+    const annotation = 'Password must contain lowercase and uppercase characters, special characters and numbers'
+
     if (!value.match(reg)) {
         return {
-            message: <ErrorMessage
-                message={'Password must contain lowercase and uppercase characters, special characters and numbers'}
-            />,
+            message: <ErrorMessage message={annotation}/>,
             status: 'error'
         }
     }
@@ -38,9 +41,10 @@ export function passValidate(value) {
 
 export function repeatedPassValidate(primaryPass) {
     return (repeatedPass) => {
-        if(repeatedPass !== primaryPass) {
+        const annotation = 'Passwords must be equals'
+        if (repeatedPass !== primaryPass) {
             return {
-                message: <ErrorMessage message={'Passwords must be equals'}/>,
+                message: <ErrorMessage message={annotation}/>,
                 status: 'error'
             }
         }
@@ -53,15 +57,12 @@ export function repeatedPassValidate(primaryPass) {
 
 export function lengthValidatorCreate(minLength, maxLength) {
     return (value) => {
-        if (maxLength && value.length > maxLength) {
+        const annotation = `
+            Value must be more than ${minLength} symbols and more than ${minLength} symbols
+        `
+        if (returnLengthValCondition(value.length, minLength, maxLength)) {
             return {
-                message: <ErrorMessage message={`Value must be more than ${minLength} symbols`}/>,
-                status: 'error'
-            }
-        }
-        if (minLength && value.length < minLength) {
-            return {
-                message: <ErrorMessage message={`Value must be more than ${minLength} symbols`}/>,
+                message: <ErrorMessage message={annotation}/>,
                 status: 'error'
             }
         }
@@ -70,4 +71,23 @@ export function lengthValidatorCreate(minLength, maxLength) {
             status: 'info'
         }
     }
+}
+
+/**
+ *
+ * @param value - Валидируемый объект формы
+ * @param validatorsCollections - объект массивов валидаторов для формы.
+ * Например для формы login, password ожидается {login: [...], password: [...]}
+ */
+export function validateAll(value, validatorsCollections) {
+    return Object.entries(value).map(formFieldValue => {
+        const [fieldKey, fieldVal] = formFieldValue
+        const actualValidatorCollection = validatorsCollections[fieldKey]
+        return actualValidatorCollection.map(validator => validator(fieldVal).message)
+    })
+}
+
+
+function returnLengthValCondition(len, minLen, maxLen) {
+    return (minLen && len > maxLen) || (minLen && len < minLen)
 }

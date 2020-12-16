@@ -1,6 +1,7 @@
 import React from 'react'
-import {Box, Heading} from "grommet";
-import SignActions from "./sign_btns/SignActions";
+import {Box, Heading} from 'grommet'
+import {Monitor} from 'grommet-icons'
+import SignActions from './sign_btns/SignActions'
 
 
 export default function Header(props) {
@@ -11,7 +12,8 @@ export default function Header(props) {
             direction: 'row',
             justify: 'between',
             pad: 'medium',
-            background: 'brand'
+            background: 'brand',
+            elevation: 'medium'
         },
         headingStyle: {
             level: 1,
@@ -21,7 +23,9 @@ export default function Header(props) {
 
     return (
         <Box {...elementsProps.headerWrapperStyle}>
-            <Heading {...elementsProps.headingStyle}>P2P&nbsp;SERVICE</Heading>
+            <Heading {...elementsProps.headingStyle}>
+                P2P&nbsp;SERVICE
+            </Heading>
             <SignActions/>
         </Box>
     )

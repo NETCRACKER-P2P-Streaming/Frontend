@@ -1,11 +1,11 @@
 import React, {useState} from 'react'
-import {lengthValidatorCreate, passValidate} from '../../../utils/validators'
+
 import {
     Box,
     Button,
     Form,
     FormField,
-    Heading,
+    Heading, Text,
     TextInput
 } from 'grommet'
 
@@ -36,15 +36,13 @@ const primaryValue = {
 export default function SignInForm(props) {
 
     const {onSubmit} = props
-    const [value, setValue] = useState(primaryValue);
+    const [value, setValue] = useState(primaryValue)
 
-    const validators = {
-        login: [lengthValidatorCreate(6, 15)],
-        password: [passValidate, lengthValidatorCreate(6, 15)]
-    }
+    // Сообщение для ошибок, пришедших с сервера
+    const [errorMessage, setErrorMessage] = useState(undefined)
 
     return (
-        <Form
+        <><Form
             value={value}
             onChange={(nextValue) => setValue(nextValue)}
             onReset={() => setValue(primaryValue)}
@@ -57,7 +55,6 @@ export default function SignInForm(props) {
             <FormField
                 label={'Login'}
                 name={'login'}
-                validate={validators.login}
                 required
             >
                 <TextInput name={'login'} {...elementsStyles.formInput}/>
@@ -65,15 +62,17 @@ export default function SignInForm(props) {
             <FormField
                 label={'Password'}
                 name={'password'}
-                validate={validators.password}
                 required
             >
                 <TextInput name={'password'} type={'password'} {...elementsStyles.formInput}/>
             </FormField>
+            <Text>
+                {errorMessage}
+            </Text>
             <Box {...elementsStyles.buttonsWrapper}>
-                <Button type={'submit'} label={'Log in'} primary />
+                <Button type={'submit'} label={'Log in'} primary/>
                 <Button type={'reset'} label={'Clear'}/>
             </Box>
-        </Form>
+        </Form></>
     )
 }

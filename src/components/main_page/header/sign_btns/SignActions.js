@@ -1,9 +1,10 @@
 import React, {useContext, useState} from 'react'
-import {Box, Button, Layer, Menu, ResponsiveContext} from 'grommet'
+import {Anchor, Box, Button, Layer, Menu, ResponsiveContext} from 'grommet'
 import {Menu as MenuIcon, UserAdd, Login} from 'grommet-icons'
 import SignInForm from '../../sign_forms/sign_in_form/SignInForm'
-import withFormModal from '../../sign_forms/withFormModal'
-import SignUpForm from "../../sign_forms/sign_up_form/SignUpForm";
+import withFormModal from '../../sign_forms/sign_in_form/withFormModal'
+
+import {NavLink, useHistory} from "react-router-dom";
 
 export default function SignActions(props) {
 
@@ -11,13 +12,12 @@ export default function SignActions(props) {
     const size = useContext(ResponsiveContext)
 
     const [isSignIn, setIsSignIn] = useState(false)
-    const [isSignUp, setIsSignUp] = useState(false)
+    const history = useHistory()
 
     const openLogModal = () => setIsSignIn(true)
     const closeLogModal = () => setIsSignIn(false)
 
-    const openRegModal = () => setIsSignUp(true)
-    const closeRegModal = () => setIsSignUp(false)
+    const openSignUp = () => history.push('/sign_up')
 
     const elementsStyles = {
         signActionsWrapper: {
@@ -37,20 +37,20 @@ export default function SignActions(props) {
             color: 'light-1',
             label: 'Sign up',
             pad: 'small',
-            margin: {left: 'small', right: 'small'}
+            margin: {left: 'small', right: 'small'},
+            fill: true
         },
         menu: {
             dropProps: {align: {top: 'bottom', left: 'left'}},
             items: [
                 {label: 'Sign in', icon: <Login color={'brand'}/>, gap: 'large', onClick: openLogModal},
-                {label: 'Sign up', icon: <UserAdd color={'brand'}/>, gap: 'large', onClick: openRegModal},
+                {label: 'Sign up', icon: <UserAdd color={'brand'}/>, gap: 'large', onClick: openSignUp},
             ],
             icon: <MenuIcon/>
         }
     }
 
     const SignInModalFormWrapped = withFormModal(SignInForm, closeLogModal)
-    const SignUpModalFormWrapped = withFormModal(SignUpForm, closeRegModal)
 
     return (
         <Box {...elementsStyles.signActionsWrapper}>
@@ -59,19 +59,14 @@ export default function SignActions(props) {
                     ? <Menu {...elementsStyles.menu}/>
                     : <>
                         <Button {...elementsStyles.signInBtn} onClick={openLogModal}/>
-                        <Button {...elementsStyles.signUpBtn} onClick={openRegModal}/>
+                        <NavLink to={'/sign_up'} style={{textDecoration: 'none'}}>
+                            <Button {...elementsStyles.signUpBtn}/>
+                        </NavLink>
                     </>
             }
             {
                 isSignIn && (
                     <SignInModalFormWrapped
-                        onSubmit={({value}) => console.log(value)}
-                    />
-                )
-            }
-            {
-                isSignUp && (
-                    <SignUpModalFormWrapped
                         onSubmit={({value}) => console.log(value)}
                     />
                 )

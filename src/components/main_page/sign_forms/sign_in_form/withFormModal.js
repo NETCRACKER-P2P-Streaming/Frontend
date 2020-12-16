@@ -28,7 +28,7 @@ export default function withFormModal(CustomForm, closeModal) {
     return (props) => {
         const {onSubmit, ...formProps} = props
         return (
-            <Layer onEsc={closeModal} onClickOutside={closeModal}>
+            <Layer onEsc={closeModal} onClickOutside={closeModal} overflow={'auto'}>
                 <Box {...elementsStyles.closeBtnBox} >
                     <Button {...elementsStyles.closeBtn} onClick={closeModal}/>
                 </Box>
