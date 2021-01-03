@@ -27,7 +27,6 @@ const theme = {
         ...grommet.button,
         color: {dark: 'light-1', light: 'brand'}
     }
-
 }
 
 export default function App() {
@@ -47,9 +46,7 @@ export default function App() {
                     <Route
                         path={'/sign_up'}
                         exact={true}
-                        render={() => <SignUpContainer
-
-                        />}
+                        render={() => <SignUpContainer />}
                     />
 
                 </Grommet>

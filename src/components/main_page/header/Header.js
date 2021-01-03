@@ -1,11 +1,9 @@
 import React from 'react'
 import {Box, Heading} from 'grommet'
-import {Monitor} from 'grommet-icons'
 import SignActions from './sign_btns/SignActions'
 
 
 export default function Header(props) {
-
     const elementsProps = {
         headerWrapperStyle: {
             tag: 'header',

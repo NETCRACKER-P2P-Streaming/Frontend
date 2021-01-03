@@ -1,118 +1,43 @@
-import React, {useContext, useState} from 'react'
-import {
-    lengthValidatorCreate,
-    passValidate,
-    repeatedPassValidate
-} from '../../../utils/validators'
+import React from 'react'
 import {
     Box,
     Button,
     Form,
     FormField,
-    Heading, Layer, ResponsiveContext, Text,
+    Heading, Layer,
     TextInput
 } from 'grommet'
 import {FormPreviousLink} from 'grommet-icons'
-import {NavLink} from "react-router-dom";
-
-const elementsStyles = {
-    formWrapper: {
-        width: 'large',
-        background: 'light-6',
-        pad: 'large',
-        elevation: 'large',
-        round: 'small'
-    },
-    headingWrapper: {
-        align: 'center',
-        pad: {bottom: 'medium'}
-
-    },
-    heading: {
-        level: 1,
-        color: 'dark-3'
-    },
-    buttonsWrapper: {
-        direction: 'row',
-        justify: 'between',
-        margin: {top: 'large'}
-    },
-    formInput: {
-        width: 'large'
-    },
-    submitBtn: {},
-    clearBtn: {
-        color: 'brand'
-    },
-    backLayer: {
-        modal: false,
-        position: 'top-left',
-        animation: 'fadeIn'
-    },
-    backBtn: {
-        plain: true
-    }
-}
-
-const primaryValue = {
-    login: '',
-    password: '',
-    repeatedPass: '',
-
-    first_name: '',
-    last_name: '',
-    email: '',
-    status: '',
-    avatar: ''
-}
+import {NavLink} from 'react-router-dom'
 
 
-export default function SignUpForm(props) {
-
-    const {onSubmit} = props
-    const [value, setValue] = useState(primaryValue)
-
-    //Сообщение об ошибке, пришедшей с сервера
-    const [validateMessage, setValidateMessage] = useState(undefined)
-
-    const [formPage, setFormPage] = useState(1)
-    const size = useContext(ResponsiveContext)
-
-    const passValidator = [passValidate, lengthValidatorCreate(6, 15)]
-    const validators = {
-        login: [lengthValidatorCreate(6, 15)],
-        password: passValidator,
-        repeatedPass: [repeatedPassValidate(value.password), ...passValidator]
-    }
-
-    function validateField(validatorsColl) {
-        return (validatedValue) => {
-            let validateResult
-            for(let v of validatorsColl) {
-                validateResult = v(validatedValue)
-                if(validateResult.status === 'error') {
-                    return validateResult
-                }
-            }
-            return validateResult
-        }
-    }
+export default function SignUpForm({
+                                       size, onSubmit, value, setValue,
+                                       primaryValue, formPage, validateField,
+                                       validators, setFormPage
+}) {
 
     return (
         <>
             {
                 size !== 'small' &&
                 <Layer
-                    {...elementsStyles.backLayer}
+                    modal={false}
+                    position={'top-left'}
+                    animation={'fadeIn'}
                 >
                     <Button
-                        {...elementsStyles.backBtn}
+                        plain={true}
                         icon={<NavLink to={'/'}><FormPreviousLink color={'dark-3'} size={'xlarge'}/></NavLink>}
                     />
                 </Layer>
             }
             <Box
-                {...elementsStyles.formWrapper}
+                width={'large'}
+                background={'light-6'}
+                pad={'large'}
+                elevation={'large'}
+                round={'small'}
                 margin={{left: 'auto', right: 'auto', top: size !== 'small' ? 'medium' : 'none'}}
                 fill={size === 'small' || 'vertical'}
             >
@@ -126,12 +51,20 @@ export default function SignUpForm(props) {
                     {
                         size === 'small' &&
                         <Button
-                            {...elementsStyles.backBtn}
+                            plain={true}
                             icon={<NavLink to={'/'}><FormPreviousLink color={'dark-3'} size={'large'}/></NavLink>}
                         />
                     }
-                    <Box {...elementsStyles.headingWrapper}>
-                        <Heading {...elementsStyles.heading}>SIGN UP</Heading>
+                    <Box
+                        align={'center'}
+                        pad={{bottom: 'medium'}}
+                    >
+                        <Heading
+                            level={1}
+                            color={'dark-3'}
+                        >
+                            SIGN UP
+                        </Heading>
                     </Box>
                     {
                         formPage === 1
@@ -140,31 +73,47 @@ export default function SignUpForm(props) {
                                     label={'First name'}
                                     name={'first_name'}
                                 >
-                                    <TextInput name={'first_name'} {...elementsStyles.formInput}/>
+                                    <TextInput
+                                        name={'first_name'}
+                                        width={'large'}
+                                    />
                                 </FormField>
                                 <FormField
                                     label={'Last name'}
                                     name={'last_name'}
                                 >
-                                    <TextInput name={'last_name'} {...elementsStyles.formInput}/>
+                                    <TextInput
+                                        name={'last_name'}
+                                        width={'large'}
+                                    />
                                 </FormField>
                                 <FormField
                                     label={'Email'}
                                     name={'email'}
                                 >
-                                    <TextInput name={'email'} type={'email'}{...elementsStyles.formInput}/>
+                                    <TextInput
+                                        name={'email'}
+                                        type={'email'}
+                                        width={'large'}
+                                    />
                                 </FormField>
                                 <FormField
                                     label={'Status'}
                                     name={'status'}
                                 >
-                                    <TextInput name={'status'} {...elementsStyles.formInput}/>
+                                    <TextInput
+                                        name={'status'}
+                                        width={'large'}
+                                    />
                                 </FormField>
                                 <FormField
                                     label={'Avatar'}
                                     name={'avatar'}
                                 >
-                                    <TextInput name={'avatar'} {...elementsStyles.formInput}/>
+                                    <TextInput
+                                        name={'avatar'}
+                                        width={'large'}
+                                    />
                                 </FormField>
                             </>
                             : <>
@@ -174,7 +123,10 @@ export default function SignUpForm(props) {
                                     required={true}
                                     validate={validateField(validators.login)}
                                 >
-                                    <TextInput name={'login'} {...elementsStyles.formInput}/>
+                                    <TextInput
+                                        name={'login'}
+                                        width={'large'}
+                                    />
                                 </FormField>
 
                                 <FormField
@@ -183,7 +135,11 @@ export default function SignUpForm(props) {
                                     required={true}
                                     validate={validateField(validators.password)}
                                 >
-                                    <TextInput name={'password'} type={'password'} {...elementsStyles.formInput}/>
+                                    <TextInput
+                                        name={'password'}
+                                        type={'password'}
+                                        width={'large'}
+                                    />
                                 </FormField>
                                 <FormField
                                     label={'* Repeat password'}
@@ -191,12 +147,20 @@ export default function SignUpForm(props) {
                                     required={true}
                                     validate={validators.repeatedPass}
                                 >
-                                    <TextInput name={'repeatedPass'} type={'password'} {...elementsStyles.formInput}/>
+                                    <TextInput
+                                        name={'repeatedPass'}
+                                        type={'password'}
+                                        width={'large'}
+                                    />
                                 </FormField>
                             </>
                     }
 
-                    <Box {...elementsStyles.buttonsWrapper}>
+                    <Box
+                        direction={'row'}
+                        justify={'between'}
+                        margin={{top: 'large'}}
+                    >
                         {
                             formPage === 2
                             &&
@@ -210,7 +174,7 @@ export default function SignUpForm(props) {
                         <Button
                             label={formPage === 1 ? 'Next' : 'Back'}
                             onClick={() => formPage === 1 ? setFormPage(2) : setFormPage(formPage - 1)}
-                            {...elementsStyles.clearBtn}
+                            color={'brand'}
                         />
                     </Box>
                 </Form>

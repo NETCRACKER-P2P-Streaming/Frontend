@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react'
 import {Anchor, Box, Button, Layer, Menu, ResponsiveContext} from 'grommet'
 import {Menu as MenuIcon, UserAdd, Login} from 'grommet-icons'
-import SignInForm from '../../sign_forms/sign_in_form/SignInForm'
+import SignInFormContainer from '../../sign_forms/sign_in_form/SignInFormContainer'
 import withFormModal from '../../sign_forms/sign_in_form/withFormModal'
 
 import {NavLink, useHistory} from "react-router-dom";
@@ -50,7 +50,7 @@ export default function SignActions(props) {
         }
     }
 
-    const SignInModalFormWrapped = withFormModal(SignInForm, closeLogModal)
+    const SignInModalFormWrapped = withFormModal(closeLogModal)(SignInFormContainer)
 
     return (
         <Box {...elementsStyles.signActionsWrapper}>
