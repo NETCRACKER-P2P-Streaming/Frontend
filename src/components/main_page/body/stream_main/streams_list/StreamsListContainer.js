@@ -1,37 +1,28 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import StreamsList from './StreamsList'
-import {
-    streamsListSelect,
-    streamsTotalCount
-} from '../../../../../redux/selectors/selectors'
-//import Pagination from './pagination/Pagination'
-import {Box} from 'grommet'
+import {streamsListSelect, streamsTotalCount} from '../../../../../redux/selectors/selectors'
+import useWindowDimensions from '../../../../utils/useWindowDimention'
 
 
 function StreamsListContainer({streamsList, streamsTotalCount}) {
 
     const [loading, setLoading] = useState(false)
+    const { height, width } = useWindowDimensions()
+    const [headerHei, setHeaderHei] = useState(document.querySelector('header')?.clientHeight)
 
-    return <Box
-        direction={'column'}
-    >
-        <StreamsList
+    useEffect(() => {
+
+        setHeaderHei(document.querySelector('header')?.clientHeight)
+
+    }, [height, width])
+
+    return <StreamsList
             streamsList={streamsList}
             loading={loading}
             streamsTotalCount={streamsTotalCount}
+            height={height - headerHei + 'px'}
         />
-        {
-            /*
-                <Pagination
-                    paginationSize={4}
-                    totalCount={30}
-                    actualPageNumber={4}
-                />
-             */
-        }
-
-    </Box>
 }
 
 function mapStateToProps(state) {

@@ -174,6 +174,7 @@ export default function SignUpForm({
                         <Button
                             label={formPage === 1 ? 'Next' : 'Back'}
                             onClick={() => formPage === 1 ? setFormPage(2) : setFormPage(formPage - 1)}
+                            id={'page_change_btn'}
                             color={'brand'}
                         />
                     </Box>

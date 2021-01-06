@@ -1,5 +1,5 @@
 import React from 'react'
-import {grommet, Grommet} from 'grommet'
+import {Box, Grid, grommet, Grommet} from 'grommet'
 import Header from './components/main_page/header/Header'
 import MainBody from './components/main_page/body/MainBody'
 import {BrowserRouter, Route} from 'react-router-dom'
@@ -46,7 +46,7 @@ export default function App() {
                     <Route
                         path={'/sign_up'}
                         exact={true}
-                        render={() => <SignUpContainer />}
+                        render={() => <SignUpContainer/>}
                     />
 
                 </Grommet>

@@ -1,106 +1,113 @@
 import {fireEvent, render, screen} from '@testing-library/react'
-import {queryByAttribute} from '@testing-library/dom'
 import SignInForm from '../SignInForm'
 import React from 'react'
 
 describe('Sign in form rendering', () => {
-    let getById = null
     let rendered = null
 
-    beforeEach(() => {
-        rendered = render(<SignInForm/>)
-        getById = queryByAttribute.bind(null, 'id')
-    })
+    beforeEach(() => rendered = render(<SignInForm/>))
 
     it('Login input founded', () => {
-        const loginInput = getById(rendered.container, 'login')
+        const loginInput = rendered.container.querySelector('#login')
         expect(loginInput).toBeInTheDocument()
     })
 
     it('Password input founded', () => {
-        const passInput = getById(rendered.container, 'password')
+        const passInput = rendered.container.querySelector('#password')
         expect(passInput).toBeInTheDocument()
     })
 
     it('Submit btn founded', () => {
-        const submitBtn = screen.getByText(/Log in/i)
+        const submitBtn = rendered.container.querySelector('button[type=\'submit\']')
         expect(submitBtn).toBeInTheDocument()
     })
 
     it('Clear btn founded', () => {
-        const submitBtn = screen.getByText(/Clear/i)
+        const submitBtn = rendered.container.querySelector('button[type=\'reset\']')
         expect(submitBtn).toBeInTheDocument()
+    })
+
+    it('Header text founded', () => {
+        const signInText = screen.getByText(/sign in/i)
+        expect(signInText).toBeInTheDocument()
     })
 })
 
 describe('Sign in form actions', () => {
-    let getById = null
-    let rendered = null
     const primaryValue = {
         login: '',
         password: ''
     }
-    let value = {}
-    let setValue = jest.fn()
+    let rendered = null
+    let value = null
+    let setValue = null
+
+    let loginInput = null
+    let passInput = null
 
     beforeEach(() => {
-        getById = queryByAttribute.bind(null, 'id')
-        value = primaryValue
+        value = {...primaryValue}
         setValue = (newVal) => value = newVal
+
         rendered = render(<SignInForm
             value={value}
             primaryValue={primaryValue}
             setValue={setValue}
             onSubmit={jest.fn()}
         />)
+        loginInput = rendered.container.querySelector('#login')
+        passInput = rendered.container.querySelector('#password')
     })
+    afterEach(() => value = {...primaryValue})
 
     it('Fill form values', () => {
-        const loginInput = getById(rendered.container, 'login')
-        const passInput = getById(rendered.container, 'password')
 
-        expect(loginInput.value).toBe(primaryValue.login)
-        expect(passInput.value).toBe(primaryValue.password)
-
-        const testingValueLogin = 'Test input text'
-        const testingValuePassword = 'Test password text'
+        expect({
+            login: loginInput.value,
+            password: passInput.value
+        }).toStrictEqual(
+            primaryValue
+        )
 
         fireEvent.change(loginInput, {
-            target: {value: testingValueLogin}
+            target: {value: 'Test input text'}
         })
-        fireEvent.change(passInput, {
-            target: {value: testingValuePassword}
-        })
+
         rendered.rerender(<SignInForm
-            value={{
-                password: testingValuePassword,
-                login: testingValueLogin
-            }}
+            value={value}
             primaryValue={primaryValue}
             setValue={setValue}
             onSubmit={jest.fn()}
         />)
-        expect(loginInput.value).toBe(testingValueLogin)
-        expect(passInput.value).toBe(testingValuePassword)
-    })
 
-    it('Clear values', () => {
-        const loginInput = getById(rendered.container, 'login')
-        const passInput = getById(rendered.container, 'password')
-        const clearBtn = screen.getByText('Clear')
-
-        fireEvent.change(loginInput, {
-            target: {value: '123'}
-        })
         fireEvent.change(passInput, {
-            target: {value: '123'}
+            target: {value: 'Test password text'}
         })
 
         rendered.rerender(<SignInForm
-            value={{
-                password: '123',
-                login: '123'
-            }}
+            value={value}
+            primaryValue={primaryValue}
+            setValue={setValue}
+            onSubmit={jest.fn()}
+        />)
+
+        expect({
+            login: loginInput.value,
+            password: passInput.value
+        }).toStrictEqual({
+            login: 'Test input text',
+            password: 'Test password text'
+        })
+    })
+
+    it('Clear values', () => {
+        const clearBtn = rendered.container.querySelector('button[type=\'reset\']')
+        setValue({
+            password: '123',
+            login: '123'
+        })
+        rendered.rerender(<SignInForm
+            value={value}
             primaryValue={primaryValue}
             setValue={setValue}
             onSubmit={jest.fn()}
@@ -109,12 +116,18 @@ describe('Sign in form actions', () => {
         fireEvent.click(clearBtn)
 
         rendered.rerender(<SignInForm
-            value={primaryValue}
+            value={value}
             primaryValue={primaryValue}
             setValue={setValue}
             onSubmit={jest.fn()}
         />)
-        expect(loginInput.value).toBe(primaryValue.login)
-        expect(passInput.value).toBe(primaryValue.password)
+
+        expect({
+            login: loginInput.value,
+            password: passInput.value
+        }).toStrictEqual({
+            login: '',
+            password: ''
+        })
     })
 })

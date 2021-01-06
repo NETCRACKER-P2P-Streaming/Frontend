@@ -3,7 +3,7 @@ import {StatusGood, StatusCritical} from "grommet-icons"
 import {Box, Text} from "grommet"
 
 
-const ErrorMessage = ({message}) => {
+export const ErrorMessage = ({message}) => {
     return (
         <Box direction={'row'} gap={'medium'}>
             <Text color={'status-error'}>
@@ -14,12 +14,25 @@ const ErrorMessage = ({message}) => {
     )
 }
 
-const GoodMessage = () => {
+export const GoodMessage = () => {
     return (
         <Box justify={'between'}>
             <StatusGood color={'status-ok'}/>
         </Box>
     )
+}
+
+export function validateField(validatorsColl) {
+    return (validatedValue) => {
+        let validateResult
+        for(let v of validatorsColl) {
+            validateResult = v(validatedValue)
+            if(validateResult.status === 'error') {
+                return validateResult
+            }
+        }
+        return validateResult
+    }
 }
 
 
@@ -56,6 +69,10 @@ export function repeatedPassValidate(primaryPass) {
 }
 
 export function lengthValidatorCreate(minLength, maxLength) {
+    if(minLength > maxLength) {
+        minLength = null
+        maxLength = null
+    }
     return (value) => {
         const annotation = `
             Value must be more than ${minLength} symbols and more than ${minLength} symbols
@@ -73,21 +90,7 @@ export function lengthValidatorCreate(minLength, maxLength) {
     }
 }
 
-/**
- *
- * @param value - Валидируемый объект формы
- * @param validatorsCollections - объект массивов валидаторов для формы.
- * Например для формы login, password ожидается {login: [...], password: [...]}
- */
-export function validateAll(value, validatorsCollections) {
-    return Object.entries(value).map(formFieldValue => {
-        const [fieldKey, fieldVal] = formFieldValue
-        const actualValidatorCollection = validatorsCollections[fieldKey]
-        return actualValidatorCollection.map(validator => validator(fieldVal).message)
-    })
-}
-
 
 function returnLengthValCondition(len, minLen, maxLen) {
-    return (minLen && len > maxLen) || (minLen && len < minLen)
+    return (maxLen && len > maxLen) || (minLen && len < minLen)
 }
