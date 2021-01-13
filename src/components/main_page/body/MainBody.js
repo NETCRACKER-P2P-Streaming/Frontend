@@ -4,7 +4,6 @@ import StreamSearchFormContainer from './stream_main/search_form/StreamSearchFor
 import StreamsListContainer from './stream_main/streams_list/StreamsListContainer'
 
 export default function MainBody() {
-
     return (
         <Main
             direction={'row'}

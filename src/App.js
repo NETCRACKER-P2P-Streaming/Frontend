@@ -1,56 +1,40 @@
 import React from 'react'
-import {Box, Grid, grommet, Grommet} from 'grommet'
-import Header from './components/main_page/header/Header'
 import MainBody from './components/main_page/body/MainBody'
-import {BrowserRouter, Route} from 'react-router-dom'
-import {Provider} from 'react-redux'
+import {Route} from 'react-router-dom'
 import SignUpContainer from './components/sign_up/SignUpContainer'
-import {store} from './redux/store'
+import {connect} from 'react-redux'
+import {selectAppLoading} from './redux/selectors/selectors'
+import Loading from './components/util_components/Loading'
+import HeaderContainer from './components/main_page/header/HeaderContainer'
 
-const theme = {
-    global: {
-        ...grommet.global,
-        colors: {
-            control: {'dark': 'neutral-3', 'light': 'brand'}
-        },
-        focus: {
-            outline: {
-                color: 'transparent'
-            },
-            border: {
-                color: {light: 'brand', dark: 'light-1'}
-            }
-        }
-    },
-
-    button: {
-        ...grommet.button,
-        color: {dark: 'light-1', light: 'brand'}
-    }
-}
-
-export default function App() {
+function App({appLoading}) {
     return (
-        <BrowserRouter>
-            <Provider store={store}>
-                <Grommet theme={theme}>
-                    <Route
-                        path={'/'}
-                        exact={true}
-                        render={() => (
-                            <>
-                                <Header/>
-                                <MainBody/>
-                            </>
-                        )}/>
-                    <Route
-                        path={'/sign_up'}
-                        exact={true}
-                        render={() => <SignUpContainer/>}
-                    />
+        <>
+            <Route
+                path={'/'}
+                exact={true}
+                render={() => (
+                    <>
+                        <HeaderContainer/>
+                        <MainBody/>
+                    </>
+                )}/>
+            <Route
+                path={'/sign_up'}
+                exact={true}
+                render={() => <SignUpContainer/>}
+            />
 
-                </Grommet>
-            </Provider>
-        </BrowserRouter>
+            {/* Если флаг состояния загрузки всего прилоежния в true -
+            отображается модальное окно с индикатором загрузки. */}
+            {appLoading && <Loading/>}
+        </>
+
     )
 }
+
+const mapStateToProps = (state) => ({
+    appLoading: selectAppLoading(state)
+})
+
+export default connect(mapStateToProps, {})(App)

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import StreamsList from './StreamsList'
-import {streamsListSelect, streamsTotalCount} from '../../../../../redux/selectors/selectors'
+import {selectStreamsListSelect, selectStreamsTotalCount} from '../../../../../redux/selectors/selectors'
 import useWindowDimensions from '../../../../utils/useWindowDimention'
 
 
@@ -27,8 +27,8 @@ function StreamsListContainer({streamsList, streamsTotalCount}) {
 
 function mapStateToProps(state) {
     return {
-        streamsList: streamsListSelect(state),
-        streamsTotalCount: streamsTotalCount(state)
+        streamsList: selectStreamsListSelect(state),
+        streamsTotalCount: selectStreamsTotalCount(state)
     }
 }
 

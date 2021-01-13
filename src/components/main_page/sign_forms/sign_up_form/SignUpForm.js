@@ -1,26 +1,32 @@
 import React from 'react'
+import {FormPreviousLink} from 'grommet-icons'
+import {NavLink} from 'react-router-dom'
+import SignUpFormFirstPage from './sign_up_form_first_page/SignUpFormFirstPage'
+import SignUpFormSecondPage from './sign_up_form_second_page/SignUpFormSecondPage'
 import {
     Box,
     Button,
     Form,
-    FormField,
-    Heading, Layer,
-    TextInput
+    Heading,
+    Layer
 } from 'grommet'
-import {FormPreviousLink} from 'grommet-icons'
-import {NavLink} from 'react-router-dom'
+
 
 
 export default function SignUpForm({
                                        size, onSubmit, value, setValue,
-                                       primaryValue, formPage, validateField,
-                                       validators, setFormPage
-}) {
+                                       formPage, validateField,
+                                       validators, setFormPage, errorMessage,
+                                       loading, setErrorMessage
+                                   }) {
 
     return (
         <>
             {
-                size !== 'small' &&
+                // Стрелка возвращения к главному экрану из формы регистрации.
+                // Показывается если нет общей загрузки приложения, а также если размер
+                // окна не соответствует мобильному. В ином случае происходит отрисовка внутри формы
+                size !== 'small' && !loading &&
                 <Layer
                     modal={false}
                     position={'top-left'}
@@ -43,16 +49,24 @@ export default function SignUpForm({
             >
                 <Form
                     value={value}
-                    onChange={nextValue => setValue(nextValue)}
-                    onReset={() => setValue(primaryValue)}
+                    onChange={nextValue => {
+                        setValue(nextValue)
+                        setErrorMessage(undefined)
+                    }}
                     onSubmit={onSubmit}
                     validate={'blur'}
                 >
                     {
+                        // Если размер соответствует мобильному - кнопка возвращения
+                        // на главную страницу отображается внутри формы
                         size === 'small' &&
                         <Button
                             plain={true}
-                            icon={<NavLink to={'/'}><FormPreviousLink color={'dark-3'} size={'large'}/></NavLink>}
+                            icon={
+                                <NavLink to={'/'}>
+                                    <FormPreviousLink color={'dark-3'} size={'large'}/>
+                                </NavLink>
+                            }
                         />
                     }
                     <Box
@@ -68,92 +82,12 @@ export default function SignUpForm({
                     </Box>
                     {
                         formPage === 1
-                            ? <>
-                                <FormField
-                                    label={'First name'}
-                                    name={'first_name'}
-                                >
-                                    <TextInput
-                                        name={'first_name'}
-                                        width={'large'}
-                                    />
-                                </FormField>
-                                <FormField
-                                    label={'Last name'}
-                                    name={'last_name'}
-                                >
-                                    <TextInput
-                                        name={'last_name'}
-                                        width={'large'}
-                                    />
-                                </FormField>
-                                <FormField
-                                    label={'Email'}
-                                    name={'email'}
-                                >
-                                    <TextInput
-                                        name={'email'}
-                                        type={'email'}
-                                        width={'large'}
-                                    />
-                                </FormField>
-                                <FormField
-                                    label={'Status'}
-                                    name={'status'}
-                                >
-                                    <TextInput
-                                        name={'status'}
-                                        width={'large'}
-                                    />
-                                </FormField>
-                                <FormField
-                                    label={'Avatar'}
-                                    name={'avatar'}
-                                >
-                                    <TextInput
-                                        name={'avatar'}
-                                        width={'large'}
-                                    />
-                                </FormField>
-                            </>
-                            : <>
-                                <FormField
-                                    label={'* Login'}
-                                    name={'login'}
-                                    required={true}
-                                    validate={validateField(validators.login)}
-                                >
-                                    <TextInput
-                                        name={'login'}
-                                        width={'large'}
-                                    />
-                                </FormField>
-
-                                <FormField
-                                    label={'* Password'}
-                                    name={'password'}
-                                    required={true}
-                                    validate={validateField(validators.password)}
-                                >
-                                    <TextInput
-                                        name={'password'}
-                                        type={'password'}
-                                        width={'large'}
-                                    />
-                                </FormField>
-                                <FormField
-                                    label={'* Repeat password'}
-                                    name={'repeatedPass'}
-                                    required={true}
-                                    validate={validators.repeatedPass}
-                                >
-                                    <TextInput
-                                        name={'repeatedPass'}
-                                        type={'password'}
-                                        width={'large'}
-                                    />
-                                </FormField>
-                            </>
+                            ? <SignUpFormFirstPage />
+                            : <SignUpFormSecondPage
+                                validateField={validateField}
+                                validators={validators}
+                                errorMessage={errorMessage}
+                            />
                     }
 
                     <Box
@@ -162,15 +96,15 @@ export default function SignUpForm({
                         margin={{top: 'large'}}
                     >
                         {
-                            formPage === 2
-                            &&
+                            // Только на последней странице отрисывавется кнопка
+                            // отправки данных на сервер
+                            formPage === 2 &&
                             <Button
                                 type={'submit'}
                                 label={'Sign up'}
                                 primary
                             />
                         }
-
                         <Button
                             label={formPage === 1 ? 'Next' : 'Back'}
                             onClick={() => formPage === 1 ? setFormPage(2) : setFormPage(formPage - 1)}

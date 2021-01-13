@@ -8,7 +8,7 @@ describe('Sign in form rendering', () => {
     beforeEach(() => rendered = render(<SignInForm/>))
 
     it('Login input founded', () => {
-        const loginInput = rendered.container.querySelector('#login')
+        const loginInput = rendered.container.querySelector('#username')
         expect(loginInput).toBeInTheDocument()
     })
 
@@ -35,7 +35,7 @@ describe('Sign in form rendering', () => {
 
 describe('Sign in form actions', () => {
     const primaryValue = {
-        login: '',
+        username: '',
         password: ''
     }
     let rendered = null
@@ -55,7 +55,7 @@ describe('Sign in form actions', () => {
             setValue={setValue}
             onSubmit={jest.fn()}
         />)
-        loginInput = rendered.container.querySelector('#login')
+        loginInput = rendered.container.querySelector('#username')
         passInput = rendered.container.querySelector('#password')
     })
     afterEach(() => value = {...primaryValue})
@@ -63,7 +63,7 @@ describe('Sign in form actions', () => {
     it('Fill form values', () => {
 
         expect({
-            login: loginInput.value,
+            username: loginInput.value,
             password: passInput.value
         }).toStrictEqual(
             primaryValue
@@ -92,10 +92,10 @@ describe('Sign in form actions', () => {
         />)
 
         expect({
-            login: loginInput.value,
+            username: loginInput.value,
             password: passInput.value
         }).toStrictEqual({
-            login: 'Test input text',
+            username: 'Test input text',
             password: 'Test password text'
         })
     })
@@ -104,7 +104,7 @@ describe('Sign in form actions', () => {
         const clearBtn = rendered.container.querySelector('button[type=\'reset\']')
         setValue({
             password: '123',
-            login: '123'
+            username: '123'
         })
         rendered.rerender(<SignInForm
             value={value}
@@ -123,11 +123,19 @@ describe('Sign in form actions', () => {
         />)
 
         expect({
-            login: loginInput.value,
+            username: loginInput.value,
             password: passInput.value
         }).toStrictEqual({
-            login: '',
+            username: '',
             password: ''
         })
     })
+})
+
+test('Error tendered', () => {
+    render(<SignInForm
+        authErrorMessage={'Testing error'}
+    />)
+    const errorText = screen.getByText(/Testing error/i)
+    expect(errorText).toBeInTheDocument()
 })

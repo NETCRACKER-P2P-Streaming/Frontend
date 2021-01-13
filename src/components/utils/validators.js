@@ -1,6 +1,6 @@
 import React from 'react'
-import {StatusGood, StatusCritical} from "grommet-icons"
-import {Box, Text} from "grommet"
+import {StatusGood, StatusCritical} from 'grommet-icons'
+import {Box, Text} from 'grommet'
 
 
 export const ErrorMessage = ({message}) => {
@@ -22,6 +22,14 @@ export const GoodMessage = () => {
     )
 }
 
+/**
+ * Замыкание, возращающее функцию для проверки соответсвия входных данных
+ * валидаторам. Если хоть один валидатор провален - возвращаемая функция
+ * возвращает объект с результатами неудачной валидации. Иначе вернет undefined
+ *
+ * @param validatorsColl Итерируемый объект (коллекция) валидаторов
+ * @returns Функция, проверяющая соответствие входных данных валидаторам
+ */
 export function validateField(validatorsColl) {
     return (validatedValue) => {
         let validateResult
@@ -35,7 +43,14 @@ export function validateField(validatorsColl) {
     }
 }
 
-
+/**
+ * Валидатор пароля по регулярному выражению. Прохождение валидации, если
+ * в пароле присутствуют: число, спец. символ, буквы латинского алфавита в
+ * верхнем и нижнем регистрах.
+ *
+ * @param value Валидируемое значение
+ * @returns {{message: JSX.Element, status: string}} Объект с результатами валидации
+ */
 export function passValidate(value) {
     const reg = /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]/g
     const annotation = 'Password must contain lowercase and uppercase characters, special characters and numbers'
@@ -52,6 +67,13 @@ export function passValidate(value) {
     }
 }
 
+/**
+ * Замыкание, возвращающее валидатор, проверяющее совпадение primaryPass и repeatedPass
+ *
+ * @param primaryPass - Изначальный пароль, с которым происходит сравнение
+ * @returns {function(*): ({message, status: string})} - Сам валидатор, принимающий
+ * валидируемое значение.
+ */
 export function repeatedPassValidate(primaryPass) {
     return (repeatedPass) => {
         const annotation = 'Passwords must be equals'
@@ -68,6 +90,14 @@ export function repeatedPassValidate(primaryPass) {
     }
 }
 
+/**
+ * Замыкание, возвращающее валидатор, проверяющий длину входной строки
+ *
+ * @param minLength - Минимальная длина строки
+ * @param maxLength - Максимальная длина строки
+ * @returns {function(*): ({message, status: string})} - Валидатор проверяющий, что
+ * принимаемое значение лежит в диапазоне [minLength, maxLength]
+ */
 export function lengthValidatorCreate(minLength, maxLength) {
     if(minLength > maxLength) {
         minLength = null

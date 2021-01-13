@@ -1,7 +1,10 @@
 import React from 'react'
-import {Box, Button, Form, FormField, Heading, TextInput} from 'grommet'
+import {Box, Button, Form, FormField, Heading, Text, TextInput} from 'grommet'
 
-export default function SignInForm({primaryValue, value, setValue, onSubmit}) {
+export default function SignInForm({
+                                       primaryValue, value, setValue,
+                                       onSubmit, authErrorMessage, localLoading
+}) {
     return (
         <>
             <Form
@@ -23,32 +26,53 @@ export default function SignInForm({primaryValue, value, setValue, onSubmit}) {
                 </Box>
                 <FormField
                     label={'Login'}
-                    name={'login'}
-                    required
+                    name={'username'}
+                    required={true}
                 >
                     <TextInput
-                        id={'login'}
+                        id={'username'}
+                        name={'username'}
                         width={'large'}
                     />
                 </FormField>
                 <FormField
                     label={'Password'}
                     name={'password'}
-                    required
+                    required={true}
                 >
                     <TextInput
                         type={'password'}
                         id={'password'}
+                        name={'password'}
                         width={'large'}
                     />
                 </FormField>
+                <Box
+                >
+                    <Text
+                        color={'status-critical'}
+                        size={'medium'}
+                    >
+                        {authErrorMessage}
+                    </Text>
+                </Box>
+
                 <Box
                     direction={'row'}
                     justify={'between'}
                     margin={{top: 'medium'}}
                 >
-                    <Button type={'submit'} label={'Log in'} primary/>
-                    <Button type={'reset'} label={'Clear'}/>
+                    <Button
+                        type={'submit'}
+                        label={'Log in'}
+                        primary
+                        disabled={localLoading}
+                    />
+                    <Button
+                        type={'reset'}
+                        label={'Clear'}
+                        disabled={localLoading}
+                    />
                 </Box>
             </Form>
         </>

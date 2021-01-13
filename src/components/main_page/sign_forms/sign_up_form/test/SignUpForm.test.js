@@ -1,18 +1,19 @@
-import {screen, render, fireEvent} from '@testing-library/react'
+import {render, fireEvent, screen} from '@testing-library/react'
 import SignUpForm from '../SignUpForm'
 import {BrowserRouter} from 'react-router-dom'
+import axios from 'axios'
 import React from 'react'
 
 const componentInitialValues = {
     primaryValueFirstPage: {
-        first_name: '',
-        last_name: '',
+        firstName: '',
+        lastName: '',
         email: '',
-        status: '',
-        avatar: ''
+        description: '',
+        linkImage: ''
     },
     primaryValueSecondPage: {
-        login: '',
+        username: '',
         password: '',
         repeatedPass: ''
     },
@@ -43,13 +44,14 @@ describe('Sign up first page test', () => {
                 value={value}
                 setValue={setValue}
                 formPage={1}
+                setErrorMessage={jest.fn}
             />
         </BrowserRouter>)
-        firstNameField = rendered.container.querySelector('input[name=\'first_name\']')
-        secondNameField = rendered.container.querySelector('input[name=\'last_name\']')
+        firstNameField = rendered.container.querySelector('input[name=\'firstName\']')
+        secondNameField = rendered.container.querySelector('input[name=\'lastName\']')
         emailField = rendered.container.querySelector('input[name=\'email\']')
-        statusField = rendered.container.querySelector('input[name=\'status\']')
-        avatarField = rendered.container.querySelector('input[name=\'avatar\']')
+        statusField = rendered.container.querySelector('input[name=\'description\']')
+        avatarField = rendered.container.querySelector('input[name=\'linkImage\']')
     })
     afterEach(() => value = {...componentInitialValues.primaryValueFirstPage})
 
@@ -59,9 +61,9 @@ describe('Sign up first page test', () => {
 
     it('Email field rendered', () => expect(emailField).toBeInTheDocument())
 
-    it('Status field rendered', () => expect(statusField).toBeInTheDocument())
+    it('Description field rendered', () => expect(statusField).toBeInTheDocument())
 
-    it('Avatar field rendered', () => expect(avatarField).toBeInTheDocument())
+    it('Link image field rendered', () => expect(avatarField).toBeInTheDocument())
 
     it('Page change btn rendered', () => {
         const changeBtn = rendered.container.querySelector('#page_change_btn')
@@ -75,17 +77,17 @@ describe('Sign up first page test', () => {
 
     it('Fill values', () => {
         expect({
-            first_name: firstNameField.value,
-            last_name: secondNameField.value,
+            firstName: firstNameField.value,
+            lastName: secondNameField.value,
             email: emailField.value,
-            status: statusField.value,
-            avatar: avatarField.value
+            description: statusField.value,
+            linkImage: avatarField.value
         }).toStrictEqual({
-            first_name: value.first_name,
-            last_name: value.last_name,
+            firstName: value.firstName,
+            lastName: value.lastName,
             email: value.email,
-            status: value.status,
-            avatar: value.avatar
+            description: value.description,
+            linkImage: value.linkImage
         })
 
         fireEvent.change(firstNameField, {
@@ -104,11 +106,11 @@ describe('Sign up first page test', () => {
             target: {value: 'new avatar'}
         })
         setValue({
-            first_name: 'new first name',
-            last_name: 'new last name',
+            firstName: 'new first name',
+            lastName: 'new last name',
             email: 'new email',
-            status: 'new status',
-            avatar: 'new avatar'
+            description: 'new status',
+            linkImage: 'new avatar'
         })
 
         rendered.rerender(<BrowserRouter>
@@ -116,20 +118,21 @@ describe('Sign up first page test', () => {
                 value={value}
                 setValue={setValue}
                 formPage={1}
+                setErrorMessage={jest.fn}
             />
         </BrowserRouter>)
         expect({
-            first_name: firstNameField.value,
-            last_name: secondNameField.value,
+            firstName: firstNameField.value,
+            lastName: secondNameField.value,
             email: emailField.value,
-            status: statusField.value,
-            avatar: avatarField.value
+            description: statusField.value,
+            linkImage: avatarField.value
         }).toStrictEqual({
-            first_name: 'new first name',
-            last_name: 'new last name',
+            firstName: 'new first name',
+            lastName: 'new last name',
             email: 'new email',
-            status: 'new status',
-            avatar: 'new avatar'
+            description: 'new status',
+            linkImage: 'new avatar'
         })
     })
 })
@@ -142,10 +145,14 @@ describe('Sign up second page test', () => {
     let loginField = null
     let passField = null
     let repeatedPassField = null
+    let errorMessage = null
+    let setErrorMessage = null
 
     beforeEach(() => {
         value = {...componentInitialValues.primaryValueSecondPage}
         setValue = (nextValue) => value = nextValue
+        errorMessage = 'Custom EM'
+        setErrorMessage = (newErrorMessage) => errorMessage = newErrorMessage
         rendered = render(<BrowserRouter>
             <SignUpForm
                 value={value}
@@ -153,19 +160,26 @@ describe('Sign up second page test', () => {
                 formPage={2}
                 validators={componentInitialValues.validators}
                 validateField={componentInitialValues.validateFields}
+                setErrorMessage={setErrorMessage}
+                errorMessage={errorMessage}
             />
         </BrowserRouter>)
 
-        loginField = rendered.container.querySelector('input[name=\'login\']')
+        loginField = rendered.container.querySelector('input[name=\'username\']')
         passField = rendered.container.querySelector('input[name=\'password\']')
         repeatedPassField = rendered.container.querySelector('input[name=\'repeatedPass\']')
     })
 
-    afterEach(() => value = {...componentInitialValues.primaryValueSecondPage})
+    afterEach(() => {
+        value = {...componentInitialValues.primaryValueSecondPage}
+        errorMessage = 'Custom EM'
+    })
 
     it('Login field rendered', () => expect(loginField).toBeInTheDocument())
 
     it('Password field rendered', () => expect(passField).toBeInTheDocument())
+
+    it('Error message rendered', () => expect(rendered.getByText(/Custom EM/i)).toBeInTheDocument())
 
     it('Repeated password field rendered', () => expect(repeatedPassField).toBeInTheDocument())
 
@@ -182,7 +196,7 @@ describe('Sign up second page test', () => {
     it('Fill second page test', () => {
 
         expect({
-            login: loginField.value,
+            username: loginField.value,
             password: passField.value,
             repeatedPass: repeatedPassField.value
         }).toStrictEqual(
@@ -200,6 +214,7 @@ describe('Sign up second page test', () => {
                 formPage={2}
                 validators={componentInitialValues.validators}
                 validateField={componentInitialValues.validateFields}
+                setErrorMessage={jest.fn}
             />
         </BrowserRouter>)
 
@@ -214,6 +229,7 @@ describe('Sign up second page test', () => {
                 formPage={2}
                 validators={componentInitialValues.validators}
                 validateField={componentInitialValues.validateFields}
+                setErrorMessage={jest.fn}
             />
         </BrowserRouter>)
 
@@ -228,14 +244,15 @@ describe('Sign up second page test', () => {
                 formPage={2}
                 validators={componentInitialValues.validators}
                 validateField={componentInitialValues.validateFields}
+                setErrorMessage={jest.fn}
             />
         </BrowserRouter>)
         expect({
-            login: loginField.value,
+            username: loginField.value,
             password: passField.value,
             repeatedPass: repeatedPassField.value
         }).toStrictEqual({
-            login: 'new login',
+            username: 'new login',
             password: 'new pass',
             repeatedPass: 'new repeated pass'
         })
@@ -318,5 +335,58 @@ test('Not small size test', () => {
     </BrowserRouter>)
     const backArrowInsideForm = rendered.container.querySelector('form > button[type=\'button\'] > a')
     expect(backArrowInsideForm).not.toBeInTheDocument()
+})
+
+test('Sign up form error message rendered', async () => {
+    let errorMessage = 'Custom EM'
+    const setErrorMessage = (newErrorMessage) => errorMessage = newErrorMessage
+    const {container, findByText, rerender} = render(<BrowserRouter>
+        <SignUpForm
+            value={{
+                firstName: '123',
+                lastName: '123',
+                email: '123',
+                description: '123',
+                linkImage: '123',
+                username: '123',
+                password: '123',
+                repeatedPass: '123'
+            }}
+            setValue={{}}
+            formPage={2}
+            validators={componentInitialValues.validators}
+            validateField={componentInitialValues.validateFields}
+            setErrorMessage={setErrorMessage}
+            errorMessage={errorMessage}
+            onSubmit={() => setErrorMessage('New error message')}
+        />
+    </BrowserRouter>)
+    const submitBtn = container.querySelector('button[type=\'submit\']')
+
+    fireEvent.click(submitBtn)
+
+    rerender(<BrowserRouter>
+        <SignUpForm
+            value={{
+                firstName: '123',
+                lastName: '123',
+                email: '123',
+                description: '123',
+                linkImage: '123',
+                username: '123',
+                password: '123',
+                repeatedPass: '123'
+            }}
+            setValue={{}}
+            formPage={2}
+            validators={componentInitialValues.validators}
+            validateField={componentInitialValues.validateFields}
+            setErrorMessage={setErrorMessage}
+            errorMessage={errorMessage}
+            onSubmit={() => setErrorMessage('New error message')}
+        />
+    </BrowserRouter>)
+    const errorBlock = await findByText(/New error message/i)
+    expect(errorBlock).toBeInTheDocument()
 })
 
