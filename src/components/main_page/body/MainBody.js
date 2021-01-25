@@ -1,15 +1,11 @@
 import React from 'react'
 import {Main} from 'grommet'
-import StreamSearchFormContainer from './stream_main/search_form/StreamSearchFormContainer'
-import StreamsListContainer from './stream_main/streams_list/StreamsListContainer'
+import StreamPageContainer from './stream_main/StreamPageContainer'
 
 export default function MainBody() {
     return (
-        <Main
-            direction={'row'}
-        >
-            <StreamSearchFormContainer/>
-            <StreamsListContainer />
+        <Main>
+            <StreamPageContainer />
         </Main>
     )
 }

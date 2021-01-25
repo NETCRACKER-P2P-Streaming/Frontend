@@ -29,6 +29,37 @@
       * {
         margin: 0;
       }
+      html {
+        overflow: scroll;
+        overflow-x: hidden;
+      }
+
+      ::-webkit-scrollbar {
+        width: 0;  /* remove scrollbar space */
+        height: 0;
+        background: transparent;  /* optional: just make scrollbar invisible */
+      }
+
+      .scrolled {
+        overflow-x: auto;
+      }
+
+      .scrolled::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      .scrolled:hover::-webkit-scrollbar {
+        width: 8px; /* ширина для вертикального скролла */
+        height: 8px; /* высота для горизонтального скролла */
+        transition: 0.3s;
+      }
+
+      /* ползунок скроллбара */
+      .scrolled:hover::-webkit-scrollbar-thumb {
+        background-color: #7D4CDB;
+        border-radius: 3px;
+      }
     </style>
     <title>React App</title>
   </head>

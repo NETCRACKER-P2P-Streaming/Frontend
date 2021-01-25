@@ -3,10 +3,11 @@ import {Box, Layer} from 'grommet'
 import {InProgress} from 'grommet-icons'
 
 // Компонент модального окна загрузки приложения
-export default function Loading() {
+export default function Loading(props) {
     return (
         <Layer
-            animation={'fadeIn'}
+            animation={props.animation}
+            responsive={false}
         >
             <Box
                 pad={'medium'}

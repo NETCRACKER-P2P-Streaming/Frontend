@@ -14,6 +14,8 @@ describe('Stream search form items render test', () => {
                     setValues={jest.fn}
                     categoriesColl={Array(5).map((k, i) => i)}
                     size={'size'}
+                    streamsSortingOrders={[]}
+                    streamsSortingTypes={[]}
                 />
             </Grommet>
         )
@@ -21,23 +23,7 @@ describe('Stream search form items render test', () => {
         expect(searchField).toBeInTheDocument()
     })
 
-    it('Checkbox loading indicator rendered', () => {
-        const component = render(
-            <Grommet>
-                <FormCore
-                    loading={true}
-                    values={{}}
-                    setValues={jest.fn}
-                    categoriesColl={null}
-                    size={'size'}
-                />
-            </Grommet>
-        )
-        const loadingIndicator = component.container.querySelector('form > svg')
-        expect(loadingIndicator).toBeInTheDocument()
-    })
-
-    it('Checkboxes rendered', () => {
+    it('Categories checkboxes rendered', () => {
         const chAr = ['SoMeThiNg', 'StRanGE']
         const component = render(
             <Grommet>
@@ -46,14 +32,42 @@ describe('Stream search form items render test', () => {
                     values={{}}
                     setValues={jest.fn}
                     categoriesColl={chAr}
+                    streamsSortingOrders={[]}
+                    streamsSortingTypes={[]}
                 />
             </Grommet>
         )
-        for(let i of chAr) {
-            const label = component.getByText(i)
-            expect(label).toBeInTheDocument()
-        }
-        expect(chAr.length).toBe(chAr.length)
+        const categories = component.getAllByRole('checkbox')
+        expect(categories.length).toBe(2)
+    })
+
+    it('Selects rendered', () => {
+        const chAr = ['SoMeThiNg', 'StRanGE']
+        const chArOrd = [
+            {
+                name: 'Order 1',
+                id: 'Id 1'
+            },
+            {
+                name: 'Order 2',
+                id: 'Id 2'
+            }
+        ]
+
+        const component = render(
+            <Grommet>
+                <FormCore
+                    loading={false}
+                    values={{}}
+                    setValues={jest.fn}
+                    categoriesColl={chAr}
+                    streamsSortingOrders={chArOrd}
+                    streamsSortingTypes={[]}
+                />
+            </Grommet>
+        )
+        const categories = component.getAllByRole('textbox')
+        expect(categories.length).toBe(2)
     })
 
 })
@@ -73,6 +87,8 @@ describe('Stream search form actions test', () => {
                     setValues={setValues}
                     categoriesColl={Array(5).map((k, i) => i)}
                     size={'size'}
+                    streamsSortingOrders={[]}
+                    streamsSortingTypes={[]}
                 />
             </Grommet>
         )
@@ -90,6 +106,8 @@ describe('Stream search form actions test', () => {
                     setValues={setValues}
                     categoriesColl={Array(5).map((k, i) => i)}
                     size={'size'}
+                    streamsSortingOrders={[]}
+                    streamsSortingTypes={[]}
                 />
             </Grommet>
         )

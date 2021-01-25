@@ -3,26 +3,31 @@ import {Box} from 'grommet'
 import FormCore from "./FormCore";
 
 export default function StreamSearchForm({
-                                             setValues, values, loading, categoriesColl, size
+                                             setValues, values, categoriesColl, size,
+                                             streamsSortingTypes, streamsSortingOrders,
+                                             componentHeight
                                          }) {
     return (
         <>
             <Box
                 direction={'row'}
-                margin={{left: 'xsmall', right: 'large'}}
-                width={'medium'}
+                margin={{left: 'xsmall', right: 'small'}}
+                basis={'medium'}
+                height={componentHeight}
+                overflow={'auto'}
             >
                 <Box
                     flex={true}
                     direction={'row'}
-                    width={'medium'}
+                    pad={'small'}
                 >
                     <FormCore
                         size={size}
                         categoriesColl={categoriesColl}
-                        loading={loading}
                         setValues={setValues}
                         values={values}
+                        streamsSortingTypes={streamsSortingTypes}
+                        streamsSortingOrders={streamsSortingOrders}
                     />
                 </Box>
             </Box>

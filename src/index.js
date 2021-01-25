@@ -7,6 +7,9 @@ import {Provider} from 'react-redux'
 import {store} from './redux/store'
 import {grommet, Grommet} from 'grommet'
 
+import axios from 'axios'
+window.axios = axios
+
 
 const theme = {
     global: {

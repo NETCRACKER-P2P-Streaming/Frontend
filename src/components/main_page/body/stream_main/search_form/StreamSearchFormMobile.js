@@ -3,9 +3,10 @@ import {Box, Button, Layer} from 'grommet'
 import {Next, Previous} from 'grommet-icons'
 import FormCore from './FormCore'
 
-export default function StreamSearchForm({
-                                             setValues, values, loading, categoriesColl,
-                                             collapse, setCollapse, size
+export default function StreamSearchFormMobile({
+                                             setValues, values, categoriesColl,
+                                             collapse, setCollapse, size, streamsSortingTypes,
+                                             streamsSortingOrders, componentHeight
                                          }) {
     return (
         <>
@@ -38,6 +39,7 @@ export default function StreamSearchForm({
                             align={'center'}
                             fill
                             pad={'medium'}
+
                         >
                             <Button
                                 label={<Previous color={'brand'}/>}
@@ -46,13 +48,19 @@ export default function StreamSearchForm({
                                 onClick={() => setCollapse(!collapse)}
                                 margin={{left: 'medium'}}
                             />
-                                <FormCore
-                                    size={size}
-                                    categoriesColl={categoriesColl}
-                                    loading={loading}
-                                    setValues={setValues}
-                                    values={values}
-                                />
+                            <Box
+                                overflow={'scroll'}
+                                height={componentHeight + 'px'}
+                            >
+                            <FormCore
+                                size={size}
+                                categoriesColl={categoriesColl}
+                                setValues={setValues}
+                                values={values}
+                                streamsSortingTypes={streamsSortingTypes}
+                                streamsSortingOrders={streamsSortingOrders}
+                            />
+                            </Box>
                         </Box>
                     </Layer>
             }

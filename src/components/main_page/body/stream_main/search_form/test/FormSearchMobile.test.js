@@ -2,6 +2,7 @@ import {fireEvent, render, screen} from '@testing-library/react'
 import StreamSearchFormMobile from '../StreamSearchFormMobile'
 import React from 'react'
 import {Grommet} from 'grommet'
+import FormCore from "../FormCore";
 
 describe('Stream search form mobile render test', () => {
 
@@ -14,6 +15,8 @@ describe('Stream search form mobile render test', () => {
                 values={{}}
                 collapse={collapse}
                 setCollapse={() => collapse = false}
+                streamsSortingOrders={[]}
+                streamsSortingTypes={[]}
             />
         </Grommet>)
 
@@ -30,6 +33,8 @@ describe('Stream search form mobile render test', () => {
                 values={{}}
                 collapse={collapse}
                 setCollapse={() => collapse = false}
+                streamsSortingOrders={[]}
+                streamsSortingTypes={[]}
             />
         </Grommet>)
         const input = screen.queryByPlaceholderText(/Enter title/i)
@@ -45,6 +50,8 @@ describe('Stream search form mobile render test', () => {
                 values={{}}
                 collapse={collapse}
                 setCollapse={() => collapse = true}
+                streamsSortingOrders={[]}
+                streamsSortingTypes={[]}
             />
         </Grommet>)
 
@@ -62,6 +69,8 @@ describe('Stream search form mobile render test', () => {
                 values={{}}
                 collapse={collapse}
                 setCollapse={() => collapse = true}
+                streamsSortingOrders={[]}
+                streamsSortingTypes={[]}
             />
         </Grommet>)
 
