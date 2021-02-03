@@ -1,8 +1,8 @@
-import {userRequest, userRequestWithCookie} from './api'
+import {userRequest} from './api'
 
 export function register(userData) {
     return userRequest
-        .post('http://localhost:9090/api/v1/registration', userData)
+        .post('/api/v1/registration', userData)
         .catch(err => {
             if(err.response) {
                 throw new Error(err.response.data.message)
@@ -26,8 +26,10 @@ export function auth(formData) {
 }
 
 export function refreshAccess() {
-    return userRequestWithCookie
-        .get('/api/v1/auth/refresh-token')
+    return userRequest
+        .get('/api/v1/auth/refresh-token', {
+            withCredentials: true
+        })
         .then(res => res.data)
         .catch(err => {
             if(err.response) {
