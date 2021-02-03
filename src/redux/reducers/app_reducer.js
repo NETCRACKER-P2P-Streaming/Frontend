@@ -1,5 +1,11 @@
+import {Cookies} from 'react-cookie'
+import {getUser} from '../../API/user_api'
+import {setUserDataAC} from './user_reducer'
+
 const SET_LOADING = 'SET_LOADING'
 const SET_AUTH_FORM_OPEN = 'SET_AUTH_FORM_OPEN'
+
+let loadingClientsCount = 0
 
 const defaultState = {
 
@@ -13,9 +19,15 @@ const defaultState = {
 export default function appReducer(state = defaultState, action) {
     switch (action.type) {
         case(SET_LOADING): {
-            return {
-                ...state,
-                loading: action.loading
+            if(changeLoadingStateNeeded(action.loading, loadingClientsCount)) {
+                action.loading ? loadingClientsCount++ : loadingClientsCount--
+                return {
+                    ...state,
+                    loading: action.loading
+                }
+            } else {
+                action.loading ? loadingClientsCount++ : loadingClientsCount--
+                return state
             }
         }
         case(SET_AUTH_FORM_OPEN): {
@@ -42,4 +54,28 @@ export function setAuthFormOpenAC(newAuthFormOpenState) {
         type: SET_AUTH_FORM_OPEN,
         isAuthFormOpen: newAuthFormOpenState
     }
+}
+
+export function loadApp() {
+    return async dispatch => {
+        try {
+            let userCash = (new Cookies()).get('username')
+            if (userCash) {
+                dispatch(setLoadingAC(true))
+                const userData = await getUser(userCash)
+                dispatch(setUserDataAC(userData))
+                dispatch(setLoadingAC(false))
+            }
+        } catch (err) {
+            (new Cookies()).remove('username')
+            return Promise.reject(err)
+        }
+    }
+}
+
+// Helpers
+
+function changeLoadingStateNeeded(newLoading, loadingClientsCount) {
+    return (loadingClientsCount === 1 && !newLoading) ||
+           (newLoading && loadingClientsCount === 0)
 }

@@ -24,11 +24,11 @@ export default function StreamsList({streamsList, height, onMore, hasMore, size}
                 streamsList.map((s) => <StreamListItemContainer
                     key={s.userId}
                     userId={s.userId}
-                    streamTitle={s?.streamDesc.title}
-                    fullCategories={s?.streamDesc.fullCategories}
-                    countViewers={s?.information.countViewers}
-                    streamLinkImage={s?.streamDesc.linkImage}
-                    streamUserAttributes={s?.user}
+                    streamTitle={s.streamDesc.title}
+                    fullCategories={s.streamDesc.fullCategories}
+                    countViewers={s.information.countViewers}
+                    streamLinkImage={s.streamDesc.linkImage}
+                    streamUserAttributes={s.user}
                 />)
             }
         </InfiniteScroll>

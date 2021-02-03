@@ -17,11 +17,12 @@ function StreamPageContainer({
                                  getStreamsFromServ, getCategoriesToSearchFromServ,
                                  streamsList, categoriesList, setLoading,
                                  streamsSortingTypes, streamsSortingOrders
-}) {
+                             }) {
 
     const size = React.useContext(ResponsiveContext)
+
     // Данные, необходимые для выбора высоты элемента
-    const { height, width } = useWindowDimensions()
+    const {height, width} = useWindowDimensions()
     const [headerHei, setHeaderHei] = useState(document.querySelector('header')?.clientHeight)
     useEffect(
         () => setHeaderHei(document.querySelector('header')?.clientHeight),
@@ -75,12 +76,12 @@ function StreamPageContainer({
 
     function manageRequests() {
         clearTimeout(requestTimeOut)
-        setRequestTimeOut (
-            setTimeout (
+        setRequestTimeOut(
+            setTimeout(
                 () => {
                     setLoading(true)
                     let title = undefined
-                    if(/^[\w ]{6,50}$/.test(values.title)) {
+                    if (/^[\w ]{6,50}$/.test(values.title)) {
                         title = values.title
                     }
                     getStreamsFromServ(
@@ -104,7 +105,7 @@ function StreamPageContainer({
     // Функция запроса следующих элементов в бесконечном скролле
     function onMore() {
         let title = undefined
-        if(values.title.length > 0)
+        if (values.title.length > 0)
             title = values.title
         setHasMore(true)
         getStreamsFromServ(

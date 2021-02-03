@@ -15,7 +15,7 @@ export default function StreamListItemContainer({
         // идет проверка на валидность используемого изображения. Если изображение
         // не может быть загружено, тогда идет установка изображения в null
         // -> будет отображена заглушка
-        if(streamUserAttributes['custom:linkImage']) {
+        if(streamUserAttributes && streamUserAttributes['custom:linkImage']) {
             const img = new Image()
             img.onload = () => {setAvatarImage(streamUserAttributes['custom:linkImage'])}
             img.onerror = () => {setAvatarImage(null)}

@@ -1,13 +1,13 @@
-import {auth, register, getUser} from '../../API/user_api'
+import {auth, register, getUser, logout} from '../../API/user_api'
+import {Cookies} from 'react-cookie'
+import {setTokensCookies, deleteTokensCookies} from '../../utlils/cookiesUtils'
 
 const SET_USER_DATA = 'SET_USER_DATA'
-const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN'
 
 const defaultState = {
 
     // Данные авторизированного пользователя
-    userData: null,
-    accessToken: null
+    userData: null
 }
 
 export default function userReducer(state = defaultState, action) {
@@ -18,12 +18,6 @@ export default function userReducer(state = defaultState, action) {
                 userData: action.userData
             }
         }
-        case(SET_ACCESS_TOKEN): {
-            return {
-                ...state,
-                accessToken: action.accessToken
-            }
-        }
         default: {
             return state
         }
@@ -31,16 +25,14 @@ export default function userReducer(state = defaultState, action) {
 }
 
 export function setUserDataAC(userData) {
+    userData.userAttributes = userData.userAttributes.reduce((acc, att) => {
+        acc[att.name] = att.value
+        return acc
+    }, {})
+
     return {
         type: SET_USER_DATA,
         userData
-    }
-}
-
-function setAccessTokenAC(newAccessToken) {
-    return {
-        type: SET_ACCESS_TOKEN,
-        accessToken: newAccessToken
     }
 }
 
@@ -79,7 +71,7 @@ export function regUser(userData) {
                 ]
             }
             const result = await register(validUserData)
-            if(!result) {
+            if (!result) {
                 throw new Error('Registration failed. Try again later')
             }
         } catch (err) {
@@ -93,15 +85,47 @@ export function regUser(userData) {
  * @param formData Объект с данными, необходимыми для авторизации пользователя
  */
 export function authUser(formData) {
-    return async (dispatch, getState) => {
+    return async dispatch => {
         try {
-            //Если auth не возвращает ошибку - можно получать данные пользователя
             const result = await auth(formData)
-            dispatch(setAccessTokenAC(result.accessToken))
-            const user = await getUser(getState().user.accessToken, formData.username)
+            setTokensCookies(
+                result.accessToken,
+                result.accessTokenTimeout,
+                result.refreshTokenTimeout,
+                formData.username
+            )
+            let user = await getUser(formData.username)
             dispatch(setUserDataAC(user))
         } catch (err) {
             return Promise.reject(err)
         }
     }
 }
+
+/**
+ *
+ * @returns {function(*): Promise<undefined>} - Функция, делающая запрос на выход
+ * из системы. Если сервер отвечает положительно - удаляет токены из cookies и
+ * убирает данные авторизированного пользователя из store. Иначе выбразывает ошибку
+ */
+export function userLogout() {
+    return async dispatch => {
+        try {
+            const cookies = new Cookies()
+            const result = await logout(cookies.get('accessToken'))
+
+            if(result === 'OK') {
+                deleteTokensCookies()
+                dispatch(setUserDataAC(null))
+            } else {
+                throw new Error('Logout failed. Please try again')
+            }
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
+
+
+
+

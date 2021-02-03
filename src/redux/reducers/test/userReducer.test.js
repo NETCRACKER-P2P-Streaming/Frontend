@@ -1,6 +1,7 @@
 import {authUser, regUser} from '../user_reducer'
 import {auth, register, getUser} from '../../../API/user_api'
 import {store} from '../../store'
+import {Cookies} from 'react-cookie'
 
 jest.mock('../../../API/user_api', () => ({
     __esModule: true,
@@ -16,18 +17,45 @@ describe('User reducer auth test', () => {
             username: 'Test username',
             password: 'Test pass'
         }
-        const expectedData = {
-            name: 'Test name',
-            surname: 'Test surname',
-            email: 'test@mail.ru'
+        const userData = {
+            username: 'test username',
+            userAttributes: [
+                {
+                    name: 'name',
+                    value: 'Test name'
+                },
+                {
+                    name: 'surname',
+                    value: 'Test surname'
+                },
+                {
+                    name: 'email',
+                    value: 'test@mail.ru'
+                },
+            ]
+        }
+        const expectedUserData = {
+            username: 'test username',
+            userAttributes: {
+                name: 'Test name',
+                surname: 'Test surname',
+                email: 'test@mail.ru'
+            }
         }
         expect(store.getState().user.userData).toBeFalsy()
-        auth.mockImplementationOnce(async formData => {})
-        getUser.mockImplementationOnce(async userName => expectedData)
+        auth.mockImplementationOnce(async formData => ({
+            accessToken: 'acc tok',
+            accessTokenTimeout: 60000,
+            refreshTokenTimeout: 61000
+        }))
+        getUser.mockImplementationOnce(async userName => userData)
         const authUserInternal = authUser(formData)
         await authUserInternal(store.dispatch)
 
-        expect(store.getState().user.userData).toStrictEqual(expectedData)
+        const cookies = new Cookies()
+        expect(store.getState().user.userData).toStrictEqual(expectedUserData)
+        expect(cookies.getAll().accessToken).toBe('acc tok')
+        expect(cookies.getAll().refreshTokenTimeout).toBe('61000')
     })
 
     it('Rejected', async () => {

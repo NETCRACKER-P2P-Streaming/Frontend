@@ -1,6 +1,6 @@
 import React from 'react'
 import {Box} from 'grommet'
-import FormCore from "./FormCore";
+import FormCore from './FormCore'
 
 export default function StreamSearchForm({
                                              setValues, values, categoriesColl, size,

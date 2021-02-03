@@ -1,6 +1,6 @@
 import React from 'react'
-import {Box, Button, CheckBoxGroup, Form, FormField, Select, Stack, Text, TextInput} from 'grommet'
-import {Close, Search} from 'grommet-icons'
+import {Box, CheckBoxGroup, Form, FormField, Select, Text, TextInput} from 'grommet'
+import {Search} from 'grommet-icons'
 
 
 export default function FormCore({
