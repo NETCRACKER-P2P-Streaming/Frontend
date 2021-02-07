@@ -86,7 +86,7 @@ describe('Cookies utils tests', () => {
 
         expect(cookies.get('accessToken')).toBeFalsy()
         expect(cookies.get('username')).toBeFalsy()
-        expect(cookies.get('refreshTokenTimeout')).toBe('10000')
+        expect(cookies.get('refreshTokenTimeout')).toBeFalsy()
     })
 
     it('Refresh tokens test with all tokens', async () => {

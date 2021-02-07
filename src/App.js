@@ -10,7 +10,13 @@ import {loadApp} from './redux/reducers/app_reducer'
 
 function App({appLoading, isAuthFormOpen, loadApp}) {
 
-    useEffect(() => loadApp(), [])
+    useEffect(
+        () => loadApp()
+            .catch(err => {
+                console.log(err)
+                alert(err.message)
+            })
+        , [])
     return (
         <>
             <Route

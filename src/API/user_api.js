@@ -55,10 +55,10 @@ export function getUser(username) {
 
 export function logout(accessToken) {
     return userRequest
-        .get('/api/v1/auth/logout', {
-            headers: {
-                'Authorization' : `Bearer ${accessToken}`
-            }
+         .get('/api/v1/auth/logout', {
+             headers: {
+                 'Authorization' : `Bearer ${accessToken}`
+             }
         })
         .then(res => res.data)
         .catch(err => {

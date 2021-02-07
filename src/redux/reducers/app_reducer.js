@@ -1,6 +1,7 @@
 import {Cookies} from 'react-cookie'
 import {getUser} from '../../API/user_api'
 import {setUserDataAC} from './user_reducer'
+import {deleteTokensCookies, refreshTokensCookies} from '../../utlils/cookiesUtils'
 
 const SET_LOADING = 'SET_LOADING'
 const SET_AUTH_FORM_OPEN = 'SET_AUTH_FORM_OPEN'
@@ -59,16 +60,20 @@ export function setAuthFormOpenAC(newAuthFormOpenState) {
 export function loadApp() {
     return async dispatch => {
         try {
-            let userCash = (new Cookies()).get('username')
-            if (userCash) {
-                dispatch(setLoadingAC(true))
-                const userData = await getUser(userCash)
-                dispatch(setUserDataAC(userData))
-                dispatch(setLoadingAC(false))
+            const isCookiesRefreshed = await refreshTokensCookies()
+            if(isCookiesRefreshed) {
+                let userCash = (new Cookies()).get('username')
+                if (userCash) {
+                    dispatch(setLoadingAC(true))
+                    const userData = await getUser(userCash)
+                    dispatch(setUserDataAC(userData))
+                }
             }
         } catch (err) {
-            (new Cookies()).remove('username')
+            deleteTokensCookies()
             return Promise.reject(err)
+        } finally {
+            dispatch(setLoadingAC(false))
         }
     }
 }

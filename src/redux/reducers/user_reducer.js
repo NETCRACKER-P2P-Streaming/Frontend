@@ -25,11 +25,12 @@ export default function userReducer(state = defaultState, action) {
 }
 
 export function setUserDataAC(userData) {
-    userData.userAttributes = userData.userAttributes.reduce((acc, att) => {
-        acc[att.name] = att.value
-        return acc
-    }, {})
-
+    if(userData) {
+        userData.userAttributes = userData.userAttributes.reduce((acc, att) => {
+            acc[att.name] = att.value
+            return acc
+        }, {})
+    }
     return {
         type: SET_USER_DATA,
         userData
@@ -112,14 +113,11 @@ export function userLogout() {
     return async dispatch => {
         try {
             const cookies = new Cookies()
-            const result = await logout(cookies.get('accessToken'))
+            await logout(cookies.get('accessToken'))
 
-            if(result === 'OK') {
-                deleteTokensCookies()
-                dispatch(setUserDataAC(null))
-            } else {
-                throw new Error('Logout failed. Please try again')
-            }
+            deleteTokensCookies()
+            dispatch(setUserDataAC(null))
+
         } catch (err) {
             return Promise.reject(err)
         }

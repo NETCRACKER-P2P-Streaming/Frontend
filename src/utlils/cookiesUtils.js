@@ -13,19 +13,18 @@ const cookies = new Cookies()
  */
 export async function refreshTokensCookies() {
     if (!cookies.get('refreshTokenTimeout')) {
-        cookies.remove('username')
+        deleteTokensCookies()
         return false
     } else if (!cookies.get('accessToken')) {
         try {
             const res = await refreshAccess()
-
             setTokensCookies(
                 res.accessToken,
                 res.accessTokenTimeout,
                 res.refreshTokenTimeout
             )
         } catch (err) {
-            cookies.remove('username')
+            deleteTokensCookies()
             console.log(err)
             return false
         }
