@@ -7,7 +7,7 @@ export default function StreamPage({
                                        categoriesList, windowHeight, streamsList,
                                        streamsSortingTypes, streamsSortingOrders,
                                        topHeight, values, setValues, onMore, hasMore,
-                                       size
+                                       size, appLoading
 }) {
     return (
         <Box
@@ -28,6 +28,7 @@ export default function StreamPage({
                 streamsList={streamsList}
                 hasMore={hasMore}
                 size={size}
+                appLoading={appLoading}
             />
         </Box>
     )

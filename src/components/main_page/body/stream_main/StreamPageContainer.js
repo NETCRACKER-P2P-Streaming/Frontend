@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import {
+    selectAppLoading,
     selectCategoriesList,
     selectStreamsList,
     selectStreamsSortingOrders,
@@ -16,7 +17,8 @@ import {ResponsiveContext} from 'grommet'
 function StreamPageContainer({
                                  getStreamsFromServ, getCategoriesToSearchFromServ,
                                  streamsList, categoriesList, setLoading,
-                                 streamsSortingTypes, streamsSortingOrders
+                                 streamsSortingTypes, streamsSortingOrders,
+                                 appLoading
                              }) {
 
     const size = React.useContext(ResponsiveContext)
@@ -62,7 +64,9 @@ function StreamPageContainer({
             })
             .finally(() => {
                 setLoading(false)
-                setHasMore(true)
+                if(Array.isArray(streamsList) && streamsList.length > 0) {
+                    setHasMore(true)
+                }
             })
     }, [])
 
@@ -134,6 +138,7 @@ function StreamPageContainer({
         onMore={onMore}
         hasMore={hasMore}
         size={size}
+        appLoading={appLoading}
     />
 }
 
@@ -142,7 +147,8 @@ function mapStateToProps(state) {
         streamsList: selectStreamsList(state),
         categoriesList: selectCategoriesList(state),
         streamsSortingTypes: selectStreamsSortingTypes(state),
-        streamsSortingOrders: selectStreamsSortingOrders(state)
+        streamsSortingOrders: selectStreamsSortingOrders(state),
+        appLoading: selectAppLoading(state)
     }
 }
 

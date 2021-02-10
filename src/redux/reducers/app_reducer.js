@@ -62,9 +62,9 @@ export function loadApp() {
         try {
             const isCookiesRefreshed = await refreshTokensCookies()
             if(isCookiesRefreshed) {
+                dispatch(setLoadingAC(true))
                 let userCash = (new Cookies()).get('username')
                 if (userCash) {
-                    dispatch(setLoadingAC(true))
                     const userData = await getUser(userCash)
                     dispatch(setUserDataAC(userData))
                 }
