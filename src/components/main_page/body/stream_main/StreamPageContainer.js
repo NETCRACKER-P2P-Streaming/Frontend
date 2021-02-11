@@ -101,7 +101,7 @@ function StreamPageContainer({
                         })
                         .finally(() => setLoading(false))
                 },
-                500
+                1000
             )
         )
     }

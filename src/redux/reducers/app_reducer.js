@@ -6,6 +6,12 @@ import {deleteTokensCookies, refreshTokensCookies} from '../../utlils/cookiesUti
 const SET_LOADING = 'SET_LOADING'
 const SET_AUTH_FORM_OPEN = 'SET_AUTH_FORM_OPEN'
 
+// Счетчик источников вызова загрузки. Если источников не больше 1 ->
+// загрузку можно прекратить, иначе стоит прекратить загрузку только
+// когда этого потребует последний источник.
+// --- ! ---
+// ВСЕГДА СЛЕДУЕТ ВЫЗЫВАТЬ SET_LOADING(FALSE), ЕСЛИ
+// LOADING ИЗНАЧАЛЬНО МОЖЕТ ОКАЗАТЬСЯ В TRUE (в случае одного конкретного источника)
 let loadingClientsCount = 0
 
 const defaultState = {
@@ -21,13 +27,11 @@ export default function appReducer(state = defaultState, action) {
     switch (action.type) {
         case(SET_LOADING): {
             if(changeLoadingStateNeeded(action.loading, loadingClientsCount)) {
-                action.loading ? loadingClientsCount++ : loadingClientsCount--
                 return {
                     ...state,
                     loading: action.loading
                 }
             } else {
-                action.loading ? loadingClientsCount++ : loadingClientsCount--
                 return state
             }
         }
@@ -80,7 +84,14 @@ export function loadApp() {
 
 // Helpers
 
-function changeLoadingStateNeeded(newLoading, loadingClientsCount) {
-    return (loadingClientsCount === 1 && !newLoading) ||
-           (newLoading && loadingClientsCount === 0)
+function changeLoadingStateNeeded(newLoading) {
+    const condition = (loadingClientsCount === 1 && !newLoading) || newLoading
+
+    if(newLoading) {
+        loadingClientsCount++
+    } else {
+        loadingClientsCount = loadingClientsCount > 0 ? loadingClientsCount - 1 : 0
+    }
+
+    return condition
 }
