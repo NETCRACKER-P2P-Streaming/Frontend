@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
@@ -24,6 +25,42 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <style type="text/css">
+      * {
+        margin: 0;
+      }
+      html {
+        overflow: scroll;
+        overflow-x: hidden;
+      }
+
+      ::-webkit-scrollbar {
+        width: 0;  /* remove scrollbar space */
+        height: 0;
+        background: transparent;  /* optional: just make scrollbar invisible */
+      }
+
+      .scrolled {
+        overflow-x: auto;
+      }
+
+      .scrolled::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      .scrolled:hover::-webkit-scrollbar {
+        width: 8px; /* ширина для вертикального скролла */
+        height: 8px; /* высота для горизонтального скролла */
+        transition: 0.3s;
+      }
+
+      /* ползунок скроллбара */
+      .scrolled:hover::-webkit-scrollbar-thumb {
+        background-color: #7D4CDB;
+        border-radius: 3px;
+      }
+    </style>
     <title>React App</title>
   </head>
   <body>
