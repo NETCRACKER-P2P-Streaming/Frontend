@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+
+  streaming_project_frontend-prod:
+    container_name: streaming_project_frontend-prod
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - '1337:80'
