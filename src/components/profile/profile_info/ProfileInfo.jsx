@@ -2,11 +2,16 @@ import React from "react"
 import Loading from "../../util_components/Loading"
 import { Box, Button, Grid, Form, FormField, Heading, Text, TextInput } from 'grommet'
 import ProfileAvatarContainer from "./ProfileAvatarContainer"
+import ProfileStatus from "./ProfileStatus"
 
 const ProfileInfo = (props) => {
   if (!props.profile) {
     return <Loading />
   }
+  let userAtt = props.profile.userAttributes.reduce((acc, att) => {
+    acc[att.name] = att.value
+    return acc
+  }, {})
   return (
     <Box
       direction="row"
@@ -23,11 +28,13 @@ const ProfileInfo = (props) => {
         ]}
       >
         <Box gridArea="profile"  >
+
           <Heading
             level={1}>
-            {props.profile.userAttributes[2].value}&nbsp;
-            {props.profile.userAttributes[5].value}
+            {userAtt['name']}&nbsp;
+            {userAtt['family_name']}
           </Heading>
+          <ProfileStatus status={userAtt['custom:description']} />
           <ProfileAvatarContainer />
           <Box
             pad="small">
@@ -70,10 +77,10 @@ const ProfileInfo = (props) => {
           </Box>
         </Box>
         <Box gridArea="streams"  >
-          <Form> 
+          <Form>
             <Button
-            type={'submit'}
-            primary label={'Start new stream'}
+              type={'submit'}
+              primary label={'Start new stream'}
             />
           </Form>
         </Box>
