@@ -27,4 +27,21 @@ export const getUserProfile = (username) => (dispatch) => {
     dispatch(setUserProfile(response.data));
   });
 }
+
+export const saveProfile = (profile) => async (dispatch, getState) => {
+   try {
+    const username = getState().user.userData.username;
+    profileAPI.saveProfile(profile);
+   debugger;
+              dispatch(getUserProfile(username));
+} catch (err) {
+    return Promise.reject(err)
+}
+}
+/* export const setPassword = (password) => ({type: SET_PASSWORD, password})
+export const resetPassword = (password) => (dispatch) => {
+profileAPI.resetPassword(password).then(response => {
+  dispatch(setPassword(response.data));
+});
+} */
 export default profileReducer;

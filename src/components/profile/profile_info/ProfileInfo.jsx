@@ -97,4 +97,4 @@ const ProfileInfo = (props) => {
     </Box>
   )
 }
-export default ProfileInfo;
+export default ProfileInfo
