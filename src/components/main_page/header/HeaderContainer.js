@@ -4,10 +4,12 @@ import {connect} from 'react-redux'
 import {selectIsAuthFormOpen, selectUserData} from '../../../redux/selectors/selectors'
 import {setAuthFormOpenAC} from '../../../redux/reducers/app_reducer'
 import {userLogout} from '../../../redux/reducers/user_reducer'
+import {useHistory} from 'react-router-dom'
 
 function HeaderContainer({isAuthFormOpen, setAuthFormOpen, userData, userLogout}) {
 
     const [avatarImage, setAvatarImage] = useState(null)
+    const history = useHistory()
 
     useEffect(() => {
         // Если пользователь существует и у него существует поле аватарки -
@@ -28,6 +30,7 @@ function HeaderContainer({isAuthFormOpen, setAuthFormOpen, userData, userLogout}
         userAvatar={avatarImage}
         userData={userData}
         logoutUserAction={userLogout}
+        history={history}
     />
 }
 

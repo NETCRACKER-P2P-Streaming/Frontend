@@ -2,17 +2,14 @@ import React from 'react'
 import {Avatar, Box, Menu} from 'grommet'
 import {CaretDownFill, User} from 'grommet-icons'
 
-export default function UserActions({userAvatar, logoutUserAction}) {
+export default function UserActions({userAvatar, logoutUserAction, history}) {
     return (
         <Box>
             <Menu
                 dropProps={{align: {top: 'bottom', left: 'left'}}}
                 items={[
-                    {
-                        label: 'Profile', gap: 'large', onClick: () => {
-                        }
-                    },
-
+                    {label: 'Profile', gap: 'large', onClick: () => {}},
+                    {label: 'Start stream', gap: 'large', onClick: () => history.push('/start-stream')},
                     {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
                 ]}
                 label={

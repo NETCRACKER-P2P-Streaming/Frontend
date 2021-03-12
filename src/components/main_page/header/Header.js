@@ -4,7 +4,7 @@ import SignActions from './sign_btns/SignActions'
 import UserActions from './user_actions/UserActions'
 
 
-export default function Header({isAuthFormOpen, setAuthFormOpen, userAvatar, userData, logoutUserAction}) {
+export default function Header({isAuthFormOpen, setAuthFormOpen, userAvatar, userData, logoutUserAction, history}) {
     return (
         <Box
             tag={'header'}
@@ -25,6 +25,7 @@ export default function Header({isAuthFormOpen, setAuthFormOpen, userAvatar, use
                     ? <UserActions
                         userAvatar={userAvatar}
                         logoutUserAction={logoutUserAction}
+                        history={history}
                     />
                     : <SignActions
                         isAuthFormOpen={isAuthFormOpen}
