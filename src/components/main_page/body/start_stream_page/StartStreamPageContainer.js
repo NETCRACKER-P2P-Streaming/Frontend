@@ -2,7 +2,9 @@ import React, {useState} from 'react'
 import {connect} from 'react-redux'
 import StartStreamPage from './StartStreamPage'
 import {commonRegExpValidator, customConditionValidator} from '../../../utils/validators'
+import * as Stomp from 'stomp-websocket'
 
+let stream = null
 
 function StartStreamPageContainer({headerHei, height}) {
 
@@ -16,13 +18,24 @@ function StartStreamPageContainer({headerHei, height}) {
                 },
                 audio: false
             }
-            const stream = await navigator.mediaDevices.getDisplayMedia(options)
+            stream = await navigator.mediaDevices.getDisplayMedia(options)
             document.getElementById('share_video_container').srcObject = stream
             stream.oninactive = onStopSharing
             setIsStreamInitialized(true)
         } catch (err) {
             console.error(err)
         }
+    }
+
+    async function onSubmit() {
+        const client = Stomp.overWS('<our url>')
+        const streamerPeerConnection = new RTCPeerConnection({})
+        client.connect({}, () => console.log('connection is going'))
+        stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
+        const answer = await streamerPeerConnection.createAnswer()
+        await streamerPeerConnection.setLocalDescription(answer)
+        client.heartbeat.outgoing = 1000;
+        client.send('/app/stream/offer', {}, streamerPeerConnection.localDescription)
     }
 
     function onStopSharing() {
