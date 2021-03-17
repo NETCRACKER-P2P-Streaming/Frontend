@@ -4,6 +4,7 @@ import StreamPageContainer from './stream_main/StreamPageContainer'
 import {Route} from 'react-router-dom'
 import StartStreamPageContainer from './start_stream_page/StartStreamPageContainer'
 import useWindowDimensions from '../../utils/useWindowDimention'
+import StreamContainer from './stream/StreamContainer'
 
 export default function MainBody() {
 
@@ -32,6 +33,13 @@ export default function MainBody() {
                 render={() => <StartStreamPageContainer
                     height={height}
                     headerHei={headerHei}
+                />}
+            />
+            <Route
+                path={'/stream/:streamId?'}
+                exact={true}
+                render={params => <StreamContainer
+                    {...params}
                 />}
             />
         </Main>

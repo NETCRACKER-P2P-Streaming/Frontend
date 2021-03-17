@@ -1,11 +1,13 @@
 import React from 'react'
 import {Avatar, Box, Image, Stack, Text} from 'grommet'
 import {Image as ImageIcon, User} from 'grommet-icons'
+import {NavLink} from 'react-router-dom'
 
 export default function StreamListItem({
                                            streamImage, avatarImage, countViewers,
                                            streamTitle, userId, fullCategories,
-}) {
+                                           streamId
+                                       }) {
     return (
         <Box
             height={'medium'}
@@ -13,44 +15,47 @@ export default function StreamListItem({
             elevation={'medium'}
             margin={'xsmall'}
         >
-            <Stack
-                anchor={'top-left'}
+            <NavLink
+                to={`/stream/${streamId}`}
             >
-                <Box
-                    height={'small'}
-                    width={'medium'}
-                    align={'center'}
-                    justify={'center'}
-                    background={'light-1'}
+                <Stack
+                    anchor={'top-left'}
+                >
+                    <Box
+                        height={'small'}
+                        width={'medium'}
+                        align={'center'}
+                        justify={'center'}
+                        background={'light-1'}
 
-                >
-                    {
-                        streamImage
-                            ? <Image
-                                fit={'contain'}
-                                src={streamImage}
-                                alt={'Stream image'}
-                            />
-                            : <ImageIcon
-                                size={'large'}
-                                color={'brand'}
-                            />
-                    }
-                </Box>
-                <Box
-                    background={'light-6'}
-                    round={'small'}
-                    margin={'small'}
-                    pad={'xsmall'}
-                >
-                    <Text
-                        color={'dark-2'}
                     >
-                        {`${countViewers} viewers now`}
-                    </Text>
-                </Box>
-            </Stack>
-
+                        {
+                            streamImage
+                                ? <Image
+                                    fit={'contain'}
+                                    src={streamImage}
+                                    alt={'Stream image'}
+                                />
+                                : <ImageIcon
+                                    size={'large'}
+                                    color={'brand'}
+                                />
+                        }
+                    </Box>
+                    <Box
+                        background={'light-6'}
+                        round={'small'}
+                        margin={'small'}
+                        pad={'xsmall'}
+                    >
+                        <Text
+                            color={'dark-2'}
+                        >
+                            {`${countViewers} viewers now`}
+                        </Text>
+                    </Box>
+                </Stack>
+            </NavLink>
 
             <Box
                 direction={'row'}
@@ -106,7 +111,7 @@ export default function StreamListItem({
             >
                 {
                     fullCategories.map((c, index) => {
-                        if(index < 5) {
+                        if (index < 5) {
                             return <Box
                                 key={c.name}
                                 background={'light-6'}

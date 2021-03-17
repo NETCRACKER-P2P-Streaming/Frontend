@@ -1,14 +1,11 @@
 import React from 'react'
 import {Box, Button} from 'grommet'
 import StartStreamPageForm from './StartStreamPageForm'
-import AddCategoryForm from './AddCategoryForm'
 
 export default function StartStreamPage({
                                             onStartSharing, isStreamInitialized, selectOptions,
-                                            initialStartStreamFormValues, setSelectOptions, startStreamFormValidators, headerHei,
-                                            height, setStartStreamFormValues, startStreamFormValues, addCategoryFormValidators,
-                                            addCategoryFormValues, setAddCategoryFormValues, addCategoryFormInitialValues,
-                                            isAddCategoryFormShown, setIsAddCategoryFormShown
+                                            initialStartStreamFormValues, setSelectOptions, startStreamFormValidators,
+                                            headerHei, height, setStartStreamFormValues, startStreamFormValues
                                         }) {
     return <Box
         direction={'row'}
@@ -54,20 +51,7 @@ export default function StartStreamPage({
                 initialFormValues={initialStartStreamFormValues}
                 setFormValues={setStartStreamFormValues}
                 validators={startStreamFormValidators}
-                setIsAddCategoryFormShown={setIsAddCategoryFormShown}
-                isAddCategoryFormShown={isAddCategoryFormShown}
             />
-            {
-                isAddCategoryFormShown
-                &&
-                <AddCategoryForm
-                    validators={addCategoryFormValidators}
-                    formValues={addCategoryFormValues}
-                    setFormValues={setAddCategoryFormValues}
-                    initialValues={addCategoryFormInitialValues}
-                    setIsAddCategoryFormShown={setIsAddCategoryFormShown}
-                />
-            }
         </Box>
     </Box>
 }

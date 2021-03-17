@@ -86,27 +86,6 @@ function StartStreamPageContainer({headerHei, height}) {
         ]
     }
 
-    const addCategoryFormInitialValues = {
-        title: '',
-        description: ''
-    }
-    const [addCategoryFormValues, setAddCategoryFormValues] = useState(addCategoryFormInitialValues)
-    const [isAddCategoryFormShown, setIsAddCategoryFormShown] = useState(false)
-    const addCategoryFormValidators = {
-        title: [
-            commonRegExpValidator(
-                /^[\w ]{2,30}$/,
-                'Title must be 2-30 alphanumeric symbols'
-            )
-        ],
-        description: [
-            commonRegExpValidator(
-                /^[\w ]{0,255}$/,
-                'Description must be maximum 255 alphanumeric symbols'
-            )
-        ]
-    }
-
     return <StartStreamPage
         onStartSharing={onStartSharing}
         isStreamInitialized={isStreamInitialized}
@@ -118,12 +97,6 @@ function StartStreamPageContainer({headerHei, height}) {
         startStreamFormValidators={startStreamFormValidators}
         height={height}
         headerHei={headerHei}
-        addCategoryFormValues={addCategoryFormValues}
-        setAddCategoryFormValues={setAddCategoryFormValues}
-        addCategoryFormValidators={addCategoryFormValidators}
-        addCategoryFormInitialValues={addCategoryFormInitialValues}
-        isAddCategoryFormShown={isAddCategoryFormShown}
-        setIsAddCategoryFormShown={setIsAddCategoryFormShown}
     />
 }
 

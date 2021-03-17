@@ -4,7 +4,9 @@ import {CaretDownFill, User} from 'grommet-icons'
 
 export default function UserActions({userAvatar, logoutUserAction, history}) {
     return (
-        <Box>
+        <Box
+            pad={'none'}
+        >
             <Menu
                 dropProps={{align: {top: 'bottom', left: 'left'}}}
                 items={[

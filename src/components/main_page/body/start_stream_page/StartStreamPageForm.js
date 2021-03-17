@@ -5,7 +5,7 @@ import {Close} from 'grommet-icons'
 
 export default function StartStreamPageForm({
                                                 selectOptions, setSelectOptions, formValues, initialFormValues,
-                                                setFormValues, validators, setIsAddCategoryFormShown, isAddCategoryFormShown
+                                                setFormValues, validators
 }) {
 
     function sortOptions() {
@@ -128,17 +128,6 @@ export default function StartStreamPageForm({
                 }
             </Select>
         </FormField>
-        {
-            isAddCategoryFormShown
-            ||
-            <Button
-                label={'Add your category'}
-                secondary={true}
-                onClick={() => setIsAddCategoryFormShown(true)}
-                margin={{vertical: 'medium', left: '2px'}}
-                alignSelf={'center'}
-            />
-        }
         <Box
             wrap={true}
             flex={true}
