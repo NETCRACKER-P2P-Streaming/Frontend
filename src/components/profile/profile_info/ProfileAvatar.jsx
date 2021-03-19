@@ -1,10 +1,10 @@
 import React from 'react'
-import { Box} from 'grommet'
+import { Box, Image} from 'grommet'
 
 export default function ProfileAvatar({ userAvatar, userData }) {
     return (
         <Box pad="small" width="medium">
-            <img src={userAvatar} />
+            <Image src={userAvatar} />
         </Box>
     )
 }

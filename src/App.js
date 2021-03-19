@@ -38,7 +38,12 @@ function App({appLoading, isAuthFormOpen, loadApp}) {
             />
             <Route 
                 path="/profile/:username?"
-                render={() => <ProfileContainer/>} 
+                render={() => (
+                    <>
+                        <HeaderContainer/>
+                        <ProfileContainer/>                   
+                    </>
+                )} 
             />
          
             {/* Если флаг состояния загрузки всего прилоежния в true -
