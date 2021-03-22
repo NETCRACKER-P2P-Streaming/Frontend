@@ -1,48 +1,77 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
+import { putUserAttributes } from '../../../API/user_api';
+import { Cookies } from 'react-cookie'
 
-export default 
-    function ProfileDataForm() {
+export default
+    function PersonDataForm(props) {
+    const [errorMessage, setErrorMessage] = useState(undefined)
 
-        const [form, setForm] = useState({
-          name: '',
-          password: ''
-        });
-      
-        const submit = e => {
-          e.preventDefault();
-          console.log(form.name, form.password);
-        };
-      
-        const update = e => {
-          setForm({
+    const [form, setForm] = useState({
+        name: ''
+    });
+    let handleChange = e => {
+        setForm({
             ...form,
             [e.target.name]: e.target.value
-          });
-        };
-      
-        return (
-          <form onSubmit={submit}>
-      
-            <label>
-               Имя:
-              <input
-                value={form.name}
-                name="name"
-                onChange={update}
-              />
-            </label>
-            
-          <label>
-              Пароль:
-              <input
-                value={form.password}
-                name="password"
-                type="password"
-                onChange={update}
-              />
-            </label>
-      
-            <button>Отправить</button>
-          </form>
-        );
-      }
+        });
+    };
+
+    async function onSubmit() {
+        try {
+            await putUser(form)
+        } catch (err) {
+            setErrorMessage(err.message)
+        }
+    }
+    function putUser(userData) {
+        return async dispatch => {
+            try {
+                const validUserData = {
+                    username: userData.username,
+                    password: userData.password,
+                    userAttributes: [
+                        {
+                            name: "name",
+                            value: userData.firstName
+                        },
+                        {
+                            name: "custom:linkImage",
+                            value: userData.linkImage
+                        },
+                        {
+                            name: "custom:description",
+                            value: userData.description
+                        },
+                        {
+                            name: "family_name",
+                            value: userData.lastName
+                        },
+                        {
+                            name: "email",
+                            value: userData.email
+                        }
+                    ]
+                }
+                const cookies = new Cookies()
+                const result = await putUserAttributes(validUserData, cookies.get('accessToken'))
+                if (!result) {
+                    throw new Error('Save failed. Try again later')
+                }
+            } catch (err) {
+                return Promise.reject(err)
+            }
+        }
+    }
+    return (
+        <div>
+            <form onSubmit={onSubmit}>
+                <label>
+                    Person Name:
+                        <input value={form.name} name="name" onChange={handleChange} />
+                </label>
+                <button type="submit">Add</button>
+            </form>
+        </div>
+    )
+
+}

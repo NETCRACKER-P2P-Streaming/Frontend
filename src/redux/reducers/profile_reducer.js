@@ -1,4 +1,5 @@
 import { profileAPI } from "../../API/profile_api"
+import { putUserAttributes } from "../../API/user_api";
 const SET_USER_PROFILE = 'SET_USER_PROFILE'
 
 let initialState = {
@@ -27,7 +28,11 @@ export const getUserProfile = (username) => (dispatch) => {
     dispatch(setUserProfile(response.data));
   });
 }
-
+/* export const putUserProfile = (username) => (dispatch) => {
+  putUserAttributes(username).then(response => {
+    dispatch(setUserProfile(response.data));
+  });
+} */
 export const saveProfile = (profile) => async (dispatch, getState) => {
    try {
     const username = getState().user.userData.username;
