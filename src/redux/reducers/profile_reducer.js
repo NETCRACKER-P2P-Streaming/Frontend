@@ -1,5 +1,7 @@
 import { profileAPI } from "../../API/profile_api"
-import { putUserAttributes } from "../../API/user_api";
+import { putUserData} from "../../API/profile_api"
+import {Cookies} from 'react-cookie'
+
 const SET_USER_PROFILE = 'SET_USER_PROFILE'
 
 let initialState = {
@@ -28,21 +30,23 @@ export const getUserProfile = (username) => (dispatch) => {
     dispatch(setUserProfile(response.data));
   });
 }
-/* export const putUserProfile = (username) => (dispatch) => {
-  putUserAttributes(username).then(response => {
-    dispatch(setUserProfile(response.data));
-  });
-} */
-export const saveProfile = (profile) => async (dispatch, getState) => {
-   try {
-    const username = getState().user.userData.username;
-    profileAPI.saveProfile(profile);
-   debugger;
-              dispatch(getUserProfile(username));
-} catch (err) {
-    return Promise.reject(err)
-}
-}
+
+export const saveProfile = (userData) =>  {
+  try{
+    const user = {
+        "userAttributes": [
+            {
+                "name": "name",
+                "value": userData.name
+            }]}
+       
+            const cookies = new Cookies()
+            putUserData(user, cookies.get('accessToken'))
+           
+        } catch (err) {
+            return Promise.reject(err)
+        }
+  }
 /* export const setPassword = (password) => ({type: SET_PASSWORD, password})
 export const resetPassword = (password) => (dispatch) => {
 profileAPI.resetPassword(password).then(response => {

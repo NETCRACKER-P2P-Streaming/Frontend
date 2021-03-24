@@ -12,17 +12,7 @@ resetPassword(newPassword, oldPassword,username ) {
 }  
 
 }
-export function saveProfile(userData) {
-return axios
-    .put(`http://localhost:9090/api/v1/users`, userData)
-    .catch(err => {
-        if(err.response) {
-            throw new Error(err.response.data.message)
-        } else {
-            throw err
-        }
-    })
-}
+
 export function putUserData(user, accessToken) {
   return  axios.put(`http://localhost:9090/api/v1/users`,  user ,{  headers: {
           withCredentials: true,

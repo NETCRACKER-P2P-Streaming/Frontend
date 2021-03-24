@@ -2,10 +2,12 @@ import {Cookies} from 'react-cookie'
 
 import React, {useState} from 'react'
 import { putUserData } from '../../../API/profile_api'
+import { saveProfile } from '../../../redux/reducers/profile_reducer';
 
 export default 
-    function PersonDataForm() {
- 
+    function PersonDataForm(isOwner) {
+        let [editMode, setEditMode] = useState(false);
+
   const [form, setForm] = useState({
     name: ''
   });
@@ -13,25 +15,18 @@ export default
    setForm({   ...form,
     [e.target.name]: e.target.value });
   };
-
+/*   const onSubmit = (formData) => {
+    saveProfile(formData).then(
+        () => {
+            setEditMode(false);
+        }
+    );
+} */
   let handleSubmit = (event) => {
     event.preventDefault();
-    
+    saveProfile(form)
 
-try{
-    const user = {
-        "userAttributes": [
-            {
-                "name": "name",
-                "value": form.name
-            }]}
-       
-            const cookies = new Cookies()
-            putUserData(user, cookies.get('accessToken'))
-           
-        } catch (err) {
-            return Promise.reject(err)
-        }
+
   }
 
   

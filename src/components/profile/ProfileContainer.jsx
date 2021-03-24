@@ -12,7 +12,8 @@ class ProfileContainer extends React.Component {
     profileAPI.getProfile(username);
   }
   render() {
-    return <Profile {...this.props} profile={this.props.profile} />
+    return <Profile {...this.props} profile={this.props.profile} isOwner={this.props.match.params.username} 
+    />
   }
 }
 let mapStateToProps = (state) => ({
