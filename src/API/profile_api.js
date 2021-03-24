@@ -23,3 +23,14 @@ return axios
         }
     })
 }
+export function putUserData(user, accessToken) {
+  return  axios.put(`http://localhost:9090/api/v1/users`,  user ,{  headers: {
+          withCredentials: true,
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+      }})
+        .then(res => {
+          console.log(res);
+          console.log(res.data);
+        })
+}

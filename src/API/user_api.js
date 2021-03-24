@@ -1,5 +1,4 @@
 import { userRequest } from './api'
-import axios from 'axios';
 
 export function register(userData) {
     return userRequest
@@ -53,18 +52,7 @@ export function getUser(username) {
             }
         })
 }
-export function putUserAttributes(user, accessToken) {
-    return userRequest
-        .put(`http://localhost:9090/api/v1/users`, user, {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
-        })
-        .then(res => {
-            console.log(res);
-            console.log(res.data);
-          })
-}
+
 
 export function logout(accessToken) {
     return userRequest
