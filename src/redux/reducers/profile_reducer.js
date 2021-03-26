@@ -32,6 +32,7 @@ export const getUserProfile = (username) => (dispatch) => {
 }
 
 export const saveProfile = (userData) =>  {
+  return async dispatch => {
   try{
     const user = {
         "userAttributes": [
@@ -41,13 +42,19 @@ export const saveProfile = (userData) =>  {
             }]}
        
             const cookies = new Cookies()
-            putUserData(user, cookies.get('accessToken'))
-           
+
+            const result = await putUserData(user, cookies.get('accessToken'))
+            if (!result) {
+                throw new Error('Save failed. Try again later')
+            }
         } catch (err) {
             return Promise.reject(err)
         }
+      }   
   }
   export const changePassword = (userData) =>  {
+    return async dispatch => {
+
     try{
       const user = {
          
@@ -57,11 +64,14 @@ export const saveProfile = (userData) =>  {
             }
          
               const cookies = new Cookies()
-              resetPassword(user, cookies.get('accessToken'))
-             
+              const result = await resetPassword(user, cookies.get('accessToken'))
+              if (!result) {
+                  throw new Error('Reset password failed. Try again later')
+              }
           } catch (err) {
               return Promise.reject(err)
           }
+        }
     }
 /* export const setPassword = (password) => ({type: SET_PASSWORD, password})
 export const resetPassword = (password) => (dispatch) => {

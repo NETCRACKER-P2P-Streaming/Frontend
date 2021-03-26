@@ -4,12 +4,15 @@ import ProfileDataFormSave from './ProfileDataFormSave';
 import { FormField, Button, Form, TextInput } from 'grommet';
 import Loading from "../../util_components/Loading"
 
-const ProfileDataForm = ({ profile, isOwner }) => {
+const ProfileDataForm = ({ profile, isOwner, saveProfile }) => {
   let [editMode, setEditMode] = useState(false);
 
   const [form, setForm] = useState({
     name: ''
   });
+  if (!profile) {
+    return <Loading />
+    }
   let handleChange = e => {
     setForm({
       ...form,

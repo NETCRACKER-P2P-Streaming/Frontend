@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import Profile from './Profile';
-import { getUserProfile } from "../../redux/reducers/profile_reducer";
+import { getUserProfile, saveProfile } from "../../redux/reducers/profile_reducer";
 import { withRouter } from "react-router-dom";
 import { profileAPI } from "../../API/profile_api";
 
@@ -21,4 +21,4 @@ let mapStateToProps = (state) => ({
 });
 let withUrlDataContainerComponent = withRouter(ProfileContainer);
 
-export default connect(mapStateToProps, { getUserProfile })(withUrlDataContainerComponent); 
+export default connect(mapStateToProps, { getUserProfile, saveProfile })(withUrlDataContainerComponent)
