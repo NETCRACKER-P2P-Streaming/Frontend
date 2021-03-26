@@ -1,4 +1,4 @@
-import { profileAPI } from "../../API/profile_api"
+import { profileAPI, resetPassword } from "../../API/profile_api"
 import { putUserData} from "../../API/profile_api"
 import {Cookies} from 'react-cookie'
 
@@ -47,6 +47,22 @@ export const saveProfile = (userData) =>  {
             return Promise.reject(err)
         }
   }
+  export const changePassword = (userData) =>  {
+    try{
+      const user = {
+         
+              "newPassword": userData.newPassword,
+              "oldPassword": userData.oldPassword,
+       
+            }
+         
+              const cookies = new Cookies()
+              resetPassword(user, cookies.get('accessToken'))
+             
+          } catch (err) {
+              return Promise.reject(err)
+          }
+    }
 /* export const setPassword = (password) => ({type: SET_PASSWORD, password})
 export const resetPassword = (password) => (dispatch) => {
 profileAPI.resetPassword(password).then(response => {
