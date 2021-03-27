@@ -5,6 +5,7 @@ import {deleteTokensCookies, refreshTokensCookies} from '../../utlils/cookiesUti
 
 const SET_LOADING = 'SET_LOADING'
 const SET_AUTH_FORM_OPEN = 'SET_AUTH_FORM_OPEN'
+const SET_PASSWORD_FORM_OPEN = 'SET_PASSWORD_FORM_OPEN'
 
 // Счетчик источников вызова загрузки. Если источников не больше 1 ->
 // загрузку можно прекратить, иначе стоит прекратить загрузку только
@@ -20,7 +21,8 @@ const defaultState = {
     loading: false,
 
     // Флаг открытия \ закрытия формы авторизации
-    isAuthFormOpen: false
+    isAuthFormOpen: false,
+    isPasswordFormOpen: false
 }
 
 export default function appReducer(state = defaultState, action) {
@@ -41,6 +43,12 @@ export default function appReducer(state = defaultState, action) {
                 isAuthFormOpen: action.isAuthFormOpen
             }
         }
+        case(SET_PASSWORD_FORM_OPEN): {
+            return {
+                ...state,
+                isPasswordFormOpen: action.isPasswordFormOpen
+            }
+        }
         default: {
             return state
         }
@@ -58,6 +66,13 @@ export function setAuthFormOpenAC(newAuthFormOpenState) {
     return {
         type: SET_AUTH_FORM_OPEN,
         isAuthFormOpen: newAuthFormOpenState
+    }
+}
+
+export function setPasswordFormOpenAC(newPasswordFormOpenState) {
+    return {
+        type: SET_PASSWORD_FORM_OPEN,
+        isPasswordFormOpen: newPasswordFormOpenState
     }
 }
 

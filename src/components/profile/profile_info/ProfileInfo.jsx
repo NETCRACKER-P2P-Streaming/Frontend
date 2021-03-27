@@ -3,15 +3,20 @@ import Loading from "../../util_components/Loading"
 import { Box, Button, Grid, Form, FormField, Heading, Text, TextInput } from 'grommet'
 import ProfileAvatarContainer from "./ProfileAvatarContainer"
 import ProfileStatus from "./ProfileStatus"
-
-const ProfileInfo = (props) => {
-  if (!props.profile) {
+import ChangePasswordContainer from "./ChangePasswordContainer"
+import withFormModal from '../../main_page/sign_forms/sign_in_form/withFormModal'
+const ProfileInfo = ({profile,isPasswordFormOpen,setPasswordFormOpen}) => {
+  if (!profile) {
     return <Loading />
   }
-  let userAtt = props.profile.userAttributes.reduce((acc, att) => {
+  let userAtt = profile.userAttributes.reduce((acc, att) => {
     acc[att.name] = att.value
     return acc
   }, {})
+  const openLogModal = () => setPasswordFormOpen(true)
+  const closeLogModal = () => setPasswordFormOpen(false)
+      // Оборачивание  формы изменения пароля в модальное окно
+      const PasswordInModalFormWrapped = withFormModal(closeLogModal)(ChangePasswordContainer)
   return (
     <Box
       direction="row"
@@ -74,6 +79,15 @@ const ProfileInfo = (props) => {
                 width={'large'}
               />
             </FormField>
+            <Button
+                            default={true}
+                            color={'light-1'}
+                            label={'Reset password'}
+                            pad={'small'}
+                            margin={{left: 'small', right: 'small'}}
+                            onClick={openLogModal}
+                        />
+                          {isPasswordFormOpen && <PasswordInModalFormWrapped />}
           </Box>
         </Box>
         <Box gridArea="streams"  >

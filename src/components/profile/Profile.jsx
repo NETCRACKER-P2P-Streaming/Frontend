@@ -6,15 +6,17 @@ import ChangePassword from "./profile_info/ChangePassword";
 const Profile = (props) => {
 
   return <div>
-    <ProfileInfo profile={props.profile}/>
-    <ProfileDataForm 
-                         isOwner={props.isOwner}
-                         profile={props.profile}
-                         status={props.status}
-                         saveProfile={props.saveProfile}
-                         updateStatus={props.updateStatus}/>
-     <ChangePassword/>                    
-                         
+    <ProfileInfo profile={props.profile}  isPasswordFormOpen={props.isPasswordFormOpen}
+      setPasswordFormOpen={props.setPasswordFormOpen}/>
+    <ProfileDataForm
+      isOwner={props.isOwner}
+      profile={props.profile}
+      status={props.status}
+      saveProfile={props.saveProfile}
+      updateStatus={props.updateStatus} 
+     />
+
+
   </div>
 }
 export default Profile

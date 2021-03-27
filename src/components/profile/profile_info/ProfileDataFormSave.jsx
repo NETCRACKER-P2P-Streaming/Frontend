@@ -1,10 +1,19 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 
-export default function  ProfileDataFormSave  (props) {
+export default 
 
-  return <div>
- fdfdf
-                         
-  </div>
+function ProfileDataFormSave() {
+  let history = useHistory();
+
+  function handleClick() {
+    history.push("/home");
+  }
+
+  return (
+    <button type="button" onClick={handleClick}>
+      Go home
+    </button>
+  );
 }
