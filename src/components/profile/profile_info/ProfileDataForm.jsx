@@ -1,47 +1,28 @@
 import React, { useState } from 'react'
-import { saveProfile } from '../../../redux/reducers/profile_reducer';
-import ProfileDataFormSave from './ProfileDataFormSave';
-import { FormField, Button, Form, TextInput } from 'grommet';
+import ProfileDataFormSave from './ProfileDataFormSave'
+import { FormField, Box,Button, Form, TextInput } from 'grommet'
 import Loading from "../../util_components/Loading"
 
 const ProfileDataForm = ({ profile, isOwner, saveProfile }) => {
-  let [editMode, setEditMode] = useState(false);
+  let [editMode, setEditMode] = useState(false)
 
-  const [form, setForm] = useState({
-    name: ''
-  });
+
   if (!profile) {
     return <Loading />
     }
-  let handleChange = e => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
-  };
-  const handleSubmit = (formData) => {
-    saveProfile(form).then(
-      () => {
-        setEditMode(false);
-      }
-    );
-  }
 
 
 
-  return (<div>
-    <form onSubmit={handleSubmit}>
-      <label>
-        Person Name:
-      <input value={form.name} name="name" onChange={handleChange} />
-      </label>
-      <button type="submit">Add</button>
-      <div> {editMode
-        ? <ProfileDataFormSave />
+
+  return (
+
+      <Box> {editMode
+        ? <ProfileDataFormSave setEditMode={setEditMode} profile={profile}       saveProfile={saveProfile}
+        />
         : <ProfileData goToEditMode={() => { setEditMode(true) }} profile={profile} isOwner={isOwner} />}
-      </div>
-    </form>
-  </div>
+      </Box>
+  
+  
   )
 
 }
@@ -68,5 +49,4 @@ const ProfileData = ({ profile, isOwner, goToEditMode }) => {
 
   </div>
 }
-export default
-  ProfileDataForm
+export default ProfileDataForm

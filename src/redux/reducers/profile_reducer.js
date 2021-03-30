@@ -33,50 +33,37 @@ export const getUserProfile = (username) => (dispatch) => {
 
 export const saveProfile = (userData) =>  {
   return async dispatch => {
-  try{
-    const user = {
+    try {
+      const user = {
         "userAttributes": [
-            {
-                "name": "name",
-                "value": userData.name
-            }]}
-       
-            const cookies = new Cookies()
-
-            const result = await putUserData(user, cookies.get('accessToken'))
-            if (!result) {
-                throw new Error('Save failed. Try again later')
-            }
-        } catch (err) {
-            return Promise.reject(err)
-        }
-      }   
+          {
+            "name": "name",
+            "value": userData.name
+          }]
+      }
+      const cookies = new Cookies()
+      const result = await putUserData(user, cookies.get('accessToken'))
+      if (!result) {
+        throw new Error('Save failed. Try again later')
+      }
+    } catch (err) {
+      return Promise.reject(err)
+    }
   }
+}
   export const changePassword = (userData) =>  {
     return async dispatch => {
-
-    try{
-      const user = {
-         
-              "newPassword": userData.newPassword,
-              "oldPassword": userData.oldPassword,
-       
-            }
-         
-              const cookies = new Cookies()
-              const result = await resetPassword(user, cookies.get('accessToken'))
-              if (!result) {
-                  throw new Error('Reset password failed. Try again later')
-              }
-          } catch (err) {
-              return Promise.reject(err)
-          }
+      try {
+        const user = {
+          "newPassword": userData.newPassword,
+          "oldPassword": userData.oldPassword,
         }
+        const cookies = new Cookies()
+        const result = await resetPassword(user, cookies.get('accessToken'))
+      } catch (err) {
+        return Promise.reject(err)
+      }
     }
-/* export const setPassword = (password) => ({type: SET_PASSWORD, password})
-export const resetPassword = (password) => (dispatch) => {
-profileAPI.resetPassword(password).then(response => {
-  dispatch(setPassword(response.data));
-});
-} */
+  }
+
 export default profileReducer;

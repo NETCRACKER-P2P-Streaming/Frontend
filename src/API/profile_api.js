@@ -16,11 +16,16 @@ export function resetPassword(data, accessToken) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`
       }})
-        .then(res => {
-          console.log(res);
-          console.log(res.data);
-        })
+        .then(res => res.data) 
+        .catch(err => {
+          if (err.response) {
+              throw new Error(err.response.data.message)
+          } else {
+              throw err
+          }
+      })
 }
+
 
 export function putUserData(user, accessToken) {
   return  axios.put(`http://localhost:9090/api/v1/users`,  user ,{  headers: {
@@ -28,8 +33,12 @@ export function putUserData(user, accessToken) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`
       }})
-        .then(res => {
-          console.log(res);
-          console.log(res.data);
-        })
+      .then(res => res.data) 
+      .catch(err => {
+        if (err.response) {
+            throw new Error(err.response.data.message)
+        } else {
+            throw err
+        }
+    })
 }
