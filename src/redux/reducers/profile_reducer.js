@@ -39,7 +39,16 @@ export const saveProfile = (userData) =>  {
           {
             "name": "name",
             "value": userData.name
-          }]
+          },
+          {
+            "name": "family_name",
+            "value": userData.lastname
+          }, 
+          {
+            "name": "email",
+            "value": userData.email
+          }
+        ]
       }
       const cookies = new Cookies()
       const result = await putUserData(user, cookies.get('accessToken'))

@@ -5,7 +5,8 @@ import ProfileAvatarContainer from "./ProfileAvatarContainer"
 import ProfileStatus from "./ProfileStatus"
 import ChangePasswordContainer from "./ChangePasswordContainer"
 import withFormModal from '../../main_page/sign_forms/sign_in_form/withFormModal'
-const ProfileInfo = ({profile,isPasswordFormOpen,setPasswordFormOpen}) => {
+import ProfileDataForm from "./ProfileDataForm"
+const ProfileInfo = ({profile,isPasswordFormOpen,setPasswordFormOpen,isOwner,saveProfile,status,updateStatus}) => {
   if (!profile) {
     return <Loading />
   }
@@ -34,40 +35,12 @@ const ProfileInfo = ({profile,isPasswordFormOpen,setPasswordFormOpen}) => {
       >
         <Box gridArea="profile"  >
 
-          <Heading
-            level={1}>
-            {userAtt['name']}&nbsp;
-            {userAtt['family_name']}
-          </Heading>
-          <ProfileStatus status={userAtt['custom:description']} />
-          <ProfileAvatarContainer />
-          <Box
-            pad="small">
-            <FormField
-              label={'Nickname'}
-              name={'nickname'}
-              required={true}
-            >
-              <TextInput
-                type={'nickname'}
-                id={'nickname'}
-                name={'nickname'}
-                width={'large'}
-              />
-            </FormField>
-            <FormField
-              label={'Email'}
-              name={'email'}
-              required={true}
-            >
-              <TextInput
-                type={'email'}
-                id={'email'}
-                name={'email'}
-                width={'large'}
-              />
-            </FormField>
-            <FormField
+          <ProfileDataForm      isOwner={isOwner}
+      profile={profile}
+      status={status}
+      saveProfile={saveProfile}
+      updateStatus={updateStatus} />
+          <FormField
               label={'Password'}
               name={'password'}
               required={true}
@@ -88,7 +61,6 @@ const ProfileInfo = ({profile,isPasswordFormOpen,setPasswordFormOpen}) => {
                             onClick={openLogModal}
                         />
                           {isPasswordFormOpen && <PasswordInModalFormWrapped />}
-          </Box>
         </Box>
         <Box gridArea="streams"  >
           <Form>

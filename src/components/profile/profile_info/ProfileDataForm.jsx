@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import ProfileDataFormSave from './ProfileDataFormSave'
-import { FormField, Box,Button, Form, TextInput } from 'grommet'
+import { Heading,FormField, Box,Button, Form, TextInput } from 'grommet'
 import Loading from "../../util_components/Loading"
-
+import ProfileAvatarContainer from "./ProfileAvatarContainer"
+import ProfileStatus from "./ProfileStatus"
 const ProfileDataForm = ({ profile, isOwner, saveProfile }) => {
   let [editMode, setEditMode] = useState(false)
 
@@ -36,17 +37,42 @@ const ProfileData = ({ profile, isOwner, goToEditMode }) => {
     acc[att.name] = att.value
     return acc
   }, {})
-  return <div>
-    {isOwner && <div><button onClick={goToEditMode}>edit</button></div>}
-    <div>
-      <b>Nickname</b>: {profile.username}
-    </div>
-    <div>
-      <b>Email</b>: {userAtt['email']}
-    </div>
+  return <Box>
+    {isOwner && <Box><Button onClick={goToEditMode}>edit</Button></Box>}
+  
+ 
 
+    <Heading
+            level={1}>
+            {userAtt['name']}&nbsp;
+            {userAtt['family_name']}
+          </Heading>
+          <ProfileStatus status={userAtt['custom:description']} />
+          <ProfileAvatarContainer />
+          <Box
+            pad="small">
+            <FormField
+              label={'Nickname'}
+              name={'nickname'}
+              required={true}
+            >
+             {profile.username}
+              
+            </FormField>
+            <FormField
+              label={'Email'}
+              name={'Email'}
+              required={true}
 
+            >
+           
+               {userAtt['email']}
 
-  </div>
+          
+            </FormField>
+         
+          </Box>
+
+  </Box>
 }
 export default ProfileDataForm

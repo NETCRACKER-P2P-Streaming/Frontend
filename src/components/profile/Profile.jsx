@@ -7,14 +7,10 @@ const Profile = (props) => {
 
   return <div>
     <ProfileInfo profile={props.profile}  isPasswordFormOpen={props.isPasswordFormOpen}
-      setPasswordFormOpen={props.setPasswordFormOpen}/>
-    <ProfileDataForm
-      isOwner={props.isOwner}
-      profile={props.profile}
-      status={props.status}
-      saveProfile={props.saveProfile}
-      updateStatus={props.updateStatus} 
-     />
+      setPasswordFormOpen={props.setPasswordFormOpen}    saveProfile={props.saveProfile}
+      updateStatus={props.updateStatus}      isOwner={props.isOwner}
+      />
+
 
 
   </div>

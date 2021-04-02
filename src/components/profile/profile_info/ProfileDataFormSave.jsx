@@ -3,19 +3,19 @@ import { FormField, Box,Button, Form, TextInput } from 'grommet'
 import Loading from "../../util_components/Loading"
 
 export default function ProfileDataFormSave  ({ profile, isOwner, saveProfile, setEditMode})  {
-
+  let userAtt = profile.userAttributes.reduce((acc, att) => {
+    acc[att.name] = att.value
+    return acc
+  }, {})
   const [form, setForm] = useState({
-    name: ''
+    name: '',
+    lastname: '',
+    email: ''
   });
   if (!profile) {
     return <Loading />
     }
-  let handleChange = e => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    })
-  }
+ 
   const handleSubmit = (formData) => {
     saveProfile(form).then(
       () => {
@@ -23,16 +23,37 @@ export default function ProfileDataFormSave  ({ profile, isOwner, saveProfile, s
       }
     )
   }
-
+  let handleChange = e => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    })
+  }
 
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <FormField>
-        Person Name:
-        <TextInput value={form.name} name="name" onChange={handleChange} />
+    <Form onSubmit={handleSubmit}  
+    value={form}
+    onChange={(nextValue) => setForm(nextValue)}>
+    <FormField   label={'Name'}
+                name={'name'}>
+      <TextInput   id={'name'}
+                    name={'name'}  />
       </FormField>
-      <Button type="submit">Add</Button>
+      <FormField  label={'Lastname'}
+                name={'lastname'}>
+      <TextInput  id={'lastname'}
+                    name={'lastname'}  />
+      </FormField>
+      <FormField   label={'Email'}
+                name={'email'}>
+      <TextInput   id={'email'}
+                    name={'email'}  />
+      </FormField>
+
+  
+    
+    <Button type="submit">Save</Button>
     
     </Form>
   
