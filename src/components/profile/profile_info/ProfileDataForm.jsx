@@ -4,7 +4,7 @@ import { Heading,FormField, Box,Button, Form, TextInput } from 'grommet'
 import Loading from "../../util_components/Loading"
 import ProfileAvatarContainer from "./ProfileAvatarContainer"
 import ProfileStatus from "./ProfileStatus"
-const ProfileDataForm = ({ profile, isOwner, saveProfile }) => {
+const ProfileDataForm = ({ profile, isOwner, saveProfile,updateStatus }) => {
   let [editMode, setEditMode] = useState(false)
 
 
@@ -20,7 +20,8 @@ const ProfileDataForm = ({ profile, isOwner, saveProfile }) => {
       <Box> {editMode
         ? <ProfileDataFormSave setEditMode={setEditMode} profile={profile}       saveProfile={saveProfile}
         />
-        : <ProfileData goToEditMode={() => { setEditMode(true) }} profile={profile} isOwner={isOwner} />}
+        : <ProfileData goToEditMode={() => { setEditMode(true) }} profile={profile} isOwner={isOwner}       updateStatus={updateStatus}
+        />}
       </Box>
   
   
@@ -28,7 +29,7 @@ const ProfileDataForm = ({ profile, isOwner, saveProfile }) => {
 
 }
 
-const ProfileData = ({ profile, isOwner, goToEditMode }) => {
+const ProfileData = ({ profile, isOwner, goToEditMode,updateStatus }) => {
 
   if (!profile) {
     return <Loading />
@@ -38,7 +39,13 @@ const ProfileData = ({ profile, isOwner, goToEditMode }) => {
     return acc
   }, {})
   return <Box>
-    {isOwner && <Box><Button onClick={goToEditMode}>edit</Button></Box>}
+    {isOwner &&  <Box
+                direction={'row'}
+                justify={'between'}
+                margin={{ top: 'medium' }}
+            ><Button  
+            label={'Edit'}
+             onClick={goToEditMode} /></Box>}
   
  
 
@@ -47,7 +54,8 @@ const ProfileData = ({ profile, isOwner, goToEditMode }) => {
             {userAtt['name']}&nbsp;
             {userAtt['family_name']}
           </Heading>
-          <ProfileStatus status={userAtt['custom:description']} />
+          <ProfileStatus status={userAtt['custom:description']}       updateStatus={updateStatus}
+ />
           <ProfileAvatarContainer />
           <Box
             pad="small">

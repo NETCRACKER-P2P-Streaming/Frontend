@@ -1,4 +1,4 @@
-import { profileAPI, resetPassword } from "../../API/profile_api"
+import { changeStatus, profileAPI, resetPassword } from "../../API/profile_api"
 import { putUserData} from "../../API/profile_api"
 import {Cookies} from 'react-cookie'
 
@@ -74,5 +74,25 @@ export const saveProfile = (userData) =>  {
       }
     }
   }
-
+  export const updateStatus = (userData) =>  {
+    return async dispatch => {
+      try {
+        const user = {
+          "userAttributes": [
+            {
+              "name": "custom:description",
+              "value": userData.status
+            }
+          ]
+        }
+        const cookies = new Cookies()
+        const result = await changeStatus(user, cookies.get('accessToken'))
+        if (!result) {
+          throw new Error('error')
+        }
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+  }
 export default profileReducer;

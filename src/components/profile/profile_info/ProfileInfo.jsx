@@ -1,8 +1,6 @@
 import React from "react"
 import Loading from "../../util_components/Loading"
 import { Box, Button, Grid, Form, FormField, Heading, Text, TextInput } from 'grommet'
-import ProfileAvatarContainer from "./ProfileAvatarContainer"
-import ProfileStatus from "./ProfileStatus"
 import ChangePasswordContainer from "./ChangePasswordContainer"
 import withFormModal from '../../main_page/sign_forms/sign_in_form/withFormModal'
 import ProfileDataForm from "./ProfileDataForm"
@@ -28,9 +26,8 @@ const ProfileInfo = ({profile,isPasswordFormOpen,setPasswordFormOpen,isOwner,sav
         columns={['large', 'small']}
         gap="xlarge"
         areas={[
-          { name: 'profile', start: [0, 0], end: [0, 0] },
+          { name: 'profile', start: [0, 0], end: [1, 0] },
           { name: 'streams', start: [0, 1], end: [1, 1] },
-          { name: 'button', start: [1, 0], end: [1, 0] },
         ]}
       >
         <Box gridArea="profile"  >
@@ -40,26 +37,21 @@ const ProfileInfo = ({profile,isPasswordFormOpen,setPasswordFormOpen,isOwner,sav
       status={status}
       saveProfile={saveProfile}
       updateStatus={updateStatus} />
-          <FormField
-              label={'Password'}
-              name={'password'}
-              required={true}
-            >
-              <TextInput
-                type={'password'}
-                id={'password'}
-                name={'password'}
-                width={'large'}
-              />
-            </FormField>
-            <Button
-                            default={true}
-                            color={'light-1'}
-                            label={'Reset password'}
-                            pad={'small'}
-                            margin={{left: 'small', right: 'small'}}
-                            onClick={openLogModal}
-                        />
+          
+            
+            <Box
+                direction={'row'}
+                justify={'between'}
+                margin={{ top: 'medium' }}
+            >  <Button
+            default={true}
+            label={'Reset password'}
+            pad={'small'}
+            margin={{left: 'small', right: 'small'}}
+            onClick={openLogModal}
+        /></Box>
+            
+          
                           {isPasswordFormOpen && <PasswordInModalFormWrapped />}
         </Box>
         <Box gridArea="streams"  >
@@ -70,14 +62,7 @@ const ProfileInfo = ({profile,isPasswordFormOpen,setPasswordFormOpen,isOwner,sav
             />
           </Form>
         </Box>
-        <Box gridArea="button"  >
-          <Heading></Heading>
-          <Button
-            type={'submit'}
-            label={'Save'}
-            primary
-          />
-        </Box>
+       
       </Grid>
 
     </Box>

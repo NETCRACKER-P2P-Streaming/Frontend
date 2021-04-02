@@ -8,9 +8,9 @@ export default function ProfileDataFormSave  ({ profile, isOwner, saveProfile, s
     return acc
   }, {})
   const [form, setForm] = useState({
-    name: '',
-    lastname: '',
-    email: ''
+    name: userAtt['name'],
+    lastname: userAtt['family_name'],
+    email: userAtt['email']
   });
   if (!profile) {
     return <Loading />
@@ -31,12 +31,21 @@ export default function ProfileDataFormSave  ({ profile, isOwner, saveProfile, s
   }
 
 
-  return (
+  return (   
+
     <Form onSubmit={handleSubmit}  
     value={form}
     onChange={(nextValue) => setForm(nextValue)}>
+      <Box
+                direction={'row'}
+                justify={'between'}
+                margin={{ top: 'medium' }}
+            ><Button   label={'Save'} primary type="submit" /><Button label='Cancel' color='border' onClick={() => {
+              setEditMode(false);
+            }} /></Box>
+
     <FormField   label={'Name'}
-                name={'name'}>
+                name={'name'} placeholder={userAtt['name']}>
       <TextInput   id={'name'}
                     name={'name'}  />
       </FormField>
@@ -53,10 +62,9 @@ export default function ProfileDataFormSave  ({ profile, isOwner, saveProfile, s
 
   
     
-    <Button type="submit">Save</Button>
     
     </Form>
-  
+   
   )
 
 }

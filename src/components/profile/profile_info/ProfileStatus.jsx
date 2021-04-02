@@ -1,41 +1,51 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
+import { Box, Button, Grid, Form, FormField, Heading, Text, TextInput } from 'grommet'
 
 
 const ProfileStatus = (props) => {
     let [editMode, setEditMode] = useState(false);
     let [status, setStatus] = useState(props.status);
 
-    useEffect( () => {
+    useEffect(() => {
         setStatus(props.status);
-    }, [props.status] );
+    }, [props.status]);
 
     const activateEditMode = () => {
         setEditMode(true);
     }
 
-    const deactivateEditMode = () => {
-        setEditMode(false);
-        props.updateStatus(status);
-    }
 
-    const onStatusChange = (e) => {
-        setStatus(e.currentTarget.value);
+    let onStatusChange = e => {
+        setStatus({
+            ...status,
+            [e.target.name]: e.target.value
+        })
+    }
+    const handleSubmit = (formData) => {
+        props.updateStatus(status).then(
+            () => {
+                setEditMode(false);
+            }
+        )
     }
 
     return (
-        <div>
+        <Box>
             { !editMode &&
-            <div>
-                <b>Status: </b> <span onDoubleClick={ activateEditMode }>{props.status || "-------"}</span>
-            </div>
+                <Box>
+                    <b>Status: </b> <span onDoubleClick={activateEditMode}>{props.status || "-------"}</span>
+                </Box>
             }
-            {editMode &&
-            <div>
-                <input onChange={onStatusChange} autoFocus={true} onBlur={ deactivateEditMode }
-                       value={status} />
-            </div>
+            {editMode && <Form onSubmit={handleSubmit}
+                value={status}
+                onChange={(nextValue) => setStatus(nextValue)}>
+                <FormField label="Status" name={'status'} >                <TextInput name={'status'}
+                    value={status} />
+                </FormField><Button label={'Change status'} primary type="submit" /><Button label='Cancel' color='border' onClick={() => {
+                    setEditMode(false);
+                }} /></Form>
             }
-        </div>
+        </Box>
     )
 }
 
