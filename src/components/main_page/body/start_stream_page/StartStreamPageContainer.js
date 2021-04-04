@@ -5,14 +5,14 @@ import {commonRegExpValidator, customConditionValidator} from '../../../utils/va
 import {addStreamOnServ} from '../../../../redux/reducers/stream_reducer'
 import * as Stomp from 'stomp-websocket'
 import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
-import {selectAppLoading, selectCategoriesList} from '../../../../redux/selectors/selectors'
-import {setLoadingAC} from "../../../../redux/reducers/app_reducer";
+import {selectCategoriesList} from '../../../../redux/selectors/selectors'
+import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
 
 let stream = null
 
 function StartStreamPageContainer({
                                       headerHei, height, addStreamOnServ, getCategoriesToSearchFromServ,
-                                      categories, setLoading, appLoading
+                                      categories, setLoading
 }) {
 
     const [isStreamInitialized, setIsStreamInitialized] = useState(false)
@@ -35,7 +35,8 @@ function StartStreamPageContainer({
     }
 
     async function openStreamerConnection(streamId) {
-        const client = Stomp.over('http://localhost:3030/signaling')
+        debugger
+        const client = Stomp.client('ws://localhost:3030/signaling')
         const streamerPeerConnection = new RTCPeerConnection({})
 
         stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
@@ -97,6 +98,7 @@ function StartStreamPageContainer({
             })
             .finally(() => setLoading(false))
     },[])
+
     const initialStartStreamFormValues = {
         title: '',
         description: '',
@@ -105,14 +107,20 @@ function StartStreamPageContainer({
     }
 
     const [selectOptions, setSelectOptions] = useState(categories)
+
+    useEffect(() => {
+        setSelectOptions(categories)
+    }, [categories])
+
     const [startStreamFormValues, setStartStreamFormValues] = useState(initialStartStreamFormValues)
 
     function onSubmit(values) {
-        addStreamOnServ({
-            ...values,
-            categories: values.categories.filter(c => !!c)
-        })
-            .then(response => openStreamerConnection(response.userId))
+        // addStreamOnServ({
+        //     ...values,
+        //     categories: values.categories.filter(c => !!c)
+        // })
+        //     .then(response => openStreamerConnection(response.userId))
+        openStreamerConnection('606a14ab79174b03035878c4')
             .catch(err => {
                 alert(err.message)
                 console.log(err)
@@ -157,8 +165,7 @@ function StartStreamPageContainer({
 
 function mapStateToProps(state) {
     return {
-        categories: selectCategoriesList(state),
-        appLoading: selectAppLoading(state)
+        categories: selectCategoriesList(state)
     }
 }
 
