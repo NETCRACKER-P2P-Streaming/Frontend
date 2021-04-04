@@ -1,13 +1,19 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import StartStreamPage from './StartStreamPage'
 import {commonRegExpValidator, customConditionValidator} from '../../../utils/validators'
 import {addStreamOnServ} from '../../../../redux/reducers/stream_reducer'
 import * as Stomp from 'stomp-websocket'
+import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
+import {selectAppLoading, selectCategoriesList} from '../../../../redux/selectors/selectors'
+import {setLoadingAC} from "../../../../redux/reducers/app_reducer";
 
 let stream = null
 
-function StartStreamPageContainer({headerHei, height, addStreamOnServ}) {
+function StartStreamPageContainer({
+                                      headerHei, height, addStreamOnServ, getCategoriesToSearchFromServ,
+                                      categories, setLoading, appLoading
+}) {
 
     const [isStreamInitialized, setIsStreamInitialized] = useState(false)
 
@@ -29,7 +35,6 @@ function StartStreamPageContainer({headerHei, height, addStreamOnServ}) {
     }
 
     async function openStreamerConnection(streamId) {
-        debugger
         const client = Stomp.over('http://localhost:3030/signaling')
         const streamerPeerConnection = new RTCPeerConnection({})
 
@@ -69,6 +74,7 @@ function StartStreamPageContainer({headerHei, height, addStreamOnServ}) {
         //     .catch(() => console.log('error'))
     }
 
+
     function onStopSharing() {
         try {
             const _videoElem = document.getElementById('share_video_container')
@@ -82,28 +88,30 @@ function StartStreamPageContainer({headerHei, height, addStreamOnServ}) {
         }
     }
 
+    useEffect(() => {
+        setLoading(true)
+        getCategoriesToSearchFromServ()
+            .catch(err => {
+                alert(err.message)
+                console.log(err)
+            })
+            .finally(() => setLoading(false))
+    },[])
     const initialStartStreamFormValues = {
         title: '',
         description: '',
         linkImage: '',
         categories: []
     }
-    const categoriesOptions = [
-        {id: 1, name: 'option 1'},
-        {id: 2, name: 'option 2'},
-        {id: 3, name: 'option 3'},
-    ]
 
-    const [selectOptions, setSelectOptions] = useState(categoriesOptions)
+    const [selectOptions, setSelectOptions] = useState(categories)
     const [startStreamFormValues, setStartStreamFormValues] = useState(initialStartStreamFormValues)
 
     function onSubmit(values) {
-        debugger
-        const valuesWithValidCategories = {
+        addStreamOnServ({
             ...values,
-            categories: values.categories.map(c => categoriesOptions[c].name)
-        }
-        addStreamOnServ(valuesWithValidCategories)
+            categories: values.categories.filter(c => !!c)
+        })
             .then(response => openStreamerConnection(response.userId))
             .catch(err => {
                 alert(err.message)
@@ -148,9 +156,14 @@ function StartStreamPageContainer({headerHei, height, addStreamOnServ}) {
 }
 
 function mapStateToProps(state) {
-    return {}
+    return {
+        categories: selectCategoriesList(state),
+        appLoading: selectAppLoading(state)
+    }
 }
 
 export default connect(mapStateToProps, {
-    addStreamOnServ
+    addStreamOnServ,
+    getCategoriesToSearchFromServ,
+    setLoading: setLoadingAC
 })(StartStreamPageContainer)
