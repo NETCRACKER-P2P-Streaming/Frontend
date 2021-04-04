@@ -5,7 +5,8 @@ import StartStreamPageForm from './StartStreamPageForm'
 export default function StartStreamPage({
                                             onStartSharing, isStreamInitialized, selectOptions,
                                             initialStartStreamFormValues, setSelectOptions, startStreamFormValidators,
-                                            headerHei, height, setStartStreamFormValues, startStreamFormValues
+                                            headerHei, height, setStartStreamFormValues, startStreamFormValues,
+                                            onSubmit
                                         }) {
     return <Box
         direction={'row'}
@@ -51,6 +52,7 @@ export default function StartStreamPage({
                 initialFormValues={initialStartStreamFormValues}
                 setFormValues={setStartStreamFormValues}
                 validators={startStreamFormValidators}
+                onSubmit={onSubmit}
             />
         </Box>
     </Box>

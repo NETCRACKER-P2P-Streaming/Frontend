@@ -5,7 +5,7 @@ import {Close} from 'grommet-icons'
 
 export default function StartStreamPageForm({
                                                 selectOptions, setSelectOptions, formValues, initialFormValues,
-                                                setFormValues, validators
+                                                setFormValues, validators, onSubmit
 }) {
 
     function sortOptions() {
@@ -49,7 +49,7 @@ export default function StartStreamPageForm({
     return <Form
         value={formValues}
         onChange={onChange}
-        onSubmit={() => {}}
+        onSubmit={onSubmit}
         onReset={() => setFormValues(initialFormValues)}
         validate={'submit'}
     >

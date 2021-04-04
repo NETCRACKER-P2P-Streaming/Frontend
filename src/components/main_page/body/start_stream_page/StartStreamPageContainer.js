@@ -27,15 +27,27 @@ function StartStreamPageContainer({headerHei, height}) {
         }
     }
 
-    async function onSubmit() {
-        const client = Stomp.overWS('<our url>')
+    async function openStreamerConnection() {
+
+        const client = Stomp.over('http://localhost:3030')
         const streamerPeerConnection = new RTCPeerConnection({})
+
         client.connect({}, () => console.log('connection is going'))
-        stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
-        const answer = await streamerPeerConnection.createAnswer()
-        await streamerPeerConnection.setLocalDescription(answer)
-        client.heartbeat.outgoing = 1000;
-        client.send('/app/stream/offer', {}, streamerPeerConnection.localDescription)
+        client.heartbeat.outgoing = 1000
+
+        const handleNegotiationNeededEvent = () => {
+            if (streamerPeerConnection.signalingState !== 'stable') {
+                return
+            } else {
+                stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
+
+                streamerPeerConnection.createAnswer()
+                    .then(answer => streamerPeerConnection.setLocalDescription(answer))
+                    .then(() => client.send('/app/stream/offer', {}, streamerPeerConnection.localDescription))
+                    .catch(() => console.log('error'))
+            }
+        }
+        streamerPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent
     }
 
     function onStopSharing() {
@@ -50,6 +62,7 @@ function StartStreamPageContainer({headerHei, height}) {
             console.error(err)
         }
     }
+
     const initialStartStreamFormValues = {
         title: '',
         description: '',
@@ -68,13 +81,13 @@ function StartStreamPageContainer({headerHei, height}) {
     const startStreamFormValidators = {
         title: [
             commonRegExpValidator(
-            /^[\w ]{5,50}$/,
-            'Title must be 5-50 alphanumeric symbols'
+                /^[\w ]{5,50}$/,
+                'Title must be 5-50 alphanumeric symbols'
             )
         ],
         description: [
             commonRegExpValidator(
-            /^[\w ]{0,512}$/,
+                /^[\w ]{0,512}$/,
                 'Description must be maximum 512 alphanumeric symbols'
             )
         ],
@@ -97,6 +110,7 @@ function StartStreamPageContainer({headerHei, height}) {
         startStreamFormValidators={startStreamFormValidators}
         height={height}
         headerHei={headerHei}
+        onSubmit={openStreamerConnection}
     />
 }
 
@@ -104,6 +118,4 @@ function mapStateToProps(state) {
     return {}
 }
 
-export default connect(mapStateToProps, {
-
-})(StartStreamPageContainer)
+export default connect(mapStateToProps, {})(StartStreamPageContainer)
