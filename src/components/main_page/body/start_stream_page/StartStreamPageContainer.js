@@ -2,11 +2,12 @@ import React, {useState} from 'react'
 import {connect} from 'react-redux'
 import StartStreamPage from './StartStreamPage'
 import {commonRegExpValidator, customConditionValidator} from '../../../utils/validators'
+import {addStreamOnServ} from '../../../../redux/reducers/stream_reducer'
 import * as Stomp from 'stomp-websocket'
 
 let stream = null
 
-function StartStreamPageContainer({headerHei, height}) {
+function StartStreamPageContainer({headerHei, height, addStreamOnServ}) {
 
     const [isStreamInitialized, setIsStreamInitialized] = useState(false)
 
@@ -27,27 +28,45 @@ function StartStreamPageContainer({headerHei, height}) {
         }
     }
 
-    async function openStreamerConnection() {
-
-        const client = Stomp.over('http://localhost:3030')
+    async function openStreamerConnection(streamId) {
+        debugger
+        const client = Stomp.over('http://localhost:3030/signaling')
         const streamerPeerConnection = new RTCPeerConnection({})
+
+        stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
 
         client.connect({}, () => console.log('connection is going'))
         client.heartbeat.outgoing = 1000
+        client.reconnect_delay = 5000
 
-        const handleNegotiationNeededEvent = () => {
-            if (streamerPeerConnection.signalingState !== 'stable') {
-                return
-            } else {
-                stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
+        client.subscribe(`/queue/${streamId}/stream/offer`, (message) => console.log(message))
 
-                streamerPeerConnection.createAnswer()
-                    .then(answer => streamerPeerConnection.setLocalDescription(answer))
-                    .then(() => client.send('/app/stream/offer', {}, streamerPeerConnection.localDescription))
-                    .catch(() => console.log('error'))
-            }
-        }
-        streamerPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent
+        // const handleNegotiationNeededEvent = e => {
+        //     if (streamerPeerConnection.signalingState !== 'stable') {
+        //         return
+        //     /*} else {
+        //         streamerPeerConnection.createOffer()
+        //             .then(offer => streamerPeerConnection.setLocalDescription(offer))
+        //             .then(() => client.send('/app/stream/answer', {}, streamerPeerConnection.localDescription))
+        //             .catch(() => console.log('error'))
+        //     }*/
+        // }
+        // streamerPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent
+
+
+        // streamerPeerConnection.onicecandidate = e => {
+        //     if (e.candidate) {
+        //         console.log(e.candidate)
+        //     } else {
+        //         streamerPeerConnection.getReceivers().forEach(r => )
+        //     }
+        // }
+
+
+        // streamerPeerConnection.createAnswer()
+        //     .then(answer => streamerPeerConnection.setLocalDescription(answer))
+        //     .then(() => client.send('/app/stream/answer', {}, streamerPeerConnection.localDescription))
+        //     .catch(() => console.log('error'))
     }
 
     function onStopSharing() {
@@ -77,6 +96,20 @@ function StartStreamPageContainer({headerHei, height}) {
 
     const [selectOptions, setSelectOptions] = useState(categoriesOptions)
     const [startStreamFormValues, setStartStreamFormValues] = useState(initialStartStreamFormValues)
+
+    function onSubmit(values) {
+        debugger
+        const valuesWithValidCategories = {
+            ...values,
+            categories: values.categories.map(c => categoriesOptions[c].name)
+        }
+        addStreamOnServ(valuesWithValidCategories)
+            .then(response => openStreamerConnection(response.userId))
+            .catch(err => {
+                alert(err.message)
+                console.log(err)
+            })
+    }
 
     const startStreamFormValidators = {
         title: [
@@ -110,7 +143,7 @@ function StartStreamPageContainer({headerHei, height}) {
         startStreamFormValidators={startStreamFormValidators}
         height={height}
         headerHei={headerHei}
-        onSubmit={openStreamerConnection}
+        onSubmit={onSubmit}
     />
 }
 
@@ -118,4 +151,6 @@ function mapStateToProps(state) {
     return {}
 }
 
-export default connect(mapStateToProps, {})(StartStreamPageContainer)
+export default connect(mapStateToProps, {
+    addStreamOnServ
+})(StartStreamPageContainer)

@@ -49,7 +49,7 @@ export default function StartStreamPageForm({
     return <Form
         value={formValues}
         onChange={onChange}
-        onSubmit={onSubmit}
+        onSubmit={({value}) => onSubmit(value)}
         onReset={() => setFormValues(initialFormValues)}
         validate={'submit'}
     >

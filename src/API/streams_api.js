@@ -11,3 +11,15 @@ export function getStreams(getStreamsData) {
             }
         })
 }
+
+export function addStream(streamData) {
+    return streamsAndCategoriesRequest.post('/api/stream/register', streamData)
+        .then(response => response.data)
+        .catch(err => {
+            if(err.response) {
+                throw new Error(err.response.data.message)
+            } else {
+                throw err
+            }
+        })
+}
