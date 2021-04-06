@@ -6,7 +6,7 @@ export default function StartStreamPage({
                                             onStartSharing, isStreamInitialized, selectOptions,
                                             initialStartStreamFormValues, setSelectOptions, startStreamFormValidators,
                                             headerHei, height, setStartStreamFormValues, startStreamFormValues,
-                                            onSubmit
+                                            onSubmit, Notification, areNotificationOpen
                                         }) {
     return <Box
         direction={'row'}
@@ -14,7 +14,9 @@ export default function StartStreamPage({
         height={height - headerHei + 'px'}
         flex={"shrink"}
     >
-
+        {
+            areNotificationOpen && <Notification />
+        }
         <Box
             height={'100%'}
             width={'xlarge'}
@@ -55,6 +57,7 @@ export default function StartStreamPage({
                 onSubmit={onSubmit}
             />
         </Box>
+
     </Box>
 }
 

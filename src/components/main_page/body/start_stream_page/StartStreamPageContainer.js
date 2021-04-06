@@ -7,6 +7,7 @@ import * as Stomp from 'stomp-websocket'
 import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
 import {selectCategoriesList} from '../../../../redux/selectors/selectors'
 import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
+import Notification from "../../../util_components/Notification";
 
 let stream = null
 
@@ -16,7 +17,6 @@ function StartStreamPageContainer({
 }) {
 
     const [isStreamInitialized, setIsStreamInitialized] = useState(false)
-
     async function onStartSharing() {
         try {
             const options = {
@@ -35,44 +35,19 @@ function StartStreamPageContainer({
     }
 
     async function openStreamerConnection(streamId) {
-        debugger
-        const client = Stomp.client('ws://localhost:3030/signaling')
+        const ws = new WebSocket('ws://localhost:3030/signaling')
+        const client = Stomp.over(ws)
         const streamerPeerConnection = new RTCPeerConnection({})
 
         stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
 
-        client.connect({}, () => console.log('connection is going'))
-        client.heartbeat.outgoing = 1000
-        client.reconnect_delay = 5000
+        ws.onopen = evt => {
+            client.subscribe(`/queue/${streamId}/streamer/offer`, (message) => {
+                console.log(message)
+            })
 
-        client.subscribe(`/queue/${streamId}/stream/offer`, (message) => console.log(message))
-
-        // const handleNegotiationNeededEvent = e => {
-        //     if (streamerPeerConnection.signalingState !== 'stable') {
-        //         return
-        //     /*} else {
-        //         streamerPeerConnection.createOffer()
-        //             .then(offer => streamerPeerConnection.setLocalDescription(offer))
-        //             .then(() => client.send('/app/stream/answer', {}, streamerPeerConnection.localDescription))
-        //             .catch(() => console.log('error'))
-        //     }*/
-        // }
-        // streamerPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent
-
-
-        // streamerPeerConnection.onicecandidate = e => {
-        //     if (e.candidate) {
-        //         console.log(e.candidate)
-        //     } else {
-        //         streamerPeerConnection.getReceivers().forEach(r => )
-        //     }
-        // }
-
-
-        // streamerPeerConnection.createAnswer()
-        //     .then(answer => streamerPeerConnection.setLocalDescription(answer))
-        //     .then(() => client.send('/app/stream/answer', {}, streamerPeerConnection.localDescription))
-        //     .catch(() => console.log('error'))
+            client.subscribe('/user/queue/api/error', message => console.log(message))
+        }
     }
 
 
@@ -114,19 +89,6 @@ function StartStreamPageContainer({
 
     const [startStreamFormValues, setStartStreamFormValues] = useState(initialStartStreamFormValues)
 
-    function onSubmit(values) {
-        // addStreamOnServ({
-        //     ...values,
-        //     categories: values.categories.filter(c => !!c)
-        // })
-        //     .then(response => openStreamerConnection(response.userId))
-        openStreamerConnection('606a14ab79174b03035878c4')
-            .catch(err => {
-                alert(err.message)
-                console.log(err)
-            })
-    }
-
     const startStreamFormValidators = {
         title: [
             commonRegExpValidator(
@@ -148,6 +110,32 @@ function StartStreamPageContainer({
         ]
     }
 
+    const [areNotificationOpen, setNotificationOpen] = useState(false)
+    const showNotification = () => {
+        setNotificationOpen(true)
+        setTimeout(() => {
+            setNotificationOpen(false);
+        }, 3000)
+    }
+
+    function onSubmit(values) {
+        if(isStreamInitialized) {
+            // addStreamOnServ({
+            //     ...values,
+            //     categories: values.categories.filter(c => !!c)
+            // })
+            //     .then(response => openStreamerConnection(response.userId))
+            openStreamerConnection('606a14ab79174b03035878c4')
+                .catch(err => {
+                    alert(err.message)
+                    console.log(err)
+                })
+        } else {
+            showNotification()
+        }
+
+    }
+
     return <StartStreamPage
         onStartSharing={onStartSharing}
         isStreamInitialized={isStreamInitialized}
@@ -160,6 +148,11 @@ function StartStreamPageContainer({
         height={height}
         headerHei={headerHei}
         onSubmit={onSubmit}
+        areNotificationOpen={areNotificationOpen}
+        Notification={() => <Notification
+            content={'You must select screen for sharing'}
+            setAreOpen={setNotificationOpen}
+        />}
     />
 }
 
