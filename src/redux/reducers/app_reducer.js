@@ -22,6 +22,7 @@ const defaultState = {
 
     // Флаг открытия \ закрытия формы авторизации
     isAuthFormOpen: false,
+    // Флаг открытия \ закрытия формы пароля
     isPasswordFormOpen: false
 }
 

@@ -1,12 +1,11 @@
 import { changeStatus, profileAPI, resetPassword } from "../../API/profile_api"
 import { putUserData} from "../../API/profile_api"
 import {Cookies} from 'react-cookie'
-
 const SET_USER_PROFILE = 'SET_USER_PROFILE'
 
 let initialState = {
   profile: null
-};
+}
 const profileReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_USER_PROFILE:
@@ -14,10 +13,10 @@ const profileReducer = (state = initialState, action) => {
         return {
           ...state,
           profile: action.profile
-        };
+        }
       }
     default:
-      return state;
+      return state
   }
 }
 export const setUserProfile = (profile) => {
@@ -27,8 +26,8 @@ export const setUserProfile = (profile) => {
 }
 export const getUserProfile = (username) => (dispatch) => {
   profileAPI.getProfile(username).then(response => {
-    dispatch(setUserProfile(response.data));
-  });
+    dispatch(setUserProfile(response.data))
+  })
 }
 
 export const saveProfile = (userData) =>  {
@@ -56,8 +55,8 @@ export const saveProfile = (userData) =>  {
         throw new Error('Save failed. Try again later')
       }
     } catch (err) {
-      return Promise.reject(err)
-    }
+        return Promise.reject(err)
+      }
   }
 }
   export const changePassword = (userData) =>  {
@@ -70,8 +69,8 @@ export const saveProfile = (userData) =>  {
         const cookies = new Cookies()
         const result = await resetPassword(user, cookies.get('accessToken'))
       } catch (err) {
-        return Promise.reject(err)
-      }
+          return Promise.reject(err)
+        }
     }
   }
   export const updateStatus = (userData) =>  {
@@ -91,8 +90,8 @@ export const saveProfile = (userData) =>  {
           throw new Error('error')
         }
       } catch (err) {
-        return Promise.reject(err)
-      }
+          return Promise.reject(err)
+        }
     }
   }
-export default profileReducer;
+export default profileReducer

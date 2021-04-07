@@ -25,6 +25,7 @@ export default function Header({isAuthFormOpen, setAuthFormOpen, userAvatar, use
                     ? <UserActions
                         userAvatar={userAvatar}
                         logoutUserAction={logoutUserAction}
+                        userData={userData}
                     />
                     : <SignActions
                         isAuthFormOpen={isAuthFormOpen}

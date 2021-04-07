@@ -1,10 +1,13 @@
 import React from "react"
 import Loading from "../../util_components/Loading"
-import { Box, Button, Grid, Form, FormField, Heading, Text, TextInput } from 'grommet'
+import { Box, Button, Grid, Form} from 'grommet'
 import ChangePasswordContainer from "./ChangePasswordContainer"
 import withFormModal from '../../main_page/sign_forms/sign_in_form/withFormModal'
 import ProfileDataForm from "./ProfileDataForm"
-const ProfileInfo = ({profile,isPasswordFormOpen,setPasswordFormOpen,isOwner,saveProfile,status,updateStatus}) => {
+const ProfileInfo = ({
+                        profile, isPasswordFormOpen, setPasswordFormOpen, 
+                        isOwner,saveProfile,status,updateStatus
+                    }) => {
   if (!profile) {
     return <Loading />
   }
@@ -14,8 +17,8 @@ const ProfileInfo = ({profile,isPasswordFormOpen,setPasswordFormOpen,isOwner,sav
   }, {})
   const openLogModal = () => setPasswordFormOpen(true)
   const closeLogModal = () => setPasswordFormOpen(false)
-      // Оборачивание  формы изменения пароля в модальное окно
-      const PasswordInModalFormWrapped = withFormModal(closeLogModal)(ChangePasswordContainer)
+  // Оборачивание  формы изменения пароля в модальное окно
+  const PasswordInModalFormWrapped = withFormModal(closeLogModal)(ChangePasswordContainer)
   return (
     <Box
       direction="row"
@@ -30,29 +33,27 @@ const ProfileInfo = ({profile,isPasswordFormOpen,setPasswordFormOpen,isOwner,sav
           { name: 'streams', start: [0, 1], end: [1, 1] },
         ]}
       >
-        <Box gridArea="profile"  >
-
-          <ProfileDataForm      isOwner={isOwner}
-      profile={profile}
-      status={status}
-      saveProfile={saveProfile}
-      updateStatus={updateStatus} />
-          
-            
-            <Box
-                direction={'row'}
-                justify={'between'}
-                margin={{ top: 'medium' }}
-            >  <Button
-            default={true}
-            label={'Reset password'}
-            pad={'small'}
-            margin={{left: 'small', right: 'small'}}
-            onClick={openLogModal}
-        /></Box>
-            
-          
-                          {isPasswordFormOpen && <PasswordInModalFormWrapped />}
+      <Box gridArea="profile"  >
+        <ProfileDataForm      
+          isOwner={isOwner}
+          profile={profile}
+          status={status}
+          saveProfile={saveProfile}
+          updateStatus={updateStatus} />
+          <Box
+            direction={'row'}
+            justify={'between'}
+            margin={{ top: 'medium' }}
+          >  
+            <Button
+              default={true}
+              label={'Reset password'}
+              pad={'small'}
+              margin={{left: 'small', right: 'small'}}
+              onClick={openLogModal}
+            />
+          </Box>
+          {isPasswordFormOpen && <PasswordInModalFormWrapped />}
         </Box>
         <Box gridArea="streams"  >
           <Form>

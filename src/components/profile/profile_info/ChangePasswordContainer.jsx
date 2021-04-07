@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { setPasswordFormOpenAC } from '../../../redux/reducers/app_reducer';
-import { changePassword, saveProfile } from '../../../redux/reducers/profile_reducer';
+import { setPasswordFormOpenAC } from '../../../redux/reducers/app_reducer'
+import { changePassword, saveProfile } from '../../../redux/reducers/profile_reducer'
 import { connect } from 'react-redux'
 import { Box, Button, Form, FormField, Heading, Text, TextInput } from 'grommet'
 import {
@@ -9,13 +9,15 @@ import {
     repeatedPassValidate,
     validateField
 } from '../../utils/validators'
+import { Hide, View } from 'grommet-icons'
 
 function ChangePasswordContainer({ setPasswordFormOpen, changePassword, localLoading, setLocalLoading }) {
     const primaryValue = {
         newPassword: '',
         oldPassword: ''
     }
-    const [form, setForm] = useState(primaryValue);
+    const [reveal, setReveal] = useState(false)
+    const [form, setForm] = useState(primaryValue)
     //Ошибка, приходящая с сервера или возникающая в ходе запроса
     const [errorMessage, setErrorMessage] = useState(undefined)
     const passValidator = [passValidate, lengthValidatorCreate(8, 15)]
@@ -53,17 +55,26 @@ function ChangePasswordContainer({ setPasswordFormOpen, changePassword, localLoa
                     Reset password
                 </Heading>
             </Box>
+            <Box direction="row">
             <FormField
                 label={'Old password'}
                 name={'oldPassword'}
                 required={true}
             >
                 <TextInput
+                    plain
+                    type={reveal ? 'text' : 'password'}
                     id={'oldPassword'}
                     name={'oldPassword'}
                     width={'large'}
                 />
             </FormField>
+            <Button
+                icon={reveal ? <View size="medium" /> : <Hide size="medium" />}
+                onClick={() => setReveal(!reveal)}
+            />
+            </Box>
+            <Box direction="row">
             <FormField
                 label={'New password'}
                 name={'newPassword'}
@@ -71,11 +82,17 @@ function ChangePasswordContainer({ setPasswordFormOpen, changePassword, localLoa
                 validate={validateField(validators.password)}
             >
                 <TextInput
+                    type={reveal ? 'text' : 'password'}
                     id={'newPassword'}
                     name={'newPassword'}
                     width={'large'}
                 />
             </FormField>
+            <Button
+                icon={reveal ? <View size="medium" /> : <Hide size="medium" />}
+                onClick={() => setReveal(!reveal)}
+            />
+            </Box>
             <Box>
                 <Text
                     color={'status-critical'}

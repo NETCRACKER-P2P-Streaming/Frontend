@@ -1,18 +1,17 @@
-import React from "react";
-import ProfileInfo from "./profile_info/ProfileInfo";
-import ProfileDataForm from "./profile_info/ProfileDataForm";
-import ChangePassword from "./profile_info/ChangePassword";
+import React from "react"
+import ProfileInfo from "./profile_info/ProfileInfo"
+import { Box } from 'grommet'
 
 const Profile = (props) => {
-
-  return <div>
-    <ProfileInfo profile={props.profile}  isPasswordFormOpen={props.isPasswordFormOpen}
-      setPasswordFormOpen={props.setPasswordFormOpen}    saveProfile={props.saveProfile}
-      updateStatus={props.updateStatus}      isOwner={props.isOwner}
-      />
-
-
-
-  </div>
+  return <Box>
+    <ProfileInfo 
+      profile={props.profile}  
+      saveProfile={props.saveProfile}
+      updateStatus={props.updateStatus}      
+      isOwner={props.isOwner}
+      isPasswordFormOpen={props.isPasswordFormOpen}
+      setPasswordFormOpen={props.setPasswordFormOpen} 
+    />
+  </Box>
 }
 export default Profile
