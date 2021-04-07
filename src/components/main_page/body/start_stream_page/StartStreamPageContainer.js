@@ -11,12 +11,45 @@ import Notification from "../../../util_components/Notification";
 
 let stream = null
 
+
+async function openStreamerConnection(streamId) {
+    const ws = new WebSocket('ws://localhost:3030/signaling')
+    const client = Stomp.over(ws)
+    const streamerPeerConnection = new RTCPeerConnection({})
+
+    stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
+
+
+    client.connect({}, frame => {
+        client.subscribe('/user/queue/api/error', message => {
+            console.log(JSON.parse(message.body))
+        })
+
+        client.subscribe(`/queue/${streamId}/streamer/offer`, message => {
+            const messageParsed = JSON.parse(message.body)
+
+            const offer = streamerPeerConnection.createOffer()
+            client.send(
+                '/app/stream/answer',
+                {},
+                JSON.stringify({
+                    viewerId: messageParsed.viewerId,
+                    offerSDP: {
+                        sdp: offer.sdp
+                    }
+                }))
+        })
+    })
+}
+
+
 function StartStreamPageContainer({
                                       headerHei, height, addStreamOnServ, getCategoriesToSearchFromServ,
                                       categories, setLoading
-}) {
+                                  }) {
 
     const [isStreamInitialized, setIsStreamInitialized] = useState(false)
+
     async function onStartSharing() {
         try {
             const options = {
@@ -31,22 +64,6 @@ function StartStreamPageContainer({
             setIsStreamInitialized(true)
         } catch (err) {
             console.error(err)
-        }
-    }
-
-    async function openStreamerConnection(streamId) {
-        const ws = new WebSocket('ws://localhost:3030/signaling')
-        const client = Stomp.over(ws)
-        const streamerPeerConnection = new RTCPeerConnection({})
-
-        stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
-
-        ws.onopen = evt => {
-            client.subscribe(`/queue/${streamId}/streamer/offer`, (message) => {
-                console.log(message)
-            })
-
-            client.subscribe('/user/queue/api/error', message => console.log(message))
         }
     }
 
@@ -72,7 +89,7 @@ function StartStreamPageContainer({
                 console.log(err)
             })
             .finally(() => setLoading(false))
-    },[])
+    }, [])
 
     const initialStartStreamFormValues = {
         title: '',
@@ -119,7 +136,7 @@ function StartStreamPageContainer({
     }
 
     function onSubmit(values) {
-        if(isStreamInitialized) {
+        if (isStreamInitialized) {
             // addStreamOnServ({
             //     ...values,
             //     categories: values.categories.filter(c => !!c)

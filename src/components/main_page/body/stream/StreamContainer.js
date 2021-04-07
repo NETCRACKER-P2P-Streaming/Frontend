@@ -5,6 +5,37 @@ import Stream from './Stream'
 import * as Stomp from 'stomp-websocket'
 import useWindowDimensions from "../../../utils/useWindowDimention";
 
+
+async function connectToStream(streamId) {
+    const ws = new WebSocket('ws://localhost:3030/signaling')
+    const client = Stomp.over(ws)
+    const watcherPeerConnection = new RTCPeerConnection({})
+    const offer = await watcherPeerConnection.createOffer()
+
+    const onConnect = frame => {
+        client.subscribe('/user/queue/api/error', message => console.log(message))
+        client.send(
+            '/app/viewer/offer',
+            {},
+            JSON.stringify({
+                streamId: streamId,
+                offerSDP: {
+                    sdp: offer.sdp
+                }
+            })
+        )
+        client.subscribe('/user/queue/viewer/answer', message => {
+            watcherPeerConnection.setLocalDescription(JSON.parse(message).answerSDP.sdp)
+        })
+    }
+    if (ws.readyState === WebSocket.OPEN) {
+        onConnect()
+    } else {
+        client.connect({}, onConnect)
+    }
+}
+
+
 function StreamContainer(props) {
 
     const history = useHistory()
@@ -17,36 +48,15 @@ function StreamContainer(props) {
     )
 
     useEffect(() => {
-        //connectToStream()
+        connectToStream(props.match.params.streamId)
     }, [])
-    async function connectToStream() {
-        const ws = new WebSocket('ws://localhost:3030/signaling')
-        const client = Stomp.over(ws)
-        const watcherPeerConnection = new RTCPeerConnection({})
-        const offer = await watcherPeerConnection.createOffer()
-        await watcherPeerConnection.setLocalDescription(offer)
 
-        ws.onopen = evt => {
-            client.subscribe('/user/queue/api/error', message => console.log(message))
-
-            client.subscribe('/user/queue/viewer/answer', message => {
-                watcherPeerConnection.setLocalDescription(JSON.parse(message).answerSDP.sdp)
-            })
-        }
-
-        client.send(`/app/viewer/offer`, {}, JSON.stringify({
-            streamId: props.match.params.streamId,
-            offerSDP: {
-                sdp: watcherPeerConnection.localDescription.sdp
-            }
-        }))
-
-
-    }
-
+    const [isStreamCommonInfoOpened, setStreamCommonInfoOpened] = useState(false)
     return <Stream
         streamId={props.match.params.streamId}
         height={height - headerHei + 'px'}
+        isStreamCommonInfoOpened={isStreamCommonInfoOpened}
+        setStreamCommonInfoOpened={setStreamCommonInfoOpened}
     />
 }
 
@@ -54,6 +64,4 @@ function mapStateToProps(state) {
     return {}
 }
 
-export default connect(mapStateToProps, {
-
-})(StreamContainer)
+export default connect(mapStateToProps, {})(StreamContainer)
