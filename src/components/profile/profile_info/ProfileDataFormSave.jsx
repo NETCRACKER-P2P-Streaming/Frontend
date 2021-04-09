@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { FormField, Box, Button, Form, TextInput } from 'grommet'
 import Loading from "../../util_components/Loading"
-import { setUserProfile } from '../../../redux/reducers/profile_reducer'
+import { getUserProfile } from '../../../redux/reducers/profile_reducer'
 
 export default function ProfileDataFormSave({ profile, saveProfile, setEditMode }) {
   let userAtt = profile.userAttributes.reduce((acc, att) => {
@@ -19,7 +19,7 @@ export default function ProfileDataFormSave({ profile, saveProfile, setEditMode 
   const handleSubmit = () => {
     saveProfile(form).then(
       () => {
-        setUserProfile(profile)
+       // getUserProfile(profile)
 
         setEditMode(false)
       }

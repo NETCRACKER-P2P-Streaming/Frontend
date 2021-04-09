@@ -4,10 +4,15 @@ import { Box, Button, Grid, Form} from 'grommet'
 import ChangePasswordContainer from "./ChangePasswordContainer"
 import withFormModal from '../../main_page/sign_forms/sign_in_form/withFormModal'
 import ProfileDataForm from "./ProfileDataForm"
-const ProfileInfo = ({
-                        profile, isPasswordFormOpen, setPasswordFormOpen, 
-                        isOwner,saveProfile,status,updateStatus
-                    }) => {
+import { connect } from "react-redux"
+import {selectIsPasswordFormOpen} from '../../../redux/selectors/selectors'
+import { setPasswordFormOpenAC } from "../../../redux/reducers/app_reducer"
+import { savePhoto } from "../../../redux/reducers/profile_reducer"
+
+function ProfileInfo ({
+                        profile, isPasswordFormOpen, isOwner,savePhoto,
+                        saveProfile,updateStatus,setPasswordFormOpen
+                     }) {
   if (!profile) {
     return <Loading />
   }
@@ -37,9 +42,9 @@ const ProfileInfo = ({
         <ProfileDataForm      
           isOwner={isOwner}
           profile={profile}
-          status={status}
           saveProfile={saveProfile}
-          updateStatus={updateStatus} />
+          updateStatus={updateStatus} 
+          savePhoto={savePhoto}/>
           <Box
             direction={'row'}
             justify={'between'}
@@ -69,4 +74,13 @@ const ProfileInfo = ({
     </Box>
   )
 }
-export default ProfileInfo
+
+function mapStateToProps(state) {
+  return {  isPasswordFormOpen: selectIsPasswordFormOpen(state)
+  }
+}
+export default connect(mapStateToProps, {
+  setPasswordFormOpen: setPasswordFormOpenAC,
+  savePhoto 
+
+})(ProfileInfo)

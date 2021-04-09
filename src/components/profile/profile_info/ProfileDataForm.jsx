@@ -4,12 +4,9 @@ import { Heading, FormField, Box, Button } from 'grommet'
 import Loading from "../../util_components/Loading"
 import ProfileAvatarContainer from "./ProfileAvatarContainer"
 import ProfileStatus from "./ProfileStatus"
-import { getUserProfile } from '../../../redux/reducers/profile_reducer'
 
-const ProfileDataForm = ({ profile, isOwner, saveProfile, updateStatus }) => {
-  useEffect(() => {
-  },[profile])
-  let [editMode, setEditMode] = useState(false)
+const ProfileDataForm = ({ profile, isOwner, saveProfile, updateStatus, savePhoto }) => {
+   let [editMode, setEditMode] = useState(false)
   if (!profile) {
     return <Loading />
   }
@@ -26,12 +23,13 @@ const ProfileDataForm = ({ profile, isOwner, saveProfile, updateStatus }) => {
           profile={profile} 
           isOwner={isOwner} 
           updateStatus={updateStatus}
+          savePhoto={savePhoto}
       />}
     </Box>
   )
 }
 
-const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus }) => {
+const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus,savePhoto }) => {
   if (!profile) {
     return <Loading />
   }
@@ -58,7 +56,7 @@ const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus }) => {
         status={userAtt['custom:description']} 
         updateStatus={updateStatus} 
       />
-      <ProfileAvatarContainer />
+      <ProfileAvatarContainer isOwner={isOwner} savePhoto={savePhoto}/>
       <Box
         width="large"
       >

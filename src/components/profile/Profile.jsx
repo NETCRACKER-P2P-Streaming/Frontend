@@ -9,8 +9,6 @@ const Profile = (props) => {
       saveProfile={props.saveProfile}
       updateStatus={props.updateStatus}      
       isOwner={props.isOwner}
-      isPasswordFormOpen={props.isPasswordFormOpen}
-      setPasswordFormOpen={props.setPasswordFormOpen} 
     />
   </Box>
 }

@@ -1,4 +1,4 @@
-import { changeStatus, profileAPI, resetPassword } from "../../API/profile_api"
+import { changeStatus, profileAPI, resetPassword, changePhoto, getPhotoString } from "../../API/profile_api"
 import { putUserData} from "../../API/profile_api"
 import {Cookies} from 'react-cookie'
 const SET_USER_PROFILE = 'SET_USER_PROFILE'
@@ -59,39 +59,59 @@ export const saveProfile = (userData) =>  {
       }
   }
 }
-  export const changePassword = (userData) =>  {
-    return async dispatch => {
-      try {
-        const user = {
-          "newPassword": userData.newPassword,
-          "oldPassword": userData.oldPassword,
-        }
-        const cookies = new Cookies()
-        const result = await resetPassword(user, cookies.get('accessToken'))
-      } catch (err) {
-          return Promise.reject(err)
-        }
+export const savePhoto = (file) =>  {
+  return async dispatch => {
+    try {
+      const cookies = new Cookies()
+      const result = await getPhotoString(file, cookies.get('accessToken'))
+      console.log(result)
+      const user = {
+        "userAttributes": [
+          {
+            "name": "custom:linkImage",
+            "value": result
+          }
+        ]
+      }
+      const result2 = await changePhoto(user, cookies.get('accessToken'))
+    } catch (err) {
+        return Promise.reject(err)
     }
   }
-  export const updateStatus = (userData) =>  {
-    return async dispatch => {
-      try {
-        const user = {
-          "userAttributes": [
-            {
-              "name": "custom:description",
-              "value": userData.status
-            }
-          ]
-        }
-        const cookies = new Cookies()
-        const result = await changeStatus(user, cookies.get('accessToken'))
-        if (!result) {
-          throw new Error('error')
-        }
-      } catch (err) {
-          return Promise.reject(err)
-        }
-    }
+}
+export const changePassword = (userData) =>  {
+  return async dispatch => {
+    try {
+      const user = {
+        "newPassword": userData.newPassword,
+        "oldPassword": userData.oldPassword,
+      }
+      const cookies = new Cookies()
+      const result = await resetPassword(user, cookies.get('accessToken'))
+    } catch (err) {
+        return Promise.reject(err)
+      }
   }
+}
+export const updateStatus = (userData) =>  {
+  return async dispatch => {
+    try {
+      const user = {
+        "userAttributes": [
+          {
+            "name": "custom:description",
+            "value": userData.status
+          }
+        ]
+      }
+      const cookies = new Cookies()
+      const result = await changeStatus(user, cookies.get('accessToken'))
+      if (!result) {
+        throw new Error('error')
+      }
+    } catch (err) {
+        return Promise.reject(err)
+      }
+  }
+}
 export default profileReducer

@@ -37,7 +37,56 @@ export function putUserData(user, accessToken) {
         }
       })
 }
-export function changeStatus(user, accessToken) {
+export function changeStatus(user,accessToken) {
+  return axios.put(`http://localhost:9090/api/v1/users`,  user, { headers: {
+    withCredentials: true,
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${accessToken}`
+  }})
+      .then(res => res.data) 
+      .catch(err => {
+        if (err.response) {
+            throw new Error(err.response.data.message)
+        } else {
+            throw err
+        }
+      })
+}
+export function upload(photoFile, accessToken) {
+  const formData = new FormData()
+  formData.append("file", photoFile)
+  return axios.post(`http://localhost:9090/api/v1/s3/upload`,  formData, { headers: {
+    withCredentials: true,
+    'Content-Type': 'multipart/form-data',
+    'Authorization': `Bearer ${accessToken}`
+  }})
+    .then(res => res.data)
+    .catch(err => {
+      if (err.response) {
+          throw new Error(err.response.data.message)
+      } else {
+          throw err
+      }
+    })
+}
+export function getPhotoString(photoFile, accessToken) {
+  const formData = new FormData()
+  formData.append("file", photoFile)
+  return axios.put(`http://localhost:9090/api/v1/s3/change`,  formData, { headers: {
+    withCredentials: true,
+    'Content-Type': 'multipart/form-data',
+    'Authorization': `Bearer ${accessToken}`
+  }})
+    .then(res => res.data) 
+    .catch(err => {
+      if (err.response) {
+          throw new Error(err.response.data.message)
+      } else {
+          throw err
+      }
+    })
+}
+export function changePhoto(user,accessToken) {
   return axios.put(`http://localhost:9090/api/v1/users`,  user, { headers: {
     withCredentials: true,
     'Content-Type': 'application/json',
