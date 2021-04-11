@@ -117,6 +117,7 @@ export default function StartStreamPageForm({
                             gap={'small'}
                             align={'center'}
                             pad={'xsmall'}
+                            key={option.id}
                         >
                             <CheckBox
                                 tabIndex={'-1'}

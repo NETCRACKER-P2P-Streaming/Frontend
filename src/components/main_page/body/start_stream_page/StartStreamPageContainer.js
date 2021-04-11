@@ -7,37 +7,55 @@ import * as Stomp from 'stomp-websocket'
 import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
 import {selectCategoriesList} from '../../../../redux/selectors/selectors'
 import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
-import Notification from "../../../util_components/Notification";
+import Notification from '../../../util_components/Notification'
 
 let stream = null
 
-
 async function openStreamerConnection(streamId) {
     const ws = new WebSocket('ws://localhost:3030/signaling')
+
+    const streamerPeerConnection = new RTCPeerConnection({
+        /*iceServers: [     // Information about ICE servers - Use your own!
+            {
+                urls: "stun:stun4.l.google.com:19302"
+            }
+        ]*/
+    })
     const client = Stomp.over(ws)
-    const streamerPeerConnection = new RTCPeerConnection({})
 
-    stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
+    function onicecandidate(event) {
+        if (!streamerPeerConnection || !event || !event.candidate)
+            return
+        const candidate = event.candidate
+        alert(candidate)
+    }
 
+    streamerPeerConnection.addEventListener("icecandidate", onicecandidate)
 
     client.connect({}, frame => {
-        client.subscribe('/user/queue/api/error', message => {
-            console.log(JSON.parse(message.body))
-        })
+
+        client.subscribe('/user/queue/api/error', message => console.log(JSON.parse(message.body)))
 
         client.subscribe(`/queue/${streamId}/streamer/offer`, message => {
             const messageParsed = JSON.parse(message.body)
+            const desc = new RTCSessionDescription({...messageParsed.offerSDP, type: 'offer'})
 
-            const offer = streamerPeerConnection.createOffer()
-            client.send(
-                '/app/stream/answer',
-                {},
-                JSON.stringify({
-                    viewerId: messageParsed.viewerId,
-                    offerSDP: {
-                        sdp: offer.sdp
-                    }
-                }))
+            streamerPeerConnection.setRemoteDescription(desc)
+                .then(() => stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream)))
+                .then(() => streamerPeerConnection.createAnswer())
+                .then(answer => streamerPeerConnection.setLocalDescription(answer))
+                .then(() => {
+                    client.send(
+                        '/app/streamer/answer',
+                        {},
+                        JSON.stringify({
+                            viewerId: messageParsed.viewerId,
+                            answerSDP: {
+                                sdp: streamerPeerConnection.localDescription.sdp
+                            }
+                        })
+                    )
+                })
         })
     })
 }

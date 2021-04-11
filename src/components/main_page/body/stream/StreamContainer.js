@@ -5,27 +5,53 @@ import Stream from './Stream'
 import * as Stomp from 'stomp-websocket'
 import useWindowDimensions from "../../../utils/useWindowDimention";
 
-
 async function connectToStream(streamId) {
     const ws = new WebSocket('ws://localhost:3030/signaling')
     const client = Stomp.over(ws)
-    const watcherPeerConnection = new RTCPeerConnection({})
-    const offer = await watcherPeerConnection.createOffer()
+    const watcherPeerConnection = new RTCPeerConnection({
+        /*iceServers: [     // Information about ICE servers - Use your own!
+            {
+                urls: "stun:stun4.l.google.com:19302"
+            }
+        ]*/
+    })
+
+    function onicecandidate(event) {
+        if (!watcherPeerConnection || !event || !event.candidate)
+            return
+        const candidate = event.candidate
+        alert(candidate)
+
+        // POST-ICE-to-other-Peer(candidate.candidate, candidate.sdpMLineIndex);
+    }
+    watcherPeerConnection.addEventListener("icecandidate", onicecandidate)
+
+    watcherPeerConnection.ontrack = e => {
+        document.getElementById('my_video').srcObject = e.streams[0]
+    }
 
     const onConnect = frame => {
+
+
         client.subscribe('/user/queue/api/error', message => console.log(message))
-        client.send(
-            '/app/viewer/offer',
-            {},
-            JSON.stringify({
-                streamId: streamId,
-                offerSDP: {
-                    sdp: offer.sdp
-                }
+        watcherPeerConnection.createOffer()
+            .then(offer => watcherPeerConnection.setLocalDescription(offer))
+            .then(() => {
+                client.send(
+                    '/app/viewer/offer',
+                    {},
+                    JSON.stringify({
+                        streamId: streamId,
+                        offerSDP: {
+                            sdp: watcherPeerConnection.localDescription.sdp
+                        }
+                    })
+                )
             })
-        )
+
         client.subscribe('/user/queue/viewer/answer', message => {
-            watcherPeerConnection.setLocalDescription(JSON.parse(message).answerSDP.sdp)
+            const messageParsed = JSON.parse(message.body)
+            watcherPeerConnection.setRemoteDescription({sdp: messageParsed.answerSDP.sdp, type: 'answer'})
         })
     }
     if (ws.readyState === WebSocket.OPEN) {

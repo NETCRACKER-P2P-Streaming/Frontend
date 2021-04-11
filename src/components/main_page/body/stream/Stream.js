@@ -21,6 +21,9 @@ export default function Stream({streamId, height, isStreamCommonInfoOpened, setS
             onMouseLeave={() => setStreamCommonInfoOpened(false)}
             onMouseOver={() => setStreamCommonInfoOpened(true)}
         >
+            <video src="" id={'my_video'} autoPlay={true}>
+
+            </video>
         </Box>
 
         {

@@ -22,7 +22,8 @@
     "redux-thunk": "^2.3.0",
     "stomp-websocket": "^2.3.4-next",
     "styled-components": "^5.2.1",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "webrtc-adapter": "^7.7.1"
   },
   "scripts": {
     "start": "react-scripts start",
