@@ -1,11 +1,15 @@
 import React, {useState} from 'react'
-import {Box, Button, Layer, TextInput} from 'grommet'
-import {Down, Close} from 'grommet-icons'
+import {Avatar, Box, Button, Layer, Stack, Text, TextInput} from 'grommet'
+import {Down, Close, User} from 'grommet-icons'
+import StreamInfo from "./StreamInfo";
 
-export default function Chat({chatRef, height}) {
+export default function Chat({
+                                 chatRef, height, avatarImage, countViewers,
+                                 fullCategories, streamTitle, streamUserAttributes, userId,
+                                 streamDesc
+}) {
 
     const [isStreamInfoOpened, setStreamInfoOpened] = useState(false)
-    // Сделать стак
     return <Box
         height={height}
         width={'small'}
@@ -14,25 +18,39 @@ export default function Chat({chatRef, height}) {
         ref={chatRef}
     >
 
-        <Box
-            fill={'horizontal'}
-            background={'neutral-2'}
-            round={{corner: 'bottom', size: 'xlarge'}}
-            align={'center'}
-            style={{cursor: 'pointer'}}
-            onClick={() => setStreamInfoOpened(!isStreamInfoOpened)}
-        >
-            <Down />
-        </Box>
+        {
+            isStreamInfoOpened || (
+                <Box
+                    fill={'horizontal'}
+                    background={'neutral-2'}
+                    round={{corner: 'bottom', size: 'xlarge'}}
+                    align={'center'}
+                    style={{cursor: 'pointer'}}
+                    animation={{
+                        type: 'fadeIn',
+                        delay: 0,
+                        duration: 500,
+                        size: "xsmall"
+                    }}
+                    onClick={() => setStreamInfoOpened(!isStreamInfoOpened)}
+                >
+                    <Down />
+                </Box>
+            )
+        }
 
         {
             isStreamInfoOpened
-                ? <Box
-                    fill={'vertical'}
-                    background={'brand'}
-                >
-
-                </Box>
+                ? <StreamInfo
+                    streamTitle={streamTitle}
+                    avatarImage={avatarImage}
+                    userId={userId}
+                    fullCategories={fullCategories}
+                    isStreamInfoOpened={isStreamInfoOpened}
+                    setStreamInfoOpened={setStreamInfoOpened}
+                    streamDesc={streamDesc}
+                    countViewers={countViewers}
+                />
                 : <>
                     <Box
                         fill={'vertical'}

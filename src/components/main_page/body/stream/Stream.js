@@ -1,10 +1,13 @@
 import React, {useRef} from 'react'
-import {Box, Button, Heading, Layer, Text, TextInput, Video} from 'grommet'
-import {Down} from 'grommet-icons'
-import Chat from "./chat_block/Chat";
+import {Avatar, Box, Button, Heading, Layer, Stack, Text, TextInput, Video} from 'grommet'
+import Chat from './chat_block/Chat'
+import {User} from "grommet-icons";
 
-export default function Stream({streamId, height, isStreamCommonInfoOpened, setStreamCommonInfoOpened}) {
-
+export default function Stream({
+                                   height, isStreamCommonInfoOpened, closeStreamCommonInfo, openStreamCommonInfo,
+                                   avatarImage, countViewers, fullCategories, streamTitle, streamUserAttributes,
+                                   userId, streamDesc
+}) {
     const streamRef = useRef()
     const chatRef = useRef()
 
@@ -18,8 +21,8 @@ export default function Stream({streamId, height, isStreamCommonInfoOpened, setS
             width={'xlarge'}
             color={'black'}
             ref={streamRef}
-            onMouseLeave={() => setStreamCommonInfoOpened(false)}
-            onMouseOver={() => setStreamCommonInfoOpened(true)}
+            onMouseLeave={closeStreamCommonInfo}
+            onMouseOver={openStreamCommonInfo}
         >
             <video src="" id={'my_video'} autoPlay={true}>
 
@@ -33,14 +36,64 @@ export default function Stream({streamId, height, isStreamCommonInfoOpened, setS
                     position={'bottom'}
                     target={streamRef.current}
                     full={'horizontal'}
-
+                    responsive={false}
                 >
                     <Box
                         fill={true}
                         background={'white'}
                         height={'medium'}
                     >
-                        <Text>Some text</Text>
+                        {/* Box for stream info content */}
+                        <Stack
+                            anchor={'left'}
+                        >
+                            <Box
+                                direction={'row'}
+                                justify={'between'}
+                                pad={{horizontal: 'small'}}
+                                margin={{top: 'xsmall'}}
+                            >
+                                <Box
+                                    pad={'xsmall'}
+                                    align={'center'}
+                                >
+                                    {
+                                        avatarImage
+                                            ? <Avatar
+                                                src={avatarImage}
+                                                size={'medium'}
+                                                alt={'Avatar image'}
+                                            />
+                                            : <Box
+                                                round={'full'}
+                                                background={'light-5'}
+                                                height={'72px'}
+                                                width={'72px'}
+                                                align={'center'}
+                                                justify={'center'}
+                                            >
+                                                <User
+                                                    size={'large'}
+                                                />
+                                            </Box>
+                                    }
+                                    <Text
+                                        color={'dark-4'}
+                                        size={'medium'}
+                                    >{userId}</Text>
+                                </Box>
+                                <Box
+                                    fill={'horizontal'}
+                                    align={'center'}
+                                >
+                                    <Heading
+                                        color={'dark-3'}
+                                        weight={'bold'}
+                                        margin={{bottom: 'xsmall'}}
+                                    >{streamTitle}</Heading>
+                                </Box>
+                            </Box>
+                        </Stack>
                     </Box>
                 </Layer>
             )
@@ -49,6 +102,13 @@ export default function Stream({streamId, height, isStreamCommonInfoOpened, setS
         <Chat
             height={height}
             chatRef={chatRef}
+            avatarImage={avatarImage}
+            countViewers={countViewers}
+            fullCategories={fullCategories}
+            streamTitle={streamTitle}
+            streamUserAttributes={streamUserAttributes}
+            userId={userId}
+            streamDesc={streamDesc}
         />
 
     </Box>
