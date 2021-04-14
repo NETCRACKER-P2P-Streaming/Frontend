@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {connect} from 'react-redux'
 import StartStreamPage from './StartStreamPage'
 import {commonRegExpValidator, customConditionValidator} from '../../../utils/validators'
@@ -9,54 +9,87 @@ import {selectCategoriesList} from '../../../../redux/selectors/selectors'
 import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
 import Notification from '../../../util_components/Notification'
 
-let stream = null
+let stream = null;
+let client
 
-async function openStreamerConnection(streamId) {
+//const peerConnections = new Map();
+
+async function openStreamerConnection(streamId, peerConnections) {
     const ws = new WebSocket('ws://localhost:3030/signaling')
-
-    const streamerPeerConnection = new RTCPeerConnection({
-        /*iceServers: [     // Information about ICE servers - Use your own!
-            {
-                urls: "stun:stun4.l.google.com:19302"
-            }
-        ]*/
-    })
-    const client = Stomp.over(ws)
-
-    function onicecandidate(event) {
-        if (!streamerPeerConnection || !event || !event.candidate)
-            return
-        const candidate = event.candidate
-        alert(candidate)
+    console.log("WS established")
+    client = Stomp.over(ws)
+    var headers = {
+        // additional header
+        'stream-id': streamId,
+        'role': "streamer"
+    };
+    let config = {
+        iceServers: [     // Information about ICE servers - Use your own!
+           {
+               'urls': [
+                   'stun:stun.l.google.com:19302',
+                   'stun:stun1.l.google.com:19302',
+                   'stun:stun2.l.google.com:19302',
+                   'stun:stun.l.google.com:19302?transport=udp',
+               ]
+           }
+        ]
     }
 
-    streamerPeerConnection.addEventListener("icecandidate", onicecandidate)
-
-    client.connect({}, frame => {
+    client.connect(headers, frame => {
 
         client.subscribe('/user/queue/api/error', message => console.log(JSON.parse(message.body)))
 
-        client.subscribe(`/queue/${streamId}/streamer/offer`, message => {
-            const messageParsed = JSON.parse(message.body)
-            const desc = new RTCSessionDescription({...messageParsed.offerSDP, type: 'offer'})
+        client.subscribe(`/queue/${streamId}/watcher`, message => {
+            let sessionId = message.body;
+            let watcherPeer = new RTCPeerConnection(config)
+            peerConnections[sessionId] = watcherPeer
+            console.log(`1. Watcher connected = ${sessionId}, already connected = `, peerConnections);
+            stream.getTracks().forEach(t => watcherPeer.addTrack(t, stream))
 
-            streamerPeerConnection.setRemoteDescription(desc)
-                .then(() => stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream)))
-                .then(() => streamerPeerConnection.createAnswer())
-                .then(answer => streamerPeerConnection.setLocalDescription(answer))
+            watcherPeer.onicecandidate = event => {
+                if (event.candidate) {
+                    console.log("3. Send candidate to watcher")
+                    client.send("/app/streamer/candidate", {}, JSON.stringify({
+                        sessionId: sessionId,
+                        candidate: event.candidate
+                    }));
+                }
+            };
+
+            watcherPeer.createOffer()
+                .then(sdp => watcherPeer.setLocalDescription(sdp))
                 .then(() => {
+                    //Send offer for watcher, which connected
+                    console.log("2. Offer sent")
                     client.send(
-                        '/app/streamer/answer',
+                        '/app/offer',
                         {},
                         JSON.stringify({
-                            viewerId: messageParsed.viewerId,
-                            answerSDP: {
-                                sdp: streamerPeerConnection.localDescription.sdp
-                            }
+                            sessionId: sessionId,
+                            streamId: streamId,
+                            sdp: watcherPeer.localDescription.sdp
                         })
                     )
                 })
         })
+
+        client.subscribe(`/queue/${streamId}/streamer/candidate`, message => {
+            console.log("5. Streamer received candidate from watcher")
+            const messageParsed = JSON.parse(message.body)
+            peerConnections[messageParsed.sessionId]
+                .addIceCandidate(new RTCIceCandidate(messageParsed.candidate))
+                .catch(e => console.error(e));
+        })
+
+        client.subscribe(`/queue/${streamId}/answer`, message=> {
+            const messageParsed = JSON.parse(message.body)
+            console.log("4. Answer received from watcher", messageParsed.sessionId)
+            peerConnections[messageParsed.sessionId]
+                .setRemoteDescription({sdp: messageParsed.sdp, type: 'answer'})
+                .catch(e => console.log(e));;
+        })
+
     })
 }
 
@@ -122,6 +155,7 @@ function StartStreamPageContainer({
         setSelectOptions(categories)
     }, [categories])
 
+    let peerConnections = new Map()
     const [startStreamFormValues, setStartStreamFormValues] = useState(initialStartStreamFormValues)
 
     const startStreamFormValidators = {
@@ -160,7 +194,8 @@ function StartStreamPageContainer({
             //     categories: values.categories.filter(c => !!c)
             // })
             //     .then(response => openStreamerConnection(response.userId))
-            openStreamerConnection('606a14ab79174b03035878c4')
+            openStreamerConnection('606a14ab79174b03035878c4',
+                peerConnections)
                 .catch(err => {
                     alert(err.message)
                     console.log(err)
