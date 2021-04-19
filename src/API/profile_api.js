@@ -5,7 +5,9 @@ export const profileAPI = {
     return axios.get(`http://localhost:9090/api/v1/users/${username}`)
   },
 }
-
+export function getStreams(username) {
+    return axios.get(`http://localhost:8080/api/v1/stream/get/${username}`)
+}
 export function resetPassword(data, accessToken) {
   return axios.put(`http://localhost:9090/api/v1/users/reset-password`, data, { headers: {
     withCredentials: true,
@@ -69,7 +71,7 @@ export function upload(photoFile, accessToken) {
       }
     })
 }
-export function getPhotoString(photoFile, accessToken) {
+export function change(photoFile, accessToken) {
   const formData = new FormData()
   formData.append("file", photoFile)
   return axios.put(`http://localhost:9090/api/v1/s3/change`,  formData, { headers: {
@@ -86,18 +88,21 @@ export function getPhotoString(photoFile, accessToken) {
       }
     })
 }
-export function changePhoto(user,accessToken) {
-  return axios.put(`http://localhost:9090/api/v1/users`,  user, { headers: {
+export function deleteUserPhoto( accessToken) {
+  
+  return axios.delete(`http://localhost:9090/api/v1/s3/delete`,  { headers: {
     withCredentials: true,
-    'Content-Type': 'application/json',
+    'Content-Type': 'multipart/form-data',
     'Authorization': `Bearer ${accessToken}`
   }})
-      .then(res => res.data) 
-      .catch(err => {
-        if (err.response) {
-            throw new Error(err.response.data.message)
-        } else {
-            throw err
-        }
-      })
+    .then(res => res.data) 
+    .catch(err => {
+      if (err.response) {
+          throw new Error(err.response.data.message)
+      } else {
+          throw err
+      }
+    })
 }
+
+

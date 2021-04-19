@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { selectUserData } from '../../../redux/selectors/selectors'
 import ProfileAvatar from './ProfileAvatar'
 
-function ProfileAvatarContainer({ userData, isOwner,savePhoto }) {
+function ProfileAvatarContainer({ userData, isOwner,changePhoto,
+    deletePhoto,uploadPhoto  }) {
 
     const [avatarImage, setAvatarImage] = useState(null)
 
@@ -24,8 +25,9 @@ function ProfileAvatarContainer({ userData, isOwner,savePhoto }) {
             userAvatar={avatarImage}
             userData={userData}
             isOwner={isOwner}
-            savePhoto={savePhoto}
-        />
+            changePhoto={changePhoto}
+            deletePhoto={deletePhoto}
+            uploadPhoto={uploadPhoto}        />
     </>
 }
 

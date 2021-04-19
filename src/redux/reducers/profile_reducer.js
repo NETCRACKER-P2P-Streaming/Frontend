@@ -1,10 +1,11 @@
-import { changeStatus, profileAPI, resetPassword, changePhoto, getPhotoString } from "../../API/profile_api"
-import { putUserData} from "../../API/profile_api"
+import { changeStatus, profileAPI, resetPassword, putUserData, change, upload, deleteUserPhoto, getStreams } from "../../API/profile_api"
 import {Cookies} from 'react-cookie'
 const SET_USER_PROFILE = 'SET_USER_PROFILE'
+const SET_STREAMS = 'SET_STREAMS'
 
 let initialState = {
-  profile: null
+  profile: null,
+  streams: null
 }
 const profileReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -15,6 +16,13 @@ const profileReducer = (state = initialState, action) => {
           profile: action.profile
         }
       }
+    case SET_STREAMS:
+    {
+      return {
+        ...state,
+        streams: action.streams
+      }
+    }
     default:
       return state
   }
@@ -24,12 +32,21 @@ export const setUserProfile = (profile) => {
     type: SET_USER_PROFILE, profile
   }
 }
+export const setStreams = (streams) => {
+  return {
+    type: SET_STREAMS, streams
+  }
+}
 export const getUserProfile = (username) => (dispatch) => {
   profileAPI.getProfile(username).then(response => {
     dispatch(setUserProfile(response.data))
   })
 }
-
+export const getUserStreams = (username) => (dispatch) => {
+  getStreams(username).then(response => {
+    dispatch(setStreams(response.data))
+  })
+}
 export const saveProfile = (userData) =>  {
   return async dispatch => {
     try {
@@ -59,11 +76,11 @@ export const saveProfile = (userData) =>  {
       }
   }
 }
-export const savePhoto = (file) =>  {
+export const changePhoto = (file) =>  {
   return async dispatch => {
     try {
       const cookies = new Cookies()
-      const result = await getPhotoString(file, cookies.get('accessToken'))
+      const result = await change(file, cookies.get('accessToken'))
       console.log(result)
       const user = {
         "userAttributes": [
@@ -73,7 +90,46 @@ export const savePhoto = (file) =>  {
           }
         ]
       }
-      const result2 = await changePhoto(user, cookies.get('accessToken'))
+      const result2 = await putUserData(user, cookies.get('accessToken'))
+    } catch (err) {
+        return Promise.reject(err)
+    }
+  }
+}
+export const uploadPhoto = (file) =>  {
+  return async dispatch => {
+    try {
+      const cookies = new Cookies()
+      const result = await upload(file, cookies.get('accessToken'))
+      console.log(result)
+      const user = {
+        "userAttributes": [
+          {
+            "name": "custom:linkImage",
+            "value": result
+          }
+        ]
+      }
+      const result2 = await putUserData(user, cookies.get('accessToken'))
+    } catch (err) {
+        return Promise.reject(err)
+    }
+  }
+}
+export const deletePhoto = () =>  {
+  return async dispatch => {
+    try {
+      const cookies = new Cookies()
+      const result = await delete(cookies.get('accessToken'))
+      const user = {
+        "userAttributes": [
+          {
+            "name": "custom:linkImage",
+            "value": result
+          }
+        ]
+      }
+      const result2 = await putUserData(user, cookies.get('accessToken'))
     } catch (err) {
         return Promise.reject(err)
     }

@@ -9,6 +9,7 @@ const Profile = (props) => {
       saveProfile={props.saveProfile}
       updateStatus={props.updateStatus}      
       isOwner={props.isOwner}
+      streams={props.streams} 
     />
   </Box>
 }

@@ -5,7 +5,8 @@ import Loading from "../../util_components/Loading"
 import ProfileAvatarContainer from "./ProfileAvatarContainer"
 import ProfileStatus from "./ProfileStatus"
 
-const ProfileDataForm = ({ profile, isOwner, saveProfile, updateStatus, savePhoto }) => {
+const ProfileDataForm = ({ profile, isOwner, saveProfile, updateStatus, changePhoto,
+  deletePhoto,uploadPhoto  }) => {
    let [editMode, setEditMode] = useState(false)
   if (!profile) {
     return <Loading />
@@ -23,13 +24,16 @@ const ProfileDataForm = ({ profile, isOwner, saveProfile, updateStatus, savePhot
           profile={profile} 
           isOwner={isOwner} 
           updateStatus={updateStatus}
-          savePhoto={savePhoto}
+          changePhoto={changePhoto}
+          deletePhoto={deletePhoto}
+          uploadPhoto={uploadPhoto}
       />}
     </Box>
   )
 }
 
-const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus,savePhoto }) => {
+const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus,changePhoto,
+  deletePhoto,uploadPhoto  }) => {
   if (!profile) {
     return <Loading />
   }
@@ -56,24 +60,19 @@ const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus,savePhoto })
         status={userAtt['custom:description']} 
         updateStatus={updateStatus} 
       />
-      <ProfileAvatarContainer isOwner={isOwner} savePhoto={savePhoto}/>
+      <ProfileAvatarContainer 
+        isOwner={isOwner} 
+        changePhoto={changePhoto}
+        deletePhoto={deletePhoto}
+        uploadPhoto={uploadPhoto}
+      />
       <Box
         width="large"
       >
-        <FormField
-          label={'Nickname'}
-          name={'nickname'}
-          required={true}
-        >
+        <b>Nickname</b>          
           {profile.username}
-        </FormField>
-        <FormField
-          label={'Email'}
-          name={'Email'}
-          required={true}
-        >
+       <b>Email</b>
           {userAtt['email']}
-        </FormField>
       </Box>
     </Box>)
 }
