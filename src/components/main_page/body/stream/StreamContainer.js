@@ -1,70 +1,112 @@
 import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
-import {useHistory} from 'react-router-dom'
 import Stream from './Stream'
 import * as Stomp from 'stomp-websocket'
 import useWindowDimensions from '../../../utils/useWindowDimention'
-import {selectStreamsList} from '../../../../redux/selectors/selectors'
-import StreamListItemContainer from "../stream_main/streams_list/stream_list_item/StreamListItemContainer";
+import {selectStreamsList, selectUserData} from '../../../../redux/selectors/selectors'
+import ReactPlayer from "react-player";
 
+const tracks = []
 const connectionConfig = {
     iceServers: [
         {
-            urls: "stun:stun4.l.google.com:19302"
+            'urls': [
+                'stun:stun.l.google.com:19302',
+                'stun:stun1.l.google.com:19302',
+                'stun:stun2.l.google.com:19302',
+                'stun:stun.l.google.com:19302?transport=udp',
+            ]
         }
     ]
 }
-async function connectToStream(streamId) {
-    const ws = new WebSocket('ws://localhost:3030/signaling')
-    const client = Stomp.over(ws)
-    const watcherPeerConnection = new RTCPeerConnection(connectionConfig)
 
-    /*function onicecandidate(event) {
-        if (!watcherPeerConnection || !event || !event.candidate)
-            return
-        const candidate = event.candidate
-        alert(candidate)
-    }
-    watcherPeerConnection.addEventListener("icecandidate", onicecandidate)
-*/
-    watcherPeerConnection.ontrack = e => {
-        document.getElementById('my_video').srcObject = e.streams[0]
-    }
+const MyPlayer = () => {
+    return <ReactPlayer
+        url={tracks[0]}
+        controls={true}
+        height={'100%'}
+        width={'100%'}
+        playing={true}
+    >
 
-    const onConnect = frame => {
-
-        client.subscribe('/user/queue/api/error', message => console.log(message))
-
-        watcherPeerConnection.createOffer()
-            .then(offer => watcherPeerConnection.setLocalDescription(offer))
-            .then(() => {
-                client.send(
-                    '/app/viewer/offer',
-                    {},
-                    JSON.stringify({
-                        streamId: streamId,
-                        offerSDP: {
-                            sdp: watcherPeerConnection.localDescription.sdp
-                        }
-                    })
-                )
-            })
-
-        client.subscribe('/user/queue/viewer/answer', message => {
-            const messageParsed = JSON.parse(message.body)
-            watcherPeerConnection.setRemoteDescription({sdp: messageParsed.answerSDP.sdp, type: 'answer'})
-        })
-    }
-    if (ws.readyState === WebSocket.OPEN) {
-        onConnect()
-    } else {
-        client.connect({}, onConnect)
-    }
+    </ReactPlayer>
 }
 
 
-function StreamContainer({streamsList, ...props}) {
+function StreamContainer({streamsList, watcherId, ...props}) {
 
+    const [isStreamInit, setStreamInit] = useState(false)
+
+    async function connectToStream(streamId) {
+        const ws = new WebSocket('ws://localhost:8081/signaling')
+        const client = Stomp.over(ws)
+
+        const onConnect = frame => {
+            const watcherPeerConnection = new RTCPeerConnection(connectionConfig)
+            watcherPeerConnection.ontrack = e => {
+                tracks[0] = e.streams[0]
+                setStreamInit(true)
+            }
+
+            client.subscribe('/user/queue/api/error', message => console.log(message.body))
+
+            client.subscribe('/user/queue/viewer/offer', message => {
+                const sdp = JSON.parse(message.body).sdp
+                watcherPeerConnection.setRemoteDescription({sdp, type: 'offer'})
+                    .then(() => watcherPeerConnection.createAnswer())
+                    .then(answer => watcherPeerConnection.setLocalDescription(answer))
+                    .then(() => {
+                        client.send(
+                            '/app/answer',
+                            {},
+                            JSON.stringify({
+                                streamId,
+                                sdp: watcherPeerConnection.localDescription.sdp
+                            })
+                        )
+                    })
+                    .then(() => {
+                        watcherPeerConnection.onicecandidate = event => {
+                            if (event.candidate && watcherPeerConnection.localDescription && watcherPeerConnection?.remoteDescription?.type) {
+                                client.send(
+                                    '/app/viewer/candidate',
+                                    {},
+                                    JSON.stringify({
+                                        streamId: streamId,
+                                        icecandidate: event.candidate
+                                    })
+                                )
+                            }
+                        }
+                    })
+            })
+
+            client.subscribe('/user/queue/viewer/candidate', message => {
+                const messageParsed = JSON.parse(message.body)
+                watcherPeerConnection
+                    .addIceCandidate(new RTCIceCandidate(messageParsed.icecandidate))
+            })
+
+            setTimeout(() => {
+                watcherPeerConnection.createOffer()
+                    .then(offer => watcherPeerConnection.setLocalDescription(offer))
+                    .then(() => {
+                        client.send(
+                            '/app/notify',
+                            {},
+                            JSON.stringify({id: streamId})
+                        )
+                    })
+            }, 500)
+
+
+        }
+        if (ws.readyState === WebSocket.OPEN) {
+            onConnect()
+        } else {
+            client.connect({}, onConnect)
+        }
+    }
     const actualStreamId = props.match.params.streamId
     const actualStream = streamsList.filter(s => s.id === actualStreamId)[0]
     const {height, width} = useWindowDimensions()
@@ -92,7 +134,7 @@ function StreamContainer({streamsList, ...props}) {
     )
 
     useEffect(() => {
-        connectToStream(actualStreamId)
+        connectToStream(actualStreamId, watcherId)
             .catch(e => console.log(e.message))
     }, [])
 
@@ -100,8 +142,10 @@ function StreamContainer({streamsList, ...props}) {
 
     let mustBeClosed = true
     const openStreamCommonInfo = () => {
-        mustBeClosed = false
-        setStreamCommonInfoOpened(true)
+        if(isStreamInit) {
+            mustBeClosed = false
+            setStreamCommonInfoOpened(true)
+        }
     }
     const closeStreamCommonInfo = () => {
         mustBeClosed = true
@@ -120,12 +164,15 @@ function StreamContainer({streamsList, ...props}) {
         isStreamCommonInfoOpened={isStreamCommonInfoOpened}
         openStreamCommonInfo={openStreamCommonInfo}
         closeStreamCommonInfo={closeStreamCommonInfo}
+        MyPlayer={MyPlayer}
+        isStreamInit={isStreamInit}
     />
 }
 
 function mapStateToProps(state) {
     return {
-        streamsList: selectStreamsList(state)
+        streamsList: selectStreamsList(state),
+        watcherId: selectUserData(state).username
     }
 }
 

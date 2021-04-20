@@ -11,54 +11,82 @@ import Notification from '../../../util_components/Notification'
 
 let stream = null
 const connections = new Map()
+
 const peerConnectionConfig = {
     iceServers: [
         {
-            urls: "stun:stun4.l.google.com:19302"
+            'urls': [
+                'stun:stun.l.google.com:19302',
+                'stun:stun1.l.google.com:19302',
+                'stun:stun2.l.google.com:19302',
+                'stun:stun.l.google.com:19302?transport=udp',
+            ]
         }
     ]
 }
 
-async function openStreamerConnection(streamId) {
-    const ws = new WebSocket('ws://localhost:3030/signaling')
+let viewersCount = 0
 
-    const client = Stomp.over(ws)
-
-    /*function onicecandidate(event) {
-        if (!streamerPeerConnection || !event || !event.candidate)
-            return
-        const candidate = event.candidate
-        alert(candidate)
+async function cleanConnections() {
+    viewersCount++
+    if(viewersCount >= 10) {
+        for(let key of connections.keys()) {
+            if(connections[key].connectionState === 'closed' || connections[key].connectionState === 'failed') {
+                connections.delete(key)
+            }
+        }
+        viewersCount = 0
     }
 
-    streamerPeerConnection.addEventListener("icecandidate", onicecandidate)
-*/
+}
+async function openStreamerConnection(streamId) {
+    const ws = new WebSocket('ws://localhost:8081/signaling')
+    const client = Stomp.over(ws)
+
     client.connect({}, frame => {
 
-        client.subscribe('/user/queue/api/error', message => console.log(JSON.parse(message.body)))
-
-        client.subscribe(`/queue/${streamId}/streamer/offer`, message => {
+        client.subscribe(`/queue/${streamId}/streamer/listen`, message => {
             const messageParsed = JSON.parse(message.body)
-
-            const streamerPeerConnection = new RTCPeerConnection(peerConnectionConfig)
-            connections.set(messageParsed.viewerId, streamerPeerConnection)
-
+            const streamerPeerConnection= new RTCPeerConnection(peerConnectionConfig)
+            connections[messageParsed.id] = streamerPeerConnection
             stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
 
-            streamerPeerConnection.createAnswer()
-                .then(answer => streamerPeerConnection.setLocalDescription(answer))
-                .then(() => {
+            cleanConnections()
+            // 3
+            streamerPeerConnection.createOffer()
+                .then(offer => streamerPeerConnection.setLocalDescription(offer))
+                .then(() => client.send(
+                        '/app/offer',
+                        {},
+                        JSON.stringify({
+                            viewerId: messageParsed.id,
+                            sdp: streamerPeerConnection.localDescription.sdp
+                        })
+                    ))
+        })
+
+        client.subscribe(`/queue/${streamId}/streamer/answer`, message => {
+            const messageParsed = JSON.parse(message.body)
+            connections[messageParsed.viewerId].setRemoteDescription({sdp: messageParsed.sdp, type: 'answer'})
+
+            connections[messageParsed.viewerId].onicecandidate = event => {
+                if (event.candidate && connections[messageParsed.viewerId].localDescription && connections[messageParsed.viewerId]?.remoteDescription?.type) {
                     client.send(
-                        '/app/streamer/answer',
+                        '/app/streamer/candidate',
                         {},
                         JSON.stringify({
                             viewerId: messageParsed.viewerId,
-                            answerSDP: {
-                                sdp: streamerPeerConnection.localDescription.sdp
-                            }
+                            icecandidate: event.candidate
                         })
                     )
-                })
+                }
+            }
+        })
+
+        client.subscribe(`/queue/${streamId}/streamer/candidate`, message => {
+            const messageParsed = JSON.parse(message.body)
+            connections[messageParsed.sessionId]
+                .addIceCandidate(new RTCIceCandidate(messageParsed.icecandidate))
         })
     })
 }
