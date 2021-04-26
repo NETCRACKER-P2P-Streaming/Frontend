@@ -5,16 +5,17 @@ import ChangePasswordContainer from "./ChangePasswordContainer"
 import withFormModal from '../../main_page/sign_forms/sign_in_form/withFormModal'
 import ProfileDataForm from "./ProfileDataForm"
 import { connect } from "react-redux"
-import {selectIsPasswordFormOpen} from '../../../redux/selectors/selectors'
+import {selectIsPasswordFormOpen,selectProfileStreamsList} from '../../../redux/selectors/selectors'
 import { setPasswordFormOpenAC } from "../../../redux/reducers/app_reducer"
 import { changePhoto,
          deletePhoto,
          uploadPhoto  } from "../../../redux/reducers/profile_reducer"
+import ProfileStreamsList from "./streams/ProfileStreamsList"
 
 function ProfileInfo ({
-                        profile, isPasswordFormOpen,isOwner,changePhoto,
-                        deletePhoto,uploadPhoto ,saveProfile,
-                        updateStatus,setPasswordFormOpen, streams
+                        profile, isPasswordFormOpen, isOwner, changePhoto,
+                        deletePhoto, uploadPhoto, saveProfile, streamsList,
+                        updateStatus, setPasswordFormOpen, streams
                      }) {
   if (!profile) {
     return <Loading />
@@ -74,7 +75,10 @@ function ProfileInfo ({
               primary label={'Start new stream'}
             />
           </Form>
-          {streams.userId}
+          <ProfileStreamsList
+            streamsList={streams}
+          />
+          {streamsList.userId}
         </Box>
        
       </Grid>
@@ -84,7 +88,10 @@ function ProfileInfo ({
 }
 
 function mapStateToProps(state) {
-  return {  isPasswordFormOpen: selectIsPasswordFormOpen(state)
+  return {  
+    isPasswordFormOpen: selectIsPasswordFormOpen(state),
+    streamsList: selectProfileStreamsList(state),
+
   }
 }
 export default connect(mapStateToProps, {

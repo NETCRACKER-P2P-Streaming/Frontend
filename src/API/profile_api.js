@@ -6,7 +6,7 @@ export const profileAPI = {
   },
 }
 export function getStreams(username) {
-    return axios.get(`http://localhost:8080/api/v1/stream/get/${username}`)
+    return axios.get(`http://localhost:8080/api/stream/get/${username}`)
 }
 export function resetPassword(data, accessToken) {
   return axios.put(`http://localhost:9090/api/v1/users/reset-password`, data, { headers: {

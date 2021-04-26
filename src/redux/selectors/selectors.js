@@ -101,3 +101,7 @@ export function selectStreamsSortingTypes(state) {
 export function selectStreamsSortingOrders(state) {
     return state.streams.orders
 }
+
+export function selectProfileStreamsList(state) {
+    return state.profilePage.streams
+}
