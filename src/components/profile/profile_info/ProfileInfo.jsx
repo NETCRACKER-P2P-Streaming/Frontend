@@ -75,10 +75,7 @@ function ProfileInfo ({
               primary label={'Start new stream'}
             />
           </Form>
-          <ProfileStreamsList
-            streamsList={streams}
-          />
-          {streamsList.userId}
+        
         </Box>
        
       </Grid>

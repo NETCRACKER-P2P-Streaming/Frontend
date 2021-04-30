@@ -5,9 +5,7 @@ export const profileAPI = {
     return axios.get(`http://localhost:9090/api/v1/users/${username}`)
   },
 }
-export function getStreams(username) {
-    return axios.get(`http://localhost:8080/api/stream/get/${username}`)
-}
+
 export function resetPassword(data, accessToken) {
   return axios.put(`http://localhost:9090/api/v1/users/reset-password`, data, { headers: {
     withCredentials: true,
@@ -57,7 +55,7 @@ export function changeStatus(user,accessToken) {
 export function upload(photoFile, accessToken) {
   const formData = new FormData()
   formData.append("file", photoFile)
-  return axios.post(`http://localhost:9090/api/v1/s3/upload`,  formData, { headers: {
+  return axios.put(`http://localhost:9090/api/v1/users/file`,  formData, { headers: {
     withCredentials: true,
     'Content-Type': 'multipart/form-data',
     'Authorization': `Bearer ${accessToken}`
@@ -74,7 +72,7 @@ export function upload(photoFile, accessToken) {
 export function change(photoFile, accessToken) {
   const formData = new FormData()
   formData.append("file", photoFile)
-  return axios.put(`http://localhost:9090/api/v1/s3/change`,  formData, { headers: {
+  return axios.put(`http://localhost:9090/api/v1/users/file`,  formData, { headers: {
     withCredentials: true,
     'Content-Type': 'multipart/form-data',
     'Authorization': `Bearer ${accessToken}`
@@ -90,7 +88,7 @@ export function change(photoFile, accessToken) {
 }
 export function deleteUserPhoto( accessToken) {
   
-  return axios.delete(`http://localhost:9090/api/v1/s3/delete`,  { headers: {
+  return axios.delete(`http://localhost:9090/api/v1/users/file`,  { headers: {
     withCredentials: true,
     'Content-Type': 'multipart/form-data',
     'Authorization': `Bearer ${accessToken}`

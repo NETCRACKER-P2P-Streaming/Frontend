@@ -4,7 +4,7 @@ import { selectUserData } from '../../../redux/selectors/selectors'
 import ProfileAvatar from './ProfileAvatar'
 
 function ProfileAvatarContainer({ userData, isOwner,changePhoto,
-    deletePhoto,uploadPhoto  }) {
+                                  deletePhoto,uploadPhoto ,profile }) {
 
     const [avatarImage, setAvatarImage] = useState(null)
 
@@ -18,10 +18,12 @@ function ProfileAvatarContainer({ userData, isOwner,changePhoto,
             img.onerror = () => { setAvatarImage(null) }
             img.src = userData.userAttributes['custom:linkImage']
         }
+
     }, [userData])
 
     return <>
         <ProfileAvatar
+            profile={profile}
             userAvatar={avatarImage}
             userData={userData}
             isOwner={isOwner}

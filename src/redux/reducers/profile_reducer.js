@@ -1,12 +1,12 @@
-import { changeStatus, profileAPI, resetPassword, putUserData, change, upload, deleteUserPhoto, getStreams } from "../../API/profile_api"
+import { changeStatus, profileAPI, resetPassword, putUserData, change, upload, deleteUserPhoto } from "../../API/profile_api"
 import {Cookies} from 'react-cookie'
 const SET_USER_PROFILE = 'SET_USER_PROFILE'
-const SET_STREAMS = 'SET_STREAMS'
+const SAVE_PHOTO_SUCCESS = 'SAVE_PHOTO_SUCCESS'
 
 let initialState = {
   profile: null,
-  streams: null
 }
+
 const profileReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_USER_PROFILE:
@@ -16,39 +16,28 @@ const profileReducer = (state = initialState, action) => {
           profile: action.profile
         }
       }
-    case SET_STREAMS:
-    {
-      return {
-        ...state,
-        streams: action.streams
-      }
-    }
+      case SAVE_PHOTO_SUCCESS:
+        return {...state, profile: {...state.profile, photos: action.photos }}
     default:
       return state
   }
 }
+export const savePhotoSuccess = (photos) => ({type: SAVE_PHOTO_SUCCESS, photos})
+
 export const setUserProfile = (profile) => {
   return {
     type: SET_USER_PROFILE, profile
   }
 }
-export const setStreams = (streams) => {
-  return {
-    type: SET_STREAMS, streams
-  }
+
+export const getUserProfile = (username) => async (dispatch) => {
+  const response = await profileAPI.getProfile(username);
+  dispatch(setUserProfile(response.data));
 }
-export const getUserProfile = (username) => (dispatch) => {
-  profileAPI.getProfile(username).then(response => {
-    dispatch(setUserProfile(response.data))
-  })
-}
-export const getUserStreams = (username) => (dispatch) => {
-  getStreams(username).then(response => {
-    dispatch(setStreams(response.data))
-  })
-}
+
+
 export const saveProfile = (userData) =>  {
-  return async dispatch => {
+  return async (dispatch,getState) => {
     try {
       const user = {
         "userAttributes": [
@@ -67,7 +56,12 @@ export const saveProfile = (userData) =>  {
         ]
       }
       const cookies = new Cookies()
+      const userId = getState().profilePage.profile.username
+
       const result = await putUserData(user, cookies.get('accessToken'))
+      if (result) {
+        dispatch(getUserProfile(userId))
+      }
       if (!result) {
         throw new Error('Save failed. Try again later')
       }
@@ -76,8 +70,9 @@ export const saveProfile = (userData) =>  {
       }
   }
 }
+
 export const changePhoto = (file) =>  {
-  return async dispatch => {
+  return async (dispatch,getState) => {
     try {
       const cookies = new Cookies()
       const result = await change(file, cookies.get('accessToken'))
@@ -91,13 +86,18 @@ export const changePhoto = (file) =>  {
         ]
       }
       const result2 = await putUserData(user, cookies.get('accessToken'))
+      const userId = getState().profilePage.profile.username
+
+      if (result) {
+        dispatch(savePhotoSuccess(result));
+      }
     } catch (err) {
         return Promise.reject(err)
     }
   }
 }
 export const uploadPhoto = (file) =>  {
-  return async dispatch => {
+  return async (dispatch,getState) => {
     try {
       const cookies = new Cookies()
       const result = await upload(file, cookies.get('accessToken'))
@@ -111,13 +111,18 @@ export const uploadPhoto = (file) =>  {
         ]
       }
       const result2 = await putUserData(user, cookies.get('accessToken'))
+      const userId = getState().profilePage.profile.username
+
+      if (result) {
+        dispatch(getUserProfile(userId))
+      }
     } catch (err) {
         return Promise.reject(err)
     }
   }
 }
 export const deletePhoto = () =>  {
-  return async dispatch => {
+  return async (dispatch,getState) => {
     try {
       const cookies = new Cookies()
       const result = await delete(cookies.get('accessToken'))
@@ -125,18 +130,23 @@ export const deletePhoto = () =>  {
         "userAttributes": [
           {
             "name": "custom:linkImage",
-            "value": result
+            "value": 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png'
           }
         ]
       }
       const result2 = await putUserData(user, cookies.get('accessToken'))
+      const userId = getState().profilePage.profile.username
+
+      if (result2) {
+        dispatch(getUserProfile(userId))
+      }
     } catch (err) {
         return Promise.reject(err)
     }
   }
 }
 export const changePassword = (userData) =>  {
-  return async dispatch => {
+  return async (dispatch,getState) => {
     try {
       const user = {
         "newPassword": userData.newPassword,
@@ -144,13 +154,14 @@ export const changePassword = (userData) =>  {
       }
       const cookies = new Cookies()
       const result = await resetPassword(user, cookies.get('accessToken'))
+    
     } catch (err) {
         return Promise.reject(err)
       }
   }
 }
 export const updateStatus = (userData) =>  {
-  return async dispatch => {
+  return async (dispatch,getState) => {
     try {
       const user = {
         "userAttributes": [
@@ -162,6 +173,11 @@ export const updateStatus = (userData) =>  {
       }
       const cookies = new Cookies()
       const result = await changeStatus(user, cookies.get('accessToken'))
+      const userId = getState().profilePage.profile.username
+
+      if (result) {
+        dispatch(getUserProfile(userId))
+      }
       if (!result) {
         throw new Error('error')
       }

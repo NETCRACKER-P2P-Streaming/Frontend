@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Image, FileInput} from 'grommet'
+import { Box, Image, FileInput, Button} from 'grommet'
 import userPhoto from './avatar_img.png'
 
 export default function ProfileAvatar({ userAvatar, isOwner ,changePhoto,
@@ -29,6 +29,7 @@ export default function ProfileAvatar({ userAvatar, isOwner ,changePhoto,
             <FileInput onChange={onChangePhoto}/></>
          :<><b>You have no photo</b>
          <FileInput onChange={onUploadPhoto}/></>}
+         <Button label="Delete photo" onClick={deletePhoto}></Button>
         </Box>
     )
 }

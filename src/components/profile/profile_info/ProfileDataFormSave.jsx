@@ -19,7 +19,7 @@ export default function ProfileDataFormSave({ profile, saveProfile, setEditMode 
   const handleSubmit = () => {
     saveProfile(form).then(
       () => {
-       // getUserProfile(profile)
+        getUserProfile(profile.username)
 
         setEditMode(false)
       }
@@ -54,7 +54,7 @@ export default function ProfileDataFormSave({ profile, saveProfile, setEditMode 
         <FormField 
           label={'Name'}
           name={'name'} 
-          placeholder={userAtt['name']}>
+         >
           <TextInput 
             id={'name'}
             name={'name'} />

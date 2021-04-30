@@ -1,7 +1,7 @@
 import {streamsAndCategoriesRequest} from './api'
 
 export function getStreams(getStreamsData) {
-    return streamsAndCategoriesRequest.post('/api/stream/page', getStreamsData)
+    return streamsAndCategoriesRequest.post('/api/v1/streams-page', getStreamsData)
         .then(response => response.data)
         .catch(err => {
             if(err.response) {

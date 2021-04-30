@@ -5,9 +5,9 @@ import Loading from "../../util_components/Loading"
 import ProfileAvatarContainer from "./ProfileAvatarContainer"
 import ProfileStatus from "./ProfileStatus"
 
-const ProfileDataForm = ({ profile, isOwner, saveProfile, updateStatus, changePhoto,
-  deletePhoto,uploadPhoto  }) => {
-   let [editMode, setEditMode] = useState(false)
+const ProfileDataForm = ({ profile, isOwner, saveProfile, updateStatus, 
+                           changePhoto,deletePhoto,uploadPhoto  }) => {
+  let [editMode, setEditMode] = useState(false)
   if (!profile) {
     return <Loading />
   }
@@ -32,8 +32,8 @@ const ProfileDataForm = ({ profile, isOwner, saveProfile, updateStatus, changePh
   )
 }
 
-const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus,changePhoto,
-  deletePhoto,uploadPhoto  }) => {
+const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus,
+                       changePhoto,deletePhoto,uploadPhoto  }) => {
   if (!profile) {
     return <Loading />
   }
@@ -65,6 +65,7 @@ const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus,changePhoto,
         changePhoto={changePhoto}
         deletePhoto={deletePhoto}
         uploadPhoto={uploadPhoto}
+        profile={profile}
       />
       <Box
         width="large"
