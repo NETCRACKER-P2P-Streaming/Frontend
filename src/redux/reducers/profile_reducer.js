@@ -71,31 +71,7 @@ export const saveProfile = (userData) =>  {
   }
 }
 
-export const changePhoto = (file) =>  {
-  return async (dispatch,getState) => {
-    try {
-      const cookies = new Cookies()
-      const result = await change(file, cookies.get('accessToken'))
-      console.log(result)
-      const user = {
-        "userAttributes": [
-          {
-            "name": "custom:linkImage",
-            "value": result
-          }
-        ]
-      }
-      const result2 = await putUserData(user, cookies.get('accessToken'))
-      const userId = getState().profilePage.profile.username
 
-      if (result) {
-        dispatch(savePhotoSuccess(result));
-      }
-    } catch (err) {
-        return Promise.reject(err)
-    }
-  }
-}
 export const uploadPhoto = (file) =>  {
   return async (dispatch,getState) => {
     try {
@@ -130,7 +106,7 @@ export const deletePhoto = () =>  {
         "userAttributes": [
           {
             "name": "custom:linkImage",
-            "value": 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png'
+            "value": ''
           }
         ]
       }

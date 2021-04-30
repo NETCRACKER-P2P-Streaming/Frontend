@@ -7,15 +7,13 @@ import ProfileDataForm from "./ProfileDataForm"
 import { connect } from "react-redux"
 import {selectIsPasswordFormOpen,selectProfileStreamsList} from '../../../redux/selectors/selectors'
 import { setPasswordFormOpenAC } from "../../../redux/reducers/app_reducer"
-import { changePhoto,
-         deletePhoto,
+import { deletePhoto,
          uploadPhoto  } from "../../../redux/reducers/profile_reducer"
-import ProfileStreamsList from "./streams/ProfileStreamsList"
 
 function ProfileInfo ({
-                        profile, isPasswordFormOpen, isOwner, changePhoto,
-                        deletePhoto, uploadPhoto, saveProfile, streamsList,
-                        updateStatus, setPasswordFormOpen, streams
+                        profile, isPasswordFormOpen, isOwner, 
+                        deletePhoto, uploadPhoto, saveProfile, 
+                        updateStatus, setPasswordFormOpen
                      }) {
   if (!profile) {
     return <Loading />
@@ -48,7 +46,6 @@ function ProfileInfo ({
           profile={profile}
           saveProfile={saveProfile}
           updateStatus={updateStatus} 
-          changePhoto={changePhoto}
           deletePhoto={deletePhoto}
           uploadPhoto={uploadPhoto}
 
@@ -93,7 +90,6 @@ function mapStateToProps(state) {
 }
 export default connect(mapStateToProps, {
   setPasswordFormOpen: setPasswordFormOpenAC,
-  changePhoto,
   deletePhoto,
   uploadPhoto 
 

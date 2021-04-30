@@ -19,7 +19,7 @@ export default function ProfileDataFormSave({ profile, saveProfile, setEditMode 
   const handleSubmit = () => {
     saveProfile(form).then(
       () => {
-        getUserProfile(profile.username)
+        //getUserProfile(profile.username)
 
         setEditMode(false)
       }

@@ -29,7 +29,8 @@ function ProfileAvatarContainer({ userData, isOwner,changePhoto,
             isOwner={isOwner}
             changePhoto={changePhoto}
             deletePhoto={deletePhoto}
-            uploadPhoto={uploadPhoto}        />
+            uploadPhoto={uploadPhoto}    
+            setAvatarImage={setAvatarImage}    />
     </>
 }
 
