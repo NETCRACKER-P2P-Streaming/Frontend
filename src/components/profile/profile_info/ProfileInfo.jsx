@@ -1,6 +1,6 @@
 import React from "react"
 import Loading from "../../util_components/Loading"
-import { Box, Button, Grid, Form} from 'grommet'
+import { Box, Button, Grid, Tabs, Tab} from 'grommet'
 import ChangePasswordContainer from "./ChangePasswordContainer"
 import withFormModal from '../../main_page/sign_forms/sign_in_form/withFormModal'
 import ProfileDataForm from "./ProfileDataForm"
@@ -9,6 +9,8 @@ import {selectIsPasswordFormOpen,selectProfileStreamsList} from '../../../redux/
 import { setPasswordFormOpenAC } from "../../../redux/reducers/app_reducer"
 import { deletePhoto,
          uploadPhoto  } from "../../../redux/reducers/profile_reducer"
+import StreamPageContainer from './../../main_page/body/stream_main/StreamPageContainer'
+import ProfileStreamPageContainer from "./streams/ProfileStreamPageContainer"
 
 function ProfileInfo ({
                         profile, isPasswordFormOpen, isOwner, 
@@ -27,20 +29,14 @@ function ProfileInfo ({
   // Оборачивание  формы изменения пароля в модальное окно
   const PasswordInModalFormWrapped = withFormModal(closeLogModal)(ChangePasswordContainer)
   return (
+    <Tabs>
+    <Tab title="tab 1">
     <Box
       direction="row"
       border={{ color: 'brand', size: 'large' }}
       pad="medium">
-      <Grid
-        rows={['large', 'medium']}
-        columns={['large', 'small']}
-        gap="xlarge"
-        areas={[
-          { name: 'profile', start: [0, 0], end: [1, 0] },
-          { name: 'streams', start: [0, 1], end: [1, 1] },
-        ]}
-      >
-      <Box gridArea="profile"  >
+     
+      <Box   >
         <ProfileDataForm      
           isOwner={isOwner}
           profile={profile}
@@ -65,19 +61,16 @@ function ProfileInfo ({
           </Box>
           {isPasswordFormOpen && <PasswordInModalFormWrapped />}
         </Box>
-        <Box gridArea="streams"  >
-          <Form>
-            <Button
-              type={'submit'}
-              primary label={'Start new stream'}
-            />
-          </Form>
-        
-        </Box>
+    
        
-      </Grid>
 
     </Box>
+    </Tab>
+    <Tab title="tab 2">
+      <ProfileStreamPageContainer/>
+    </Tab>
+  </Tabs>
+
   )
 }
 
