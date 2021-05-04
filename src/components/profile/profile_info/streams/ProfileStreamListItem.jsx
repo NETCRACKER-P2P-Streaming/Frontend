@@ -8,7 +8,6 @@ export default function ProfileStreamListItem({
 }) {
     return (
         <Box
-            height={'medium'}
             width={'350px'}
             elevation={'medium'}
             margin={'xsmall'}
@@ -59,31 +58,6 @@ export default function ProfileStreamListItem({
                 margin={{top: 'xsmall'}}
             >
                 <Box
-                    pad={'xsmall'}
-                    align={'center'}
-                >
-                    {
-                        avatarImage
-                            ? <Avatar
-                                src={avatarImage}
-                                size={'large'}
-                                alt={'Avatar image'}
-                            />
-                            : <Box
-                                round={'full'}
-                                background={'light-5'}
-                                height={'72px'}
-                                width={'72px'}
-                                align={'center'}
-                                justify={'center'}
-                            >
-                                <User
-                                    size={'large'}
-                                />
-                            </Box>
-                    }
-                </Box>
-                <Box
                     width={'small'}
                     align={'center'}
                 >
@@ -93,10 +67,7 @@ export default function ProfileStreamListItem({
                         size={'large'}
                         margin={{bottom: 'xsmall'}}
                     >{streamTitle}</Text>
-                    <Text
-                        color={'dark-4'}
-                        size={'medium'}
-                    >{userId}</Text>
+               
                 </Box>
             </Box>
             <Box
@@ -112,7 +83,7 @@ export default function ProfileStreamListItem({
                                 background={'light-6'}
                                 round={'small'}
                                 pad={'xsmall'}
-                                margin={'xsmall'}
+                                margin={'small'}
                                 align={'center'}
                                 width={'156px'}
                             >

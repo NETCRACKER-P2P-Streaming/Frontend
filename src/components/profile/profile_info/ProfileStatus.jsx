@@ -22,7 +22,7 @@ const ProfileStatus = (props) => {
         <Box>
             { !editMode &&
                 <Box>
-                    <b>Status: </b> <span onDoubleClick={activateEditMode}>{props.status || "-------"}</span>
+                    <span onDoubleClick={activateEditMode}>{props.status || "-------"}</span>
                 </Box>
             }
             {editMode && 
@@ -31,14 +31,14 @@ const ProfileStatus = (props) => {
                     value={status}
                     onChange={(nextValue) => setStatus(nextValue)}
                 >
-                        <FormField label="Status" name={'status'} >                
+                        <FormField  name={'status'} >                
                             <TextInput 
                                 name={'status'}
                                 value={status} 
                             />
                         </FormField>
-                        <Button label={'Change status'} primary type="submit" />&nbsp;
-                        <Button label='Cancel' color='border' onClick={() => { setEditMode(false) }} />
+                        <Button size={'small'} label={'Change status'} primary type="submit" />&nbsp;
+                        <Button size={'small'} label='Cancel' color='border' onClick={() => { setEditMode(false) }} />
                 </Form>
             }
         </Box>

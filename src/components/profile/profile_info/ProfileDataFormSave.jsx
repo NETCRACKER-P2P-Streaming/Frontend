@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { FormField, Box, Button, Form, TextInput } from 'grommet'
 import Loading from "../../util_components/Loading"
-import { getUserProfile } from '../../../redux/reducers/profile_reducer'
 
 export default function ProfileDataFormSave({ profile, saveProfile, setEditMode }) {
   let userAtt = profile.userAttributes.reduce((acc, att) => {
@@ -19,15 +18,13 @@ export default function ProfileDataFormSave({ profile, saveProfile, setEditMode 
   const handleSubmit = () => {
     saveProfile(form).then(
       () => {
-        //getUserProfile(profile.username)
-
         setEditMode(false)
       }
     )
   }
 
   return (
-    <Form 
+    <Form
       onSubmit={handleSubmit}
       value={form}
       onChange={(nextValue) => setForm(nextValue)}
@@ -35,41 +32,41 @@ export default function ProfileDataFormSave({ profile, saveProfile, setEditMode 
       <Box
         width="large"
         direction={'row'}
-        justify={'between'}
         margin={{ top: 'medium' }}
+        justify={'between'}
       >
-        <Button 
-          label={'Save'} 
-          primary type="submit" 
+        <Button
+          label={'Save'}
+          primary type="submit"
         />
-        <Button 
-          label='Cancel' 
-          color='border' 
-          onClick={() => {setEditMode(false)}} 
+        <Button
+          label='Cancel'
+          color='border'
+          onClick={() => { setEditMode(false) }}
         />
       </Box>
       <br></br>
       <Box
         width="large">
-        <FormField 
+        <FormField
           label={'Name'}
-          name={'name'} 
-         >
-          <TextInput 
+          name={'name'}
+        >
+          <TextInput
             id={'name'}
             name={'name'} />
         </FormField>
-        <FormField 
+        <FormField
           label={'Lastname'}
           name={'lastname'}>
-          <TextInput 
+          <TextInput
             id={'lastname'}
             name={'lastname'} />
         </FormField>
-        <FormField 
+        <FormField
           label={'Email'}
           name={'email'}>
-          <TextInput 
+          <TextInput
             id={'email'}
             name={'email'} />
         </FormField>
