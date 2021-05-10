@@ -29,7 +29,10 @@ export default function StreamActions({
             onEdit={() => {}}
         />
     }
-    const prettyCategories = getPrettyStreamCategories(actualStream.streamDesc.categories)
+    const prettyCategories = actualStream?.streamDesc?.categories
+        ? getPrettyStreamCategories(actualStream.streamDesc.categories)
+        : []
+
     switch (streamState) {
         case (streamStates.OPENED): {
             return <StreamInformation
@@ -38,7 +41,7 @@ export default function StreamActions({
                 countViewers={actualStream.information.countViewers}
                 streamDesc={actualStream.streamDesc.description}
                 userId={actualStream.userId}
-                streamTitle={actualStream.streamDesc.title}
+                streamTitle={actualStream?.streamDesc.title}
                 shareAction={onSuspendStream}
                 btnActionLabel={'Suspend'}
                 onDeleteStream={onDeleteStream}

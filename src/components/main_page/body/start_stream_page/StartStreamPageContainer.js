@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import StartStreamPage from './StartStreamPage'
 import {addStreamOnServ, setActualStream, deleteStreamOnServ} from '../../../../redux/reducers/stream_reducer'
 import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
-import {getUser} from '../../../../API/user_api'
 import {
     selectActualStream,
     selectCategoriesList,
@@ -51,7 +50,7 @@ export async function openStreamerConnection(streamId) {
                     '/app/offer',
                     {},
                     JSON.stringify({
-                        viewerId: messageParsed.id,
+                        recipientId: messageParsed.id,
                         sdp: streamerPeerConnection.localDescription.sdp
                     })
                 ))
@@ -59,16 +58,16 @@ export async function openStreamerConnection(streamId) {
 
         client.subscribe(`/queue/${streamId}/streamer/answer`, message => {
             const messageParsed = JSON.parse(message.body)
-            connections[messageParsed.viewerId].setRemoteDescription({sdp: messageParsed.sdp, type: 'answer'})
+            connections[messageParsed.senderId].setRemoteDescription({sdp: messageParsed.sdp, type: 'answer'})
 
-            connections[messageParsed.viewerId].onicecandidate = event => {
-                if (event.candidate && connections[messageParsed.viewerId].localDescription && connections[messageParsed.viewerId]?.remoteDescription?.type) {
+            connections[messageParsed.senderId].onicecandidate = event => {
+                if (event.candidate && connections[messageParsed.senderId].localDescription && connections[messageParsed.viewerId]?.remoteDescription?.type) {
                     client.send(
                         '/app/streamer/candidate',
                         {},
                         JSON.stringify({
-                            viewerId: messageParsed.viewerId,
-                            icecandidate: event.candidate
+                            recipientId: messageParsed.senderId,
+                            candidate: event.candidate
                         })
                     )
                 }
@@ -77,8 +76,8 @@ export async function openStreamerConnection(streamId) {
 
         client.subscribe(`/queue/${streamId}/streamer/candidate`, message => {
             const messageParsed = JSON.parse(message.body)
-            connections[messageParsed.sessionId]
-                .addIceCandidate(new RTCIceCandidate(messageParsed.icecandidate))
+            connections[messageParsed.senderId]
+                .addIceCandidate(new RTCIceCandidate(messageParsed.candidate))
         })
     })
 }

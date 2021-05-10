@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import Stream from './Stream'
 import * as Stomp from 'stomp-websocket'
 import useWindowDimensions from '../../../utils/useWindowDimention'
-import {selectStreamsList, selectUserData} from '../../../../redux/selectors/selectors'
+import {selectStreamsList, selectUserData, selectViewerStreamStates} from '../../../../redux/selectors/selectors'
 import ReactPlayer from 'react-player'
 
 const tracks = []
@@ -59,7 +59,7 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
                             '/app/answer',
                             {},
                             JSON.stringify({
-                                streamId,
+                                recipientId: streamId,
                                 sdp: watcherPeerConnection.localDescription.sdp
                             })
                         )
@@ -71,8 +71,8 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
                                     '/app/viewer/candidate',
                                     {},
                                     JSON.stringify({
-                                        streamId: streamId,
-                                        icecandidate: event.candidate
+                                        recipientId: streamId,
+                                        candidate: event.candidate
                                     })
                                 )
                             }
@@ -83,7 +83,7 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
             client.subscribe('/user/queue/viewer/candidate', message => {
                 const messageParsed = JSON.parse(message.body)
                 watcherPeerConnection
-                    .addIceCandidate(new RTCIceCandidate(messageParsed.icecandidate))
+                    .addIceCandidate(new RTCIceCandidate(messageParsed.candidate))
             })
 
             client.subscribe(`/topic/streamer/${streamId}/close`, message => {
@@ -170,13 +170,15 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
         closeStreamCommonInfo={closeStreamCommonInfo}
         MyPlayer={MyPlayer}
         isStreamInit={streamActualState}
+        streamStates={streamStates}
     />
 }
 
 function mapStateToProps(state) {
     return {
         streamsList: selectStreamsList(state),
-        watcherId: selectUserData(state).username
+        watcherId: selectUserData(state).username,
+        streamStates: selectViewerStreamStates(state)
     }
 }
 
