@@ -24,7 +24,7 @@ function SignUpContainer({regUser, setAppLoading, appLoading, setAuthFormOpen}) 
         lastName: '',
         email: '',
         description: '',
-        linkImage: ''
+        linkImage: null
     }
 
     const [value, setValue] = useState(primaryValue)
@@ -45,6 +45,7 @@ function SignUpContainer({regUser, setAppLoading, appLoading, setAuthFormOpen}) 
 
     async function registerSubmit() {
         try {
+            debugger
             setAppLoading(true)
             await regUser(value)
             history.push('/')

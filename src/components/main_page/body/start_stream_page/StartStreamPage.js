@@ -1,13 +1,17 @@
 import React from 'react'
 import {Box, Button} from 'grommet'
-import StartStreamPageForm from './StartStreamPageForm'
+import StreamActions from './stream_actions/StreamActions'
 
 export default function StartStreamPage({
-                                            onStartSharing, isStreamInitialized, selectOptions,
-                                            initialStartStreamFormValues, setSelectOptions, startStreamFormValidators,
+                                            onStartSharing, streamState, selectOptions,
+                                            initialStartStreamFormValues, setSelectOptions,
                                             headerHei, height, setStartStreamFormValues, startStreamFormValues,
-                                            onSubmit, Notification, areNotificationOpen
+                                            onSubmit, Notification, areNotificationOpen, actualStream, streamStates,
+                                            onStopSharing, onResumeStream, checkStreamState, onSuspendStream, onDeleteStream,
+                                            isEditable, setIsEditable, getPrettyStreamCategories, actualUser
                                         }) {
+
+
     return <Box
         direction={'row'}
         width={'100%'}
@@ -15,22 +19,22 @@ export default function StartStreamPage({
         flex={"shrink"}
     >
         {
-            areNotificationOpen && <Notification />
+            areNotificationOpen && <Notification/>
         }
         <Box
             height={'100%'}
             width={'xlarge'}
             pad={'medium'}
-            direction={isStreamInitialized ? 'column' : 'row'}
+            direction={checkStreamState() ? 'column' : 'row'}
             align={'center'}
         >
             <video
-                style={{width: '90%', display: isStreamInitialized ? 'block' : 'none'}}
+                style={{width: '90%', display: checkStreamState() ? 'block' : 'none'}}
                 id={'share_video_container'}
                 autoPlay={true}
             />
             {
-                isStreamInitialized
+                checkStreamState()
                 ||
                 <Button
                     secondary={true}
@@ -45,16 +49,26 @@ export default function StartStreamPage({
             direction={'column'}
             height={'100%'}
             overflow={'scroll'}
-            margin={{right: 'small'}}
         >
-            <StartStreamPageForm
+            <StreamActions
+                initialStartStreamFormValues={initialStartStreamFormValues}
+                startStreamFormValues={startStreamFormValues}
+                setStartStreamFormValues={setStartStreamFormValues}
+                onAddStreamSubmit={onSubmit}
                 selectOptions={selectOptions}
                 setSelectOptions={setSelectOptions}
-                formValues={startStreamFormValues}
-                initialFormValues={initialStartStreamFormValues}
-                setFormValues={setStartStreamFormValues}
-                validators={startStreamFormValidators}
-                onSubmit={onSubmit}
+                streamState={streamState}
+                actualStream={actualStream}
+                streamStates={streamStates}
+                onStopSharing={onStopSharing}
+                onStartSharing={onStartSharing}
+                onResumeStream={onResumeStream}
+                onSuspendStream={onSuspendStream}
+                onDeleteStream={onDeleteStream}
+                isEditable={isEditable}
+                setIsEditable={setIsEditable}
+                getPrettyStreamCategories={getPrettyStreamCategories}
+                actualUser={actualUser}
             />
         </Box>
 

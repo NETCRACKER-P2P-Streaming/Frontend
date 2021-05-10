@@ -6,7 +6,7 @@ import {User} from 'grommet-icons'
 export default function Stream({
                                    height, isStreamCommonInfoOpened, closeStreamCommonInfo, openStreamCommonInfo,
                                    avatarImage, countViewers, fullCategories, streamTitle, streamUserAttributes,
-                                   userId, streamDesc, MyPlayer, isStreamInit
+                                   userId, streamDesc, MyPlayer, isStreamInit, streamStates
                                }) {
     const streamRef = useRef()
     const chatRef = useRef()
@@ -27,16 +27,20 @@ export default function Stream({
             direction={'column'}
         >
             {
-                isStreamInit
+                isStreamInit === streamStates.OPENED
                     ? <MyPlayer/>
-                    :   <Layer
-                        target={streamRef.current}
-                        full={false}
-                        position={'center'}
-                        modal={false}
-                    >
-                        <Spinner size={'medium'}/>
-                    </Layer>
+                    : <Layer
+                            target={streamRef.current}
+                            full={false}
+                            position={'center'}
+                            modal={false}
+                        >
+                        {
+                            isStreamInit === streamStates.SUSPENDED
+                                ? <Text>This translation has been closed</Text>
+                                : <Spinner size={'medium'}/>
+                        }
+                        </Layer>
             }
         </Box>
 

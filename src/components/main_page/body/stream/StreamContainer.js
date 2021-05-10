@@ -4,7 +4,7 @@ import Stream from './Stream'
 import * as Stomp from 'stomp-websocket'
 import useWindowDimensions from '../../../utils/useWindowDimention'
 import {selectStreamsList, selectUserData} from '../../../../redux/selectors/selectors'
-import ReactPlayer from "react-player";
+import ReactPlayer from 'react-player'
 
 const tracks = []
 const connectionConfig = {
@@ -32,10 +32,9 @@ const MyPlayer = () => {
     </ReactPlayer>
 }
 
+function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
 
-function StreamContainer({streamsList, watcherId, ...props}) {
-
-    const [isStreamInit, setStreamInit] = useState(false)
+    const [streamActualState, setStreamActualState] = useState(streamStates.NON_INITIALIZED)
 
     async function connectToStream(streamId) {
         const ws = new WebSocket('ws://localhost:8081/signaling')
@@ -45,7 +44,7 @@ function StreamContainer({streamsList, watcherId, ...props}) {
             const watcherPeerConnection = new RTCPeerConnection(connectionConfig)
             watcherPeerConnection.ontrack = e => {
                 tracks[0] = e.streams[0]
-                setStreamInit(true)
+                setStreamActualState(streamStates.OPENED)
             }
 
             client.subscribe('/user/queue/api/error', message => console.log(message.body))
@@ -85,6 +84,11 @@ function StreamContainer({streamsList, watcherId, ...props}) {
                 const messageParsed = JSON.parse(message.body)
                 watcherPeerConnection
                     .addIceCandidate(new RTCIceCandidate(messageParsed.icecandidate))
+            })
+
+            client.subscribe(`/topic/streamer/${streamId}/close`, message => {
+                setStreamActualState(streamStates.SUSPENDED)
+                watcherPeerConnection.close()
             })
 
             setTimeout(() => {
@@ -142,7 +146,7 @@ function StreamContainer({streamsList, watcherId, ...props}) {
 
     let mustBeClosed = true
     const openStreamCommonInfo = () => {
-        if(isStreamInit) {
+        if(streamActualState === streamStates.OPENED) {
             mustBeClosed = false
             setStreamCommonInfoOpened(true)
         }
@@ -165,7 +169,7 @@ function StreamContainer({streamsList, watcherId, ...props}) {
         openStreamCommonInfo={openStreamCommonInfo}
         closeStreamCommonInfo={closeStreamCommonInfo}
         MyPlayer={MyPlayer}
-        isStreamInit={isStreamInit}
+        isStreamInit={streamActualState}
     />
 }
 

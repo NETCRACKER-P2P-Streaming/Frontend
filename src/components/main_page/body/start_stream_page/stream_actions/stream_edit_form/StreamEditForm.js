@@ -1,13 +1,13 @@
 import React from 'react'
 import {Box, Button, CheckBox, Form, FormField, Heading, Select, Text, TextArea, TextInput} from 'grommet'
-import {validateField} from '../../../utils/validators'
-import {Close} from 'grommet-icons'
-import {startStreamFormValidators as validators} from '../../../utils/componentValidation'
+import {validateField} from '../../../../../utils/validators'
+import {Close, FormPreviousLink} from 'grommet-icons'
+import {startStreamFormValidators as validators} from '../../../../../utils/componentValidation'
 
-export default function StartStreamPageForm({
-                                                selectOptions, setSelectOptions, formValues, initialFormValues,
-                                                setFormValues, onSubmit
-}) {
+export default function StreamEditForm({
+                                                onReset, onBack, formValues, onSubmit,
+                                                selectOptions, setSelectOptions, setFormValues
+                                            }) {
 
     function sortOptions() {
         setSelectOptions(
@@ -51,15 +51,24 @@ export default function StartStreamPageForm({
         value={formValues}
         onChange={onChange}
         onSubmit={({value}) => onSubmit(value)}
-        onReset={() => setFormValues(initialFormValues)}
+        onReset={onReset}
         validate={'submit'}
     >
+        <Button
+            margin={{top: 'medium'}}
+            onClick={onBack}
+            label={<FormPreviousLink
+                size={'large'}
+                color={'brand'}
+            />}
+            plain={true}
+        />
         <Heading
             color={'brand'}
             margin={{vertical: 'medium'}}
             alignSelf={'center'}
         >
-            Stream settings
+            Edit stream
         </Heading>
         <FormField
             margin={{vertical: 'medium'}}
@@ -149,8 +158,8 @@ export default function StartStreamPageForm({
             justify={'between'}
             pad={{vertical: 'medium'}}
         >
-            <Button type={'submit'} primary={true} label={'Start stream'}/>
-            <Button type={'reset'} secondary={true} label={'Clear'}/>
+            <Button type={'submit'} primary={true} label={'Edit stream'}/>
+            <Button type={'reset'} secondary={true} label={'Reset'}/>
         </Box>
     </Form>
 }

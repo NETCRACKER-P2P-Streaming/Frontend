@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
-import {Avatar, Box, Button, Layer, Stack, Text, TextInput} from 'grommet'
-import {Down, Close, User} from 'grommet-icons'
-import StreamInfo from "./StreamInfo";
+import {Box, TextInput} from 'grommet'
+import {Down} from 'grommet-icons'
+import StreamInfo from './StreamInfo'
 
 export default function Chat({
                                  chatRef, height, avatarImage, countViewers,

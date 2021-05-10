@@ -1,13 +1,16 @@
-import {addStream, getStreams} from '../../API/streams_api'
-import {getUser} from '../../API/user_api'
-import {selectStreamPageSize, selectStreamsList} from '../selectors/selectors'
+import {addStream, deleteStream, getStreams} from '../../API/streams_api'
+import {getUser, logout} from '../../API/user_api'
+import {selectActualStream, selectStreamPageSize, selectStreamsList} from '../selectors/selectors'
+import {Cookies} from "react-cookie";
 
 const ADD_STREAMS = 'ADD_STREAMS'
 const SET_STREAMS = 'SET_STREAMS'
+const SET_ACTUAL_STREAM = 'SET_ACTUAL_STREAM'
 
 const defaultState = {
     streamsList: [],
     pageSize: 10,
+    actualStream: null,
     types: [
         {
             title: 'By date',
@@ -31,11 +34,29 @@ const defaultState = {
             title: 'Descending',
             value: false
         }
-    ]
+    ],
+    streamerStreamStates: {
+        NON_INITIALIZED: 'NON_INITIALIZED',
+        PREPARED: 'PREPARED',
+        OPENED: 'OPENED',
+        SUSPENDED: 'SUSPENDED',
+        SUSPENDED_PREPARED: 'SUSPENDED_PREPARED'
+    },
+    viewerStreamStates: {
+        NON_INITIALIZED: 'NON_INITIALIZED',
+        OPENED: 'OPENED',
+        CLOSED: 'CLOSED'
+    }
 }
 
 export default function streamReducer(state = defaultState, action) {
     switch (action.type) {
+        case(SET_ACTUAL_STREAM): {
+            return {
+                ...state,
+                actualStream: action.streamInfo
+            }
+        }
         case(ADD_STREAMS): {
             return {
                 ...state,
@@ -71,6 +92,13 @@ function setStreamsAC(streamsColl) {
     }
 }
 
+export function setActualStream(streamInfo) {
+    return {
+        type: SET_ACTUAL_STREAM,
+        streamInfo
+    }
+}
+
 export function getStreamsFromServ(
     withReplace,
     title,
@@ -94,7 +122,7 @@ export function getStreamsFromServ(
                 count: pageSize
             })
             let usersPromises = []
-            for(let i = 0; i < response.length; i++) {
+            for (let i = 0; i < response.length; i++) {
                 usersPromises[i] = getUser(response[i].userId)
                     .then(u => {
                         const userData = u.userAttributes.reduce((acc, item) => {
@@ -110,7 +138,7 @@ export function getStreamsFromServ(
             }
             await Promise.all(usersPromises)
             dispatch(appendStreams(response))
-        } catch(err) {
+        } catch (err) {
             return Promise.reject(err)
         }
     }
@@ -118,7 +146,6 @@ export function getStreamsFromServ(
 
 export function addStreamOnServ(streamData) {
     return async (dispatch, getState) => {
-        debugger
         try {
 
             const resultedStreamData = {
@@ -127,6 +154,23 @@ export function addStreamOnServ(streamData) {
             }
 
             return addStream(resultedStreamData)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
+
+export function deleteStreamOnServ(streamId) {
+    return async (dispatch, getState) => {
+        try {
+            const cookies = new Cookies()
+            await deleteStream(streamId, cookies.get('accessToken'))
+
+            if(selectActualStream(getState()).id === streamId) {
+                debugger
+                dispatch(setActualStream(null))
+            }
+            return Promise.resolve()
         } catch (err) {
             return Promise.reject(err)
         }

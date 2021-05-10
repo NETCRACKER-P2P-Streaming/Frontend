@@ -1,17 +1,23 @@
 import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import StartStreamPage from './StartStreamPage'
-import {commonRegExpValidator, customConditionValidator} from '../../../utils/validators'
-import {addStreamOnServ} from '../../../../redux/reducers/stream_reducer'
-import * as Stomp from 'stomp-websocket'
+import {addStreamOnServ, setActualStream, deleteStreamOnServ} from '../../../../redux/reducers/stream_reducer'
 import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
-import {selectCategoriesList} from '../../../../redux/selectors/selectors'
+import {getUser} from '../../../../API/user_api'
+import {
+    selectActualStream,
+    selectCategoriesList,
+    selectStreamerStreamStates, selectUserData
+} from '../../../../redux/selectors/selectors'
 import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
 import Notification from '../../../util_components/Notification'
+import {closeStream} from '../../../../API/streams_api'
+import * as Stomp from 'stomp-websocket'
+import {useHistory} from 'react-router-dom'
 
-let stream = null
+export let stream = null
 const connections = new Map()
-
+let viewersCounterForCleaning = 0
 const peerConnectionConfig = {
     iceServers: [
         {
@@ -25,21 +31,7 @@ const peerConnectionConfig = {
     ]
 }
 
-let viewersCount = 0
-
-async function cleanConnections() {
-    viewersCount++
-    if(viewersCount >= 10) {
-        for(let key of connections.keys()) {
-            if(connections[key].connectionState === 'closed' || connections[key].connectionState === 'failed') {
-                connections.delete(key)
-            }
-        }
-        viewersCount = 0
-    }
-
-}
-async function openStreamerConnection(streamId) {
+export async function openStreamerConnection(streamId) {
     const ws = new WebSocket('ws://localhost:8081/signaling')
     const client = Stomp.over(ws)
 
@@ -47,7 +39,7 @@ async function openStreamerConnection(streamId) {
 
         client.subscribe(`/queue/${streamId}/streamer/listen`, message => {
             const messageParsed = JSON.parse(message.body)
-            const streamerPeerConnection= new RTCPeerConnection(peerConnectionConfig)
+            const streamerPeerConnection = new RTCPeerConnection(peerConnectionConfig)
             connections[messageParsed.id] = streamerPeerConnection
             stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
 
@@ -56,13 +48,13 @@ async function openStreamerConnection(streamId) {
             streamerPeerConnection.createOffer()
                 .then(offer => streamerPeerConnection.setLocalDescription(offer))
                 .then(() => client.send(
-                        '/app/offer',
-                        {},
-                        JSON.stringify({
-                            viewerId: messageParsed.id,
-                            sdp: streamerPeerConnection.localDescription.sdp
-                        })
-                    ))
+                    '/app/offer',
+                    {},
+                    JSON.stringify({
+                        viewerId: messageParsed.id,
+                        sdp: streamerPeerConnection.localDescription.sdp
+                    })
+                ))
         })
 
         client.subscribe(`/queue/${streamId}/streamer/answer`, message => {
@@ -92,43 +84,39 @@ async function openStreamerConnection(streamId) {
 }
 
 
+async function cleanConnections() {
+    viewersCounterForCleaning++
+    if (viewersCounterForCleaning >= 10) {
+        for (let key of connections.keys()) {
+            if (connections[key].connectionState === 'closed' || connections[key].connectionState === 'failed') {
+                connections.delete(key)
+            }
+        }
+        viewersCounterForCleaning = 0
+    }
+}
+
 function StartStreamPageContainer({
                                       headerHei, height, addStreamOnServ, getCategoriesToSearchFromServ,
-                                      categories, setLoading
+                                      categories, setLoading, actualStream, streamStates, setActualStream,
+                                      deleteStreamOnServ, actualUser
                                   }) {
 
-    const [isStreamInitialized, setIsStreamInitialized] = useState(false)
-
-    async function onStartSharing() {
-        try {
-            const options = {
-                video: {
-                    cursor: true,
-                },
-                audio: false
-            }
-            stream = await navigator.mediaDevices.getDisplayMedia(options)
-            document.getElementById('share_video_container').srcObject = stream
-            stream.oninactive = onStopSharing
-            setIsStreamInitialized(true)
-        } catch (err) {
-            console.error(err)
-        }
+    const initialStartStreamFormValues = {
+        title: '',
+        description: '',
+        linkImage: '',
+        categories: []
     }
 
+    const [streamState, setStreamState] = useState(streamStates.NON_INITIALIZED)
+    const [isEditable, setIsEditable] = useState(false)
+    const [areNotificationOpen, setNotificationOpen] = useState(false)
+    const [selectOptions, setSelectOptions] = useState(categories)
+    const [startStreamFormValues, setStartStreamFormValues] = useState(initialStartStreamFormValues)
+    const history = useHistory()
 
-    function onStopSharing() {
-        try {
-            const _videoElem = document.getElementById('share_video_container')
-            let tracks = _videoElem.srcObject.getTracks()
-
-            tracks.forEach(track => track.stop())
-            _videoElem.srcObject = null
-            setIsStreamInitialized(false)
-        } catch (err) {
-            console.error(err)
-        }
-    }
+    useEffect(() => {console.log(streamState)}, [streamState])
 
     useEffect(() => {
         setLoading(true)
@@ -140,58 +128,119 @@ function StartStreamPageContainer({
             .finally(() => setLoading(false))
     }, [])
 
-    const initialStartStreamFormValues = {
-        title: '',
-        description: '',
-        linkImage: '',
-        categories: []
-    }
-
-    const [selectOptions, setSelectOptions] = useState(categories)
-
     useEffect(() => {
         setSelectOptions(categories)
     }, [categories])
 
-    const [startStreamFormValues, setStartStreamFormValues] = useState(initialStartStreamFormValues)
 
-    const startStreamFormValidators = {
-        title: [
-            commonRegExpValidator(
-                /^[\w ]{5,50}$/,
-                'Title must be 5-50 alphanumeric symbols'
-            )
-        ],
-        description: [
-            commonRegExpValidator(
-                /^[\w ]{0,512}$/,
-                'Description must be maximum 512 alphanumeric symbols'
-            )
-        ],
-        categories: [
-            customConditionValidator(
-                val => val.length > 0,
-                'At least one category must be selected'
-            )
-        ]
+    function getPrettyStreamCategories(fullCategories) {
+        return categories
+            .filter(x => fullCategories.includes(x.id))
+            .map(x => x.name)
     }
 
-    const [areNotificationOpen, setNotificationOpen] = useState(false)
     const showNotification = () => {
         setNotificationOpen(true)
         setTimeout(() => {
-            setNotificationOpen(false);
+            setNotificationOpen(false)
         }, 3000)
     }
 
+    async function onStartSharing() {
+        try {
+            const options = {
+                video: {
+                    cursor: true,
+                },
+                audio: true
+            }
+            stream = await navigator.mediaDevices.getDisplayMedia(options)
+            document.getElementById('share_video_container').srcObject = stream
+            if(streamState === streamStates.NON_INITIALIZED) {
+                setStreamState(streamStates.PREPARED)
+            }
+            if(streamState === streamStates.SUSPENDED) {
+                setStreamState(streamStates.SUSPENDED_PREPARED)
+            }
+
+            stream.oninactive = () => onStopSharing()
+
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    function onStopSharing() {
+        try {
+            const _videoElem = document.getElementById('share_video_container')
+            let tracks = _videoElem.srcObject.getTracks()
+            tracks.forEach(track => track.stop())
+            _videoElem.srcObject = null
+
+            if(!actualStream) {
+                setStreamState(streamStates.NON_INITIALIZED)
+            }
+            // } else {
+            //
+            //     // closeStream(actualStream.id, 'some cause')
+            //     //     .catch(err => alert(err))
+            // }
+
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    function onDeleteStream() {
+        try {
+            deleteStreamOnServ(actualStream.id)
+                .then(() => history.push('/'))
+        } catch (err) {
+            alert(err)
+        }
+    }
+
+    function onSuspendStream() {
+        onStopSharing()
+        closeStream(actualStream.id, 'some cause')
+            .then(() => setStreamState(streamStates.SUSPENDED))
+            .catch(err => alert(err))
+    }
+
+    function onResumeStream() {
+        if(streamState === streamStates.SUSPENDED) {
+            showNotification()
+            return
+        }
+        openStreamerConnection(actualStream.id)
+            .catch(err => alert(err))
+        setStreamState(streamStates.OPENED)
+    }
+
+    function checkStreamState() {
+        return streamState === streamStates.PREPARED
+            || streamState === streamStates.OPENED
+            || streamState === streamStates.SUSPENDED_PREPARED
+    }
+
     function onSubmit(values) {
-        if (isStreamInitialized) {
-            // addStreamOnServ({
-            //     ...values,
-            //     categories: values.categories.filter(c => !!c)
-            // })
-            //     .then(response => openStreamerConnection(response.userId))
-            openStreamerConnection('606a14ab79174b03035878c4')
+        if (streamState) {
+            addStreamOnServ({
+                ...values,
+                categories: values.categories.filter(c => !!c)
+            })
+                .then(response => {
+                    setActualStream(response)
+                    setStartStreamFormValues({
+                        title: response.streamDesc.title,
+                        description: response.streamDesc.description,
+                        linkImage: response.streamDesc.linkImage,
+                        categories: response.streamDesc.categories
+                    })
+                    return response.id
+                })
+                .then(id => openStreamerConnection(id))
+                .then(() => setStreamState(streamStates.OPENED))
                 .catch(err => {
                     alert(err.message)
                     console.log(err)
@@ -199,37 +248,52 @@ function StartStreamPageContainer({
         } else {
             showNotification()
         }
-
     }
 
     return <StartStreamPage
         onStartSharing={onStartSharing}
-        isStreamInitialized={isStreamInitialized}
+        onStopSharing={onStopSharing}
+        streamState={streamState}
         selectOptions={selectOptions}
         setSelectOptions={setSelectOptions}
         initialStartStreamFormValues={initialStartStreamFormValues}
         startStreamFormValues={startStreamFormValues}
         setStartStreamFormValues={setStartStreamFormValues}
-        startStreamFormValidators={startStreamFormValidators}
         height={height}
         headerHei={headerHei}
         onSubmit={onSubmit}
         areNotificationOpen={areNotificationOpen}
+        streamStates={streamStates}
         Notification={() => <Notification
             content={'You must select screen for sharing'}
             setAreOpen={setNotificationOpen}
         />}
+        actualStream={actualStream}
+        onResumeStream={onResumeStream}
+        checkStreamState={checkStreamState}
+        onSuspendStream={onSuspendStream}
+        onDeleteStream={onDeleteStream}
+        isEditable={isEditable}
+        setIsEditable={setIsEditable}
+        getPrettyStreamCategories={getPrettyStreamCategories}
+        actualUser={actualUser}
     />
 }
 
+
 function mapStateToProps(state) {
     return {
-        categories: selectCategoriesList(state)
+        categories: selectCategoriesList(state),
+        actualStream: selectActualStream(state),
+        streamStates: selectStreamerStreamStates(state),
+        actualUser: selectUserData(state)
     }
 }
 
 export default connect(mapStateToProps, {
     addStreamOnServ,
     getCategoriesToSearchFromServ,
-    setLoading: setLoadingAC
+    setLoading: setLoadingAC,
+    setActualStream,
+    deleteStreamOnServ
 })(StartStreamPageContainer)

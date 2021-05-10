@@ -8,3 +8,7 @@ export const userRequest = axios.create({
 export const streamsAndCategoriesRequest = axios.create({
     baseURL: config.streamsServiceAddress
 })
+
+export const signalingRequest = axios.create({
+    baseURL: config.signalingHTTPAddress
+})
