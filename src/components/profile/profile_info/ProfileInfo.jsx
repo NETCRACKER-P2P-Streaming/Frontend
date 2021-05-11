@@ -44,14 +44,13 @@ function ProfileInfo({
             <Box
               direction={'row'}
               justify={'between'}
-              margin={{ top: 'medium' }}
+              margin={{ top: 'large' }}
             >
               <Button
                 default={true}
                 label={'Reset password'}
                 pad={'small'}
                 size={'small'} 
-                margin={{ left: 'small', right: 'small' }}
                 onClick={openLogModal}
               />
             </Box>

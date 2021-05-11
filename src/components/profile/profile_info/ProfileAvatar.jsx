@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box, Image, FileInput, Button } from 'grommet'
 import userPhoto from './avatar_img.png'
+import { Trash } from 'grommet-icons'
 
 export default function ProfileAvatar({ userAvatar, deletePhoto, uploadPhoto, setAvatarImage }) {
     const onUploadPhoto = (e) => {
@@ -9,22 +10,39 @@ export default function ProfileAvatar({ userAvatar, deletePhoto, uploadPhoto, se
         }
     }
     const deleteThePhoto = (e) => {
-        deletePhoto().then(() => { window.location.reload() })
+        deletePhoto().then(
+            () => {
+                setAvatarImage('')
+            }
+        )
     }
     return (
-        <Box pad="small" width="medium">
-            <Image
-                fit="contain"
-                src={userAvatar || userPhoto}
-            />
-            <FileInput onChange={onUploadPhoto} />
-            <Button label="Delete photo" onClick={deleteThePhoto}></Button>
-            <Button     
-                label="Upload photo" 
-                onClick={() => { window.location.reload() }}>
-            </Button>
-
-
+        <Box  width="medium">
+            {userAvatar ?
+                <Image
+                    key={Date.now()}
+                    fit="cover"
+                    src={`${userAvatar}?${new Date().getTime()}`}
+                /> : 
+                <Image
+                    key={Date.now()}
+                    fit="contain"
+                    src={userPhoto}
+                />}
+            <Box
+                justify={'start'}
+                direction={'row'}
+                margin={{'top':'xsmall'}}
+            >
+                <FileInput onChange={onUploadPhoto} />
+                <Button
+                    margin={{'left':'medium'}}
+                    icon={<Trash />}
+                    size={'small'}
+                    plain={'true'}
+                    onClick={deleteThePhoto}>
+                </Button>
+            </Box>
         </Box>
     )
 }

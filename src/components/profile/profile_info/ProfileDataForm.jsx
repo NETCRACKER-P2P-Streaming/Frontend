@@ -84,7 +84,7 @@ const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus,
               direction={'column'}
             >
               <Text 
-                weight={'bold'}   
+                weight={500}   
                 margin={{  
                   'bottom': 'xsmall',
                   'right': 'small'
@@ -94,7 +94,7 @@ const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus,
                 {profile.username}
               </Text>
               <Text 
-                weight={'bold'} 
+                weight={500}   
                 margin={{ 
                   'bottom': 'xsmall',
                   'right': 'small'

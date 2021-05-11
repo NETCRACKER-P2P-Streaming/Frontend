@@ -14,13 +14,13 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
                 dropProps={{align: {top: 'bottom', left: 'left'}}}
                 items={[
                     {label: 'Profile', gap: 'large', onClick: () => openProfile()},
-
                     {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
                 ]}
                 label={
                     userAvatar
                         ? <Avatar
-                            src={userAvatar}
+                            key={Date.now()}
+                            src={`${userAvatar}?${global.Date.now()}`}
                             size={'medium'}
                         />
                         : <Box
