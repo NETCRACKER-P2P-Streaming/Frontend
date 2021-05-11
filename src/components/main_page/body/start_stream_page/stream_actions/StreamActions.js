@@ -21,12 +21,13 @@ export default function StreamActions({
                                           setIsEditable,
                                           isEditable,
                                           getPrettyStreamCategories,
-                                          actualUser
+                                          actualUser,
+                                          onEditStream
                                       }) {
     if (isEditable) {
         return <StreamEditFormContainer
             onBack={() => setIsEditable(false)}
-            onEdit={() => {}}
+            onEdit={onEditStream}
         />
     }
     const prettyCategories = actualStream?.streamDesc?.categories

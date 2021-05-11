@@ -1,7 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import StartStreamPage from './StartStreamPage'
-import {addStreamOnServ, setActualStream, deleteStreamOnServ} from '../../../../redux/reducers/stream_reducer'
+import {
+    addStreamOnServ,
+    setActualStream,
+    deleteStreamOnServ,
+    editStreamOnServ
+} from '../../../../redux/reducers/stream_reducer'
 import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
 import {
     selectActualStream,
@@ -98,7 +103,7 @@ async function cleanConnections() {
 function StartStreamPageContainer({
                                       headerHei, height, addStreamOnServ, getCategoriesToSearchFromServ,
                                       categories, setLoading, actualStream, streamStates, setActualStream,
-                                      deleteStreamOnServ, actualUser
+                                      deleteStreamOnServ, actualUser, editStreamOnServ
                                   }) {
 
     const initialStartStreamFormValues = {
@@ -179,11 +184,6 @@ function StartStreamPageContainer({
             if(!actualStream) {
                 setStreamState(streamStates.NON_INITIALIZED)
             }
-            // } else {
-            //
-            //     // closeStream(actualStream.id, 'some cause')
-            //     //     .catch(err => alert(err))
-            // }
 
         } catch (err) {
             console.error(err)
@@ -194,6 +194,7 @@ function StartStreamPageContainer({
         try {
             deleteStreamOnServ(actualStream.id)
                 .then(() => history.push('/'))
+                .then(() => setActualStream(null))
         } catch (err) {
             alert(err)
         }
@@ -220,6 +221,18 @@ function StartStreamPageContainer({
         return streamState === streamStates.PREPARED
             || streamState === streamStates.OPENED
             || streamState === streamStates.SUSPENDED_PREPARED
+    }
+
+    function onEditStream(initialValues) {
+        return editStreamOnServ(
+            actualStream.id,
+            initialValues.categories,
+            initialValues.description,
+            initialValues.linkImage,
+            initialValues.title
+        )
+            .then(() => setIsEditable(false))
+            .catch(err => alert(err))
     }
 
     function onSubmit(values) {
@@ -276,6 +289,7 @@ function StartStreamPageContainer({
         setIsEditable={setIsEditable}
         getPrettyStreamCategories={getPrettyStreamCategories}
         actualUser={actualUser}
+        onEditStream={onEditStream}
     />
 }
 
@@ -294,5 +308,6 @@ export default connect(mapStateToProps, {
     getCategoriesToSearchFromServ,
     setLoading: setLoadingAC,
     setActualStream,
-    deleteStreamOnServ
+    deleteStreamOnServ,
+    editStreamOnServ
 })(StartStreamPageContainer)

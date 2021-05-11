@@ -5,8 +5,8 @@ import {selectActualStream, selectCategoriesList} from '../../../../../../redux/
 
 
 function StreamEditFormContainer({
-                                     actualStream, onEdit, onBack,
-                                     categories
+                                     actualStream, onBack,
+                                     categories, onEdit
                                  }) {
     const initialValues = {
         title: actualStream.streamDesc.title,
@@ -20,8 +20,10 @@ function StreamEditFormContainer({
     const [editFormValues, setEditFormValues] = useState(initialValues)
     const [selectOptions, setSelectOptions] = useState(categories)
 
+
+
     return <StreamEditForm
-        onSubmit={onEdit}
+        onSubmit={() => onEdit(editFormValues)}
         setSelectOptions={setSelectOptions}
         selectOptions={selectOptions}
         formValues={editFormValues}
@@ -38,4 +40,6 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, {})(StreamEditFormContainer)
+export default connect(mapStateToProps, {
+
+})(StreamEditFormContainer)

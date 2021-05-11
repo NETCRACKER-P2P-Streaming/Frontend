@@ -8,7 +8,7 @@ export default function StartStreamPage({
                                             headerHei, height, setStartStreamFormValues, startStreamFormValues,
                                             onSubmit, Notification, areNotificationOpen, actualStream, streamStates,
                                             onStopSharing, onResumeStream, checkStreamState, onSuspendStream, onDeleteStream,
-                                            isEditable, setIsEditable, getPrettyStreamCategories, actualUser
+                                            isEditable, setIsEditable, getPrettyStreamCategories, actualUser, onEditStream
                                         }) {
 
 
@@ -69,6 +69,7 @@ export default function StartStreamPage({
                 setIsEditable={setIsEditable}
                 getPrettyStreamCategories={getPrettyStreamCategories}
                 actualUser={actualUser}
+                onEditStream={onEditStream}
             />
         </Box>
 

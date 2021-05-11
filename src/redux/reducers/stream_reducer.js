@@ -1,4 +1,4 @@
-import {addStream, deleteStream, getStreams} from '../../API/streams_api'
+import {addStream, deleteStream, editStream, getStreams} from '../../API/streams_api'
 import {getUser, logout} from '../../API/user_api'
 import {selectActualStream, selectStreamPageSize, selectStreamsList} from '../selectors/selectors'
 import {Cookies} from "react-cookie";
@@ -99,6 +99,26 @@ export function setActualStream(streamInfo) {
     }
 }
 
+export function editStreamOnServ(streamId, categoriesColl, description, linkImage, title) {
+    return async dispatch => {
+        try {
+            const streamData = {
+                categories: [...categoriesColl].filter(c => !!c),
+                description: description,
+                linkImage: linkImage,
+                title: title
+            }
+            const cookies = new Cookies()
+            const response = await editStream(streamId, streamData, cookies.get('accessToken'))
+            dispatch(setActualStream({
+                ...response,
+                streamDesc: streamData
+            }))
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
 export function getStreamsFromServ(
     withReplace,
     title,
@@ -165,11 +185,6 @@ export function deleteStreamOnServ(streamId) {
         try {
             const cookies = new Cookies()
             await deleteStream(streamId, cookies.get('accessToken'))
-
-            if(selectActualStream(getState()).id === streamId) {
-                debugger
-                dispatch(setActualStream(null))
-            }
             return Promise.resolve()
         } catch (err) {
             return Promise.reject(err)
