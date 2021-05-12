@@ -3,21 +3,26 @@ import { Box, Image, FileInput, Button } from 'grommet'
 import userPhoto from './avatar_img.png'
 import { Trash } from 'grommet-icons'
 
-export default function ProfileAvatar({ userAvatar, deletePhoto, uploadPhoto, setAvatarImage }) {
+export default function ProfileAvatar({ userAvatar, userData, deletePhoto, profile,
+                                        uploadPhoto, setAvatarImage, setUserData }) {
     const onUploadPhoto = (e) => {
         if (e.target.files.length) {
-            uploadPhoto(e.target.files[0])
+            uploadPhoto(e.target.files[0]).then(
+                () => {
+                    setUserData({...profile})
+                }
+            )
         }
     }
     const deleteThePhoto = (e) => {
-        deletePhoto().then(
+          deletePhoto().then(
             () => {
                 setAvatarImage('')
             }
         )
     }
     return (
-        <Box  width="medium">
+        <Box width="medium">
             {userAvatar ?
                 <Image
                     key={Date.now()}

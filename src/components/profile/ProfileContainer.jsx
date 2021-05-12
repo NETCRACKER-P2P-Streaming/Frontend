@@ -16,18 +16,14 @@ function ProfileContainer(props) {
     isOwner={props.match.params.username} 
     updateStatus={props.updateStatus}
     saveProfile={props.saveProfile}
-
   />
 }
 let mapStateToProps = (state) => ({
   profile: state.profilePage.profile,
-
 })
 let withUrlDataContainerComponent = withRouter(ProfileContainer)
 export default connect(mapStateToProps, { 
   getUserProfile, 
   saveProfile, 
   updateStatus,
-  
-  
 })(withUrlDataContainerComponent)

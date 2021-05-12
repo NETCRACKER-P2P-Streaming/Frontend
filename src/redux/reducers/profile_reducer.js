@@ -1,5 +1,8 @@
-import { changeStatus, profileAPI, resetPassword, putUserData, change, upload, deleteUserPhoto } from "../../API/profile_api"
+import { changeStatus, resetPassword, putUserData, upload, deleteUserPhoto } from "../../API/profile_api"
 import {Cookies} from 'react-cookie'
+import { getUser } from "../../API/user_api"
+import { setUserDataAC } from "./user_reducer"
+
 const SET_USER_PROFILE = 'SET_USER_PROFILE'
 const SAVE_PHOTO_SUCCESS = 'SAVE_PHOTO_SUCCESS'
 
@@ -31,8 +34,8 @@ export const setUserProfile = (profile) => {
 }
 
 export const getUserProfile = (username) => async (dispatch) => {
-  const response = await profileAPI.getProfile(username);
-  dispatch(setUserProfile(response.data));
+  const response = await getUser(username)
+  dispatch(setUserProfile(response))
 }
 
 
@@ -57,7 +60,6 @@ export const saveProfile = (userData) =>  {
       }
       const cookies = new Cookies()
       const userId = getState().profilePage.profile.username
-
       const result = await putUserData(user, cookies.get('accessToken'))
       if (result) {
         dispatch(getUserProfile(userId))
@@ -73,11 +75,10 @@ export const saveProfile = (userData) =>  {
 
 
 export const uploadPhoto = (file) =>  {
-  return async (dispatch,getState) => {
+  return async dispatch => {
     try {
       const cookies = new Cookies()
       const result = await upload(file, cookies.get('accessToken'))
-      console.log(result)
       const user = {
         "userAttributes": [
           {
@@ -87,10 +88,8 @@ export const uploadPhoto = (file) =>  {
         ]
       }
       const result2 = await putUserData(user, cookies.get('accessToken'))
-      const userId = getState().profilePage.profile.username
-
-      if (result) {
-        dispatch(getUserProfile(userId))
+      if (result2) {
+        dispatch(setUserDataAC(result2))
       }
     } catch (err) {
         return Promise.reject(err)
@@ -98,23 +97,21 @@ export const uploadPhoto = (file) =>  {
   }
 }
 export const deletePhoto = () =>  {
-  return async (dispatch,getState) => {
+  return async dispatch => {
     try {
       const cookies = new Cookies()
-      const result = await delete(cookies.get('accessToken'))
+      const result = await deleteUserPhoto(cookies.get('accessToken'))
       const user = {
         "userAttributes": [
           {
             "name": "custom:linkImage",
-            "value": ''
+            "value": ""
           }
         ]
       }
       const result2 = await putUserData(user, cookies.get('accessToken'))
-      const userId = getState().profilePage.profile.username
-
       if (result2) {
-        dispatch(getUserProfile(userId))
+        dispatch(setUserDataAC(result2))
       }
     } catch (err) {
         return Promise.reject(err)
