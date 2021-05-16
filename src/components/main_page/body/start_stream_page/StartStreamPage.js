@@ -33,7 +33,7 @@ export default function StartStreamPage({
         flex={"shrink"}
     >
         {
-            areNotificationOpen && <Notification/>
+            areNotificationOpen && <Notification />
         }
         <Box
             height={'100%'}

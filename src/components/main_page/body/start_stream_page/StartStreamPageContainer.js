@@ -297,7 +297,7 @@ function StartStreamPageContainer({
         setStartStreamFormValues={setStartStreamFormValues}
         startStreamFormValues={startStreamFormValues}
         onSubmit={onSubmit}
-        Notification={<Notification
+        Notification={() => <Notification
             content={'You must select screen for sharing'}
             setAreOpen={setNotificationOpen}
         />}
