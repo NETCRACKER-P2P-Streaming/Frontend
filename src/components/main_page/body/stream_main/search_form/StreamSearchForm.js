@@ -4,8 +4,7 @@ import FormCore from './FormCore'
 
 export default function StreamSearchForm({
                                              setValues, values, categoriesColl, size,
-                                             streamsSortingTypes, streamsSortingOrders,
-                                             componentHeight
+                                             streamsSortingTypes, streamsSortingOrders
                                          }) {
     return (
         <>
@@ -13,7 +12,6 @@ export default function StreamSearchForm({
                 direction={'row'}
                 margin={{left: 'xsmall', right: 'small'}}
                 basis={'medium'}
-                height={componentHeight}
                 overflow={'auto'}
             >
                 <Box

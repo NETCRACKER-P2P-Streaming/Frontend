@@ -11,7 +11,8 @@ export default function StreamInformation({
                                               fullCategories,
                                               onDeleteStream,
                                               setIsEditable,
-                                              onClose
+                                              onClose,
+                                              onStartSharing
                                           }) {
 
     return (
@@ -27,6 +28,11 @@ export default function StreamInformation({
             }}
             pad={{horizontal: 'medium'}}
         >
+            <Button
+                primary={true}
+                label={'Reselect screen'}
+                onClick={() => onStartSharing(true)}
+            />
             <Heading
                 textAlign={'center'}
                 margin={{vertical: 'medium'}}

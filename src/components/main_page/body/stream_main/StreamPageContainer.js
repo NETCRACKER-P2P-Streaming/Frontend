@@ -39,16 +39,16 @@ function StreamPageContainer({
         setLoading(true)
 
         // Получение стримов и категорий при монтировании компоненты
-        Promise.all([
-            getStreamsFromServ(
-                true,
-                undefined,
-                [],
-                streamsSortingTypes[0].value,
-                streamsSortingOrders[0].value
-            ),
+        // Promise.all([
+            // getStreamsFromServ(
+            //     true,
+            //     undefined,
+            //     [],
+            //     streamsSortingTypes[0].value,
+            //     streamsSortingOrders[0].value
+            // ),
             getCategoriesToSearchFromServ()
-        ])
+        // ])
             .catch(err => {
                 console.log(err)
                 alert(err.message)
@@ -92,7 +92,7 @@ function StreamPageContainer({
                         })
                         .finally(() => setLoading(false))
                 },
-                1000
+                500
             )
         )
     }

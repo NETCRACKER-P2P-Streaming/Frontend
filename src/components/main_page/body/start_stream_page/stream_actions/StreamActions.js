@@ -18,7 +18,8 @@ export default function StreamActions({
                                           actualUser,
                                           onEditStream,
                                           isStreamInitialized,
-                                          onClose
+                                          onClose,
+                                          onStartSharing
                                       }) {
     if (isEditable) {
         return <StreamEditFormContainer
@@ -30,7 +31,7 @@ export default function StreamActions({
         ? getPrettyStreamCategories(actualStream.streamDesc.categories)
         : []
 
-    if(actualStream) {
+    if (actualStream) {
         return <StreamInformation
             fullCategories={prettyCategories}
             avatarImage={actualUser.userAttributes['custom:linkImage']}
@@ -42,6 +43,7 @@ export default function StreamActions({
             btnActionLabel={'Suspend'}
             onDeleteStream={onDeleteStream}
             setIsEditable={setIsEditable}
+            onStartSharing={onStartSharing}
         />
     } else {
         return <StartStreamPageForm

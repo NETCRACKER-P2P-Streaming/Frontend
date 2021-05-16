@@ -130,12 +130,19 @@ function StartStreamPageContainer({
 
     useEffect(() => {
         setLoading(true)
+        window.addEventListener('onbeforeunload', onStopSharing)
+
         getCategoriesToSearchFromServ()
             .catch(err => {
                 alert(err.message)
                 console.log(err)
             })
             .finally(() => setLoading(false))
+
+        return () => {
+            window.removeEventListener('onbeforeunload', onStopSharing)
+            onStopSharing()
+        }
     }, [])
 
     useEffect(() => {
@@ -156,7 +163,7 @@ function StartStreamPageContainer({
         }, 3000)
     }
 
-    async function onStartSharing() {
+    async function onStartSharing(e) {
         try {
             const options = {
                 video: {
@@ -167,7 +174,9 @@ function StartStreamPageContainer({
             stream = await navigator.mediaDevices.getDisplayMedia(options)
             document.getElementById('share_video_container').srcObject = stream
             setIsStreamInitialized(true)
+
             stream.oninactive = () => onStopSharing()
+
         } catch (err) {
             console.error(err)
         }
@@ -175,36 +184,21 @@ function StartStreamPageContainer({
 
     function onStopSharing() {
         try {
-            const _videoElem = document.getElementById('share_video_container')
-            let tracks = _videoElem.srcObject.getTracks()
-            tracks.forEach(track => track.stop())
-            _videoElem.srcObject = null
-            setIsStreamInitialized(false)
+            if(stream) {
+                let tracks = stream.getTracks()
+                tracks.forEach(track => track.stop())
+                stream = null
+                setIsStreamInitialized(false)
+            }
         } catch (err) {
             console.error(err)
         }
     }
 
-    // async function onReselectTracks() {
-    //     try {
-    //         const options = {
-    //             video: {
-    //                 cursor: true,
-    //             },
-    //             audio: true
-    //         }
-    //         stream = await navigator.mediaDevices.getDisplayMedia(options)
-    //         document.getElementById('share_video_container').srcObject = stream
-    //         setIsStreamInitialized(true)
-    //         stream.oninactive = () => onStopSharing()
-    //     } catch (err) {
-    //         console.error(err)
-    //     }
-    // }
-
     function onDeleteStream() {
         try {
             deleteStreamOnServ(actualStream.id)
+                .then(() => onStopSharing())
                 .then(() => history.push('/'))
                 .then(() => setActualStream(null))
         } catch (err) {
@@ -215,6 +209,7 @@ function StartStreamPageContainer({
     function onCloseStream() {
         try {
             closeStreamOnServ(actualStream.id)
+                .then(() => onStopSharing())
                 .then(() => history.push('/'))
                 .then(() => setActualStream(null))
         } catch (err) {

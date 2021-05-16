@@ -33,7 +33,7 @@ export default function StreamsList({streamsList, height, onMore, hasMore, size,
                 >
                     {
                         streamsList.map((s) => <StreamListItemContainer
-                            key={s.userId}
+                            key={s.id}
                             streamId={s.id}
                             userId={s.userId}
                             streamTitle={s.streamDesc.title}

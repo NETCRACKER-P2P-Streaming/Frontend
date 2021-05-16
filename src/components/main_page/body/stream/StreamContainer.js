@@ -6,7 +6,7 @@ import useWindowDimensions from '../../../utils/useWindowDimention'
 import {selectStreamsList, selectUserData, selectViewerStreamStates} from '../../../../redux/selectors/selectors'
 import ReactPlayer from 'react-player'
 
-const tracks = []
+let tracks = null
 const connectionConfig = {
     iceServers: [
         {
@@ -22,7 +22,7 @@ const connectionConfig = {
 
 const MyPlayer = () => {
     return <ReactPlayer
-        url={tracks[0]}
+        url={tracks}
         controls={true}
         height={'100%'}
         width={'100%'}
@@ -32,9 +32,9 @@ const MyPlayer = () => {
     </ReactPlayer>
 }
 
-function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
+function StreamContainer({streamsList, streamStates, ...props}) {
 
-    const [streamActualState, setStreamActualState] = useState(streamStates.NON_INITIALIZED)
+    const [isStreamInitialized, setStreamInitialized] = useState(streamStates.NON_INITIALIZED)
 
     async function connectToStream(streamId) {
         const ws = new WebSocket('ws://localhost:8081/signaling')
@@ -42,9 +42,10 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
 
         const onConnect = frame => {
             const watcherPeerConnection = new RTCPeerConnection(connectionConfig)
+
             watcherPeerConnection.ontrack = e => {
-                tracks[0] = e.streams[0]
-                setStreamActualState(streamStates.OPENED)
+                tracks = e.streams[0]
+                setStreamInitialized(streamStates.OPENED)
             }
 
             client.subscribe('/user/queue/api/error', message => console.log(message.body))
@@ -87,7 +88,7 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
             })
 
             client.subscribe(`/topic/streamer/${streamId}/close`, message => {
-                setStreamActualState(streamStates.SUSPENDED)
+                setStreamInitialized(streamStates.CLOSED)
                 watcherPeerConnection.close()
             })
 
@@ -138,7 +139,7 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
     )
 
     useEffect(() => {
-        connectToStream(actualStreamId, watcherId)
+        connectToStream(actualStreamId)
             .catch(e => console.log(e.message))
     }, [])
 
@@ -146,7 +147,7 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
 
     let mustBeClosed = true
     const openStreamCommonInfo = () => {
-        if(streamActualState === streamStates.OPENED) {
+        if(isStreamInitialized === streamStates.OPENED) {
             mustBeClosed = false
             setStreamCommonInfoOpened(true)
         }
@@ -169,7 +170,7 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
         openStreamCommonInfo={openStreamCommonInfo}
         closeStreamCommonInfo={closeStreamCommonInfo}
         MyPlayer={MyPlayer}
-        isStreamInit={streamActualState}
+        isStreamInit={isStreamInitialized}
         streamStates={streamStates}
     />
 }
@@ -177,7 +178,6 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
 function mapStateToProps(state) {
     return {
         streamsList: selectStreamsList(state),
-        watcherId: selectUserData(state).username,
         streamStates: selectViewerStreamStates(state)
     }
 }

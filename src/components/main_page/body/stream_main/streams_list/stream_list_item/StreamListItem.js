@@ -97,7 +97,7 @@ export default function StreamListItem({
                         weight={'bold'}
                         size={'large'}
                         margin={{bottom: 'xsmall'}}
-                    >{streamTitle}</Text>
+                    >{streamTitle.length > 10 ? `${streamTitle.slice(0, 10)}...` : streamTitle}</Text>
                     <Text
                         color={'dark-4'}
                         size={'medium'}
@@ -111,7 +111,7 @@ export default function StreamListItem({
             >
                 {
                     fullCategories.map((c, index) => {
-                        if (index < 5) {
+                        if (index < 3) {
                             return <Box
                                 key={c.name}
                                 background={'light-6'}
@@ -135,7 +135,7 @@ export default function StreamListItem({
 
 
                 {
-                    fullCategories.length > 5 &&
+                    fullCategories.length > 3 &&
                     <Box
                         round={'small'}
                         pad={'small'}
@@ -145,7 +145,7 @@ export default function StreamListItem({
                             color={'dark-1'}
                             alignText={'center'}
                             size={'small'}
-                        >...{fullCategories.length - 5} more</Text>
+                        >...{fullCategories.length - 3} more</Text>
                     </Box>
                 }
 

@@ -78,6 +78,7 @@ export default function StartStreamPage({
                 onEditStream={onEditStream}
                 isStreamInitialized={isStreamInitialized}
                 onClose={onClose}
+                onStartSharing={onStartSharing}
             />
         </Box>
 

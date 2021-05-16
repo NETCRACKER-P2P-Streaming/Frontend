@@ -36,6 +36,5 @@ export default function StreamSearchFormContainer({
             size={size}
             streamsSortingTypes={streamsSortingTypes}
             streamsSortingOrders={streamsSortingOrders}
-            componentHeight={componentHeight}
         />
 }

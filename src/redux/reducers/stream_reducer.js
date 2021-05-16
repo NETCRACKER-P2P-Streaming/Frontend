@@ -34,7 +34,12 @@ const defaultState = {
             title: 'Descending',
             value: false
         }
-    ]
+    ],
+    viewerStreamStates: {
+        NON_INITIALIZED: 'NON_INITIALIZED',
+        OPENED: 'OPENED',
+        CLOSED: 'CLOSED'
+    }
 }
 
 export default function streamReducer(state = defaultState, action) {
@@ -107,6 +112,7 @@ export function editStreamOnServ(streamId, categoriesColl, description, linkImag
         }
     }
 }
+
 export function getStreamsFromServ(
     withReplace,
     title,
@@ -131,21 +137,21 @@ export function getStreamsFromServ(
             })
             let usersPromises = []
             for (let i = 0; i < response.length; i++) {
+
                 usersPromises[i] = getUser(response[i].userId)
                     .then(u => {
-                        const userData = u.userAttributes.reduce((acc, item) => {
+                        response[i].user = u.userAttributes.reduce((acc, item) => {
                             acc[item.name] = item.value
                             return acc
                         }, {})
-                        response[i].user = userData
                     })
                     .catch(err => {
                         console.log(err)
                         response[i].user = null
                     })
             }
-            await Promise.all(usersPromises)
             dispatch(appendStreams(response))
+            return Promise.all(usersPromises)
         } catch (err) {
             return Promise.reject(err)
         }
