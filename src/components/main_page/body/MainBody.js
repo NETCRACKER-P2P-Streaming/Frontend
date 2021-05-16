@@ -36,6 +36,14 @@ export default function MainBody() {
                 />}
             />
             <Route
+                path={'/start-stream/:id'}
+                exact={true}
+                render={() => <StartStreamPageContainer
+                    height={height}
+                    headerHei={headerHei}
+                />}
+            />
+            <Route
                 path={'/stream/:streamId?'}
                 exact={true}
                 render={params => <StreamContainer

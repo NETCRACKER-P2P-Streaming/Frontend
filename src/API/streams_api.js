@@ -72,3 +72,18 @@ export function closeStream(streamId, accessToken) {
             }
         })
 }
+//
+
+export function getSingleStream(streamId/*, accessToken*/) {
+    return streamsAndCategoriesRequest.get(`/api/v1/streams/${streamId}`/*, {
+        headers: {'Authorization' : `Bearer ${accessToken}`},
+    }*/)
+        .then(response => response.data)
+        .catch(err => {
+            if(err.response) {
+                throw new Error(err.response.data.message)
+            } else {
+                throw err
+            }
+        })
+}

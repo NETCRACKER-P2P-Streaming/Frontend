@@ -5,6 +5,7 @@ import * as Stomp from 'stomp-websocket'
 import useWindowDimensions from '../../../utils/useWindowDimention'
 import {selectStreamsList, selectUserData, selectViewerStreamStates} from '../../../../redux/selectors/selectors'
 import ReactPlayer from 'react-player'
+import {Redirect} from 'react-router-dom'
 
 let tracks = null
 const connectionConfig = {
@@ -32,7 +33,7 @@ const MyPlayer = () => {
     </ReactPlayer>
 }
 
-function StreamContainer({streamsList, streamStates, ...props}) {
+function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
 
     const [isStreamInitialized, setStreamInitialized] = useState(streamStates.NON_INITIALIZED)
 
@@ -157,6 +158,11 @@ function StreamContainer({streamsList, streamStates, ...props}) {
         setTimeout(() => mustBeClosed ? setStreamCommonInfoOpened(false) : null, 500)
     }
 
+    if(watcherId && watcherId === actualStream.userId) {
+        return <Redirect
+            to={`/start-stream/${actualStream.id}`}
+        />
+    }
     return <Stream
         streamTitle={actualStream.streamDesc.title}
         fullCategories={actualStream.streamDesc.fullCategories}
@@ -178,6 +184,7 @@ function StreamContainer({streamsList, streamStates, ...props}) {
 function mapStateToProps(state) {
     return {
         streamsList: selectStreamsList(state),
+        watcherId: selectUserData(state)?.username,
         streamStates: selectViewerStreamStates(state)
     }
 }

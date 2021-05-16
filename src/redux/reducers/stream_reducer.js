@@ -1,4 +1,4 @@
-import {addStream, closeStream, deleteStream, editStream, getStreams} from '../../API/streams_api'
+import {addStream, closeStream, deleteStream, editStream, getSingleStream, getStreams} from '../../API/streams_api'
 import {getUser, logout} from '../../API/user_api'
 import {selectActualStream, selectStreamPageSize, selectStreamsList} from '../selectors/selectors'
 import {Cookies} from 'react-cookie'
@@ -112,6 +112,24 @@ export function editStreamOnServ(streamId, categoriesColl, description, linkImag
         }
     }
 }
+
+export function getSingleStreamFromServ(streamId) {
+    return async dispatch => {
+        try {
+            const response = await getSingleStream(streamId)
+            debugger
+            const streamer = await getUser(response.userId)
+            response.user = streamer.userAttributes.reduce((acc, item) => {
+                acc[item.name] = item.value
+                return acc
+            }, {})
+            return response
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
+
 
 export function getStreamsFromServ(
     withReplace,

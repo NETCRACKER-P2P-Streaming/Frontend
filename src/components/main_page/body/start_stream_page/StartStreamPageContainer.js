@@ -6,7 +6,8 @@ import {
     setActualStream,
     deleteStreamOnServ,
     editStreamOnServ,
-    closeStreamOnServ
+    closeStreamOnServ,
+    getSingleStreamFromServ
 } from '../../../../redux/reducers/stream_reducer'
 import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
 import {
@@ -17,11 +18,12 @@ import {
 import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
 import Notification from '../../../util_components/Notification'
 import * as Stomp from 'stomp-websocket'
-import {useHistory} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 
 export let stream = null
 const connections = new Map()
 let viewersCounterForCleaning = 0
+
 const peerConnectionConfig = {
     iceServers: [
         {
@@ -45,7 +47,9 @@ export async function openStreamerConnection(streamId) {
             const messageParsed = JSON.parse(message.body)
             const streamerPeerConnection = new RTCPeerConnection(peerConnectionConfig)
             connections[messageParsed.id] = streamerPeerConnection
-            stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
+            if(stream) {
+                stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
+            }
 
             cleanConnections()
             streamerPeerConnection.createOffer()
@@ -111,7 +115,8 @@ function StartStreamPageContainer({
                                       deleteStreamOnServ,
                                       actualUser,
                                       editStreamOnServ,
-                                      closeStreamOnServ
+                                      closeStreamOnServ,
+                                      getSingleStreamFromServ
                                   }) {
 
     const initialStartStreamFormValues = {
@@ -121,18 +126,45 @@ function StartStreamPageContainer({
         categories: []
     }
 
+
     const [isEditable, setIsEditable] = useState(false)
     const [isStreamInitialized, setIsStreamInitialized] = useState(false)
     const [areNotificationOpen, setNotificationOpen] = useState(false)
     const [selectOptions, setSelectOptions] = useState(categories)
     const [startStreamFormValues, setStartStreamFormValues] = useState(initialStartStreamFormValues)
     const history = useHistory()
+    const {id} = useParams()
 
     useEffect(() => {
         setLoading(true)
         window.addEventListener('onbeforeunload', onStopSharing)
+        const promises = []
+        if(id) {
+            const initStreamPromise = getSingleStreamFromServ(id)
+                .then(response => {
+                    debugger
+                    setActualStream(response)
+                    setStartStreamFormValues({
+                        title: response.streamDesc.title,
+                        description: response.streamDesc.description,
+                        linkImage: response.streamDesc.linkImage,
+                        categories: response.streamDesc.categories
+                    })
+                    return response.id
+                })
+                .then(id => openStreamerConnection(id))
+                .catch(err => {
+                    alert(err.message)
+                    console.log(err)
+                })
+
+            promises.push(initStreamPromise)
+        }
 
         getCategoriesToSearchFromServ()
+        promises.push(getSingleStreamFromServ)
+
+        Promise.all(promises)
             .catch(err => {
                 alert(err.message)
                 console.log(err)
@@ -299,5 +331,6 @@ export default connect(mapStateToProps, {
     setActualStream,
     deleteStreamOnServ,
     editStreamOnServ,
-    closeStreamOnServ
+    closeStreamOnServ,
+    getSingleStreamFromServ
 })(StartStreamPageContainer)
