@@ -3,12 +3,26 @@ import {Box, Button} from 'grommet'
 import StreamActions from './stream_actions/StreamActions'
 
 export default function StartStreamPage({
-                                            onStartSharing, streamState, selectOptions,
-                                            initialStartStreamFormValues, setSelectOptions,
-                                            headerHei, height, setStartStreamFormValues, startStreamFormValues,
-                                            onSubmit, Notification, areNotificationOpen, actualStream, streamStates,
-                                            onStopSharing, onResumeStream, checkStreamState, onSuspendStream, onDeleteStream,
-                                            isEditable, setIsEditable, getPrettyStreamCategories, actualUser, onEditStream
+                                            onStartSharing,
+                                            selectOptions,
+                                            initialStartStreamFormValues,
+                                            setSelectOptions,
+                                            headerHei,
+                                            height,
+                                            setStartStreamFormValues,
+                                            startStreamFormValues,
+                                            onSubmit,
+                                            Notification,
+                                            areNotificationOpen,
+                                            actualStream,
+                                            onDeleteStream,
+                                            isEditable,
+                                            setIsEditable,
+                                            getPrettyStreamCategories,
+                                            actualUser,
+                                            onEditStream,
+                                            isStreamInitialized,
+                                            onClose
                                         }) {
 
 
@@ -25,22 +39,20 @@ export default function StartStreamPage({
             height={'100%'}
             width={'xlarge'}
             pad={'medium'}
-            direction={checkStreamState() ? 'column' : 'row'}
+            direction={'column'}
             align={'center'}
         >
             <video
-                style={{width: '90%', display: checkStreamState() ? 'block' : 'none'}}
+                style={{width: '90%', display: isStreamInitialized ? 'block' : 'none'}}
                 id={'share_video_container'}
                 autoPlay={true}
             />
             {
-                checkStreamState()
-                ||
-                <Button
+                isStreamInitialized || <Button
                     secondary={true}
                     size={'large'}
                     label={'Select screen'}
-                    margin={{horizontal: 'auto'}}
+                    margin={{horizontal: 'auto', vertical: 'auto'}}
                     onClick={onStartSharing}
                 />
             }
@@ -51,25 +63,21 @@ export default function StartStreamPage({
             overflow={'scroll'}
         >
             <StreamActions
-                initialStartStreamFormValues={initialStartStreamFormValues}
-                startStreamFormValues={startStreamFormValues}
-                setStartStreamFormValues={setStartStreamFormValues}
-                onAddStreamSubmit={onSubmit}
                 selectOptions={selectOptions}
                 setSelectOptions={setSelectOptions}
-                streamState={streamState}
+                startStreamFormValues={startStreamFormValues}
+                initialStartStreamFormValues={initialStartStreamFormValues}
+                setStartStreamFormValues={setStartStreamFormValues}
+                onAddStreamSubmit={onSubmit}
                 actualStream={actualStream}
-                streamStates={streamStates}
-                onStopSharing={onStopSharing}
-                onStartSharing={onStartSharing}
-                onResumeStream={onResumeStream}
-                onSuspendStream={onSuspendStream}
                 onDeleteStream={onDeleteStream}
-                isEditable={isEditable}
                 setIsEditable={setIsEditable}
+                isEditable={isEditable}
                 getPrettyStreamCategories={getPrettyStreamCategories}
                 actualUser={actualUser}
                 onEditStream={onEditStream}
+                isStreamInitialized={isStreamInitialized}
+                onClose={onClose}
             />
         </Box>
 

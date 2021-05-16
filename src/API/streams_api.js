@@ -57,10 +57,11 @@ export function deleteStream(streamId, accessToken) {
         })
 }
 
-export function closeStream(cause, streamId) {
-    return signalingRequest.post('/api/v1/stream', {
-        cause,
-        streamId
+export function closeStream(streamId, accessToken) {
+    return streamsAndCategoriesRequest.put('/api/v1/stream/close', {
+        id: streamId,
+    }, {
+        headers: {'Authorization' : `Bearer ${accessToken}`},
     })
         .then(response => response.data)
         .catch(err => {

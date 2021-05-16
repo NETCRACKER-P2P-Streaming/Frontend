@@ -5,7 +5,8 @@ import {
     addStreamOnServ,
     setActualStream,
     deleteStreamOnServ,
-    editStreamOnServ
+    editStreamOnServ,
+    closeStreamOnServ
 } from '../../../../redux/reducers/stream_reducer'
 import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
 import {
@@ -15,7 +16,6 @@ import {
 } from '../../../../redux/selectors/selectors'
 import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
 import Notification from '../../../util_components/Notification'
-import {closeStream} from '../../../../API/streams_api'
 import * as Stomp from 'stomp-websocket'
 import {useHistory} from 'react-router-dom'
 
@@ -48,7 +48,6 @@ export async function openStreamerConnection(streamId) {
             stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
 
             cleanConnections()
-            // 3
             streamerPeerConnection.createOffer()
                 .then(offer => streamerPeerConnection.setLocalDescription(offer))
                 .then(() => client.send(
@@ -101,9 +100,18 @@ async function cleanConnections() {
 }
 
 function StartStreamPageContainer({
-                                      headerHei, height, addStreamOnServ, getCategoriesToSearchFromServ,
-                                      categories, setLoading, actualStream, streamStates, setActualStream,
-                                      deleteStreamOnServ, actualUser, editStreamOnServ
+                                      headerHei,
+                                      height,
+                                      addStreamOnServ,
+                                      getCategoriesToSearchFromServ,
+                                      categories,
+                                      setLoading,
+                                      actualStream,
+                                      setActualStream,
+                                      deleteStreamOnServ,
+                                      actualUser,
+                                      editStreamOnServ,
+                                      closeStreamOnServ
                                   }) {
 
     const initialStartStreamFormValues = {
@@ -113,14 +121,12 @@ function StartStreamPageContainer({
         categories: []
     }
 
-    const [streamState, setStreamState] = useState(streamStates.NON_INITIALIZED)
     const [isEditable, setIsEditable] = useState(false)
+    const [isStreamInitialized, setIsStreamInitialized] = useState(false)
     const [areNotificationOpen, setNotificationOpen] = useState(false)
     const [selectOptions, setSelectOptions] = useState(categories)
     const [startStreamFormValues, setStartStreamFormValues] = useState(initialStartStreamFormValues)
     const history = useHistory()
-
-    useEffect(() => {console.log(streamState)}, [streamState])
 
     useEffect(() => {
         setLoading(true)
@@ -160,15 +166,8 @@ function StartStreamPageContainer({
             }
             stream = await navigator.mediaDevices.getDisplayMedia(options)
             document.getElementById('share_video_container').srcObject = stream
-            if(streamState === streamStates.NON_INITIALIZED) {
-                setStreamState(streamStates.PREPARED)
-            }
-            if(streamState === streamStates.SUSPENDED) {
-                setStreamState(streamStates.SUSPENDED_PREPARED)
-            }
-
+            setIsStreamInitialized(true)
             stream.oninactive = () => onStopSharing()
-
         } catch (err) {
             console.error(err)
         }
@@ -180,15 +179,28 @@ function StartStreamPageContainer({
             let tracks = _videoElem.srcObject.getTracks()
             tracks.forEach(track => track.stop())
             _videoElem.srcObject = null
-
-            if(!actualStream) {
-                setStreamState(streamStates.NON_INITIALIZED)
-            }
-
+            setIsStreamInitialized(false)
         } catch (err) {
             console.error(err)
         }
     }
+
+    // async function onReselectTracks() {
+    //     try {
+    //         const options = {
+    //             video: {
+    //                 cursor: true,
+    //             },
+    //             audio: true
+    //         }
+    //         stream = await navigator.mediaDevices.getDisplayMedia(options)
+    //         document.getElementById('share_video_container').srcObject = stream
+    //         setIsStreamInitialized(true)
+    //         stream.oninactive = () => onStopSharing()
+    //     } catch (err) {
+    //         console.error(err)
+    //     }
+    // }
 
     function onDeleteStream() {
         try {
@@ -200,27 +212,14 @@ function StartStreamPageContainer({
         }
     }
 
-    function onSuspendStream() {
-        onStopSharing()
-        closeStream(actualStream.id, 'some cause')
-            .then(() => setStreamState(streamStates.SUSPENDED))
-            .catch(err => alert(err))
-    }
-
-    function onResumeStream() {
-        if(streamState === streamStates.SUSPENDED) {
-            showNotification()
-            return
+    function onCloseStream() {
+        try {
+            closeStreamOnServ(actualStream.id)
+                .then(() => history.push('/'))
+                .then(() => setActualStream(null))
+        } catch (err) {
+            alert(err)
         }
-        openStreamerConnection(actualStream.id)
-            .catch(err => alert(err))
-        setStreamState(streamStates.OPENED)
-    }
-
-    function checkStreamState() {
-        return streamState === streamStates.PREPARED
-            || streamState === streamStates.OPENED
-            || streamState === streamStates.SUSPENDED_PREPARED
     }
 
     function onEditStream(initialValues) {
@@ -236,7 +235,7 @@ function StartStreamPageContainer({
     }
 
     function onSubmit(values) {
-        if (streamState) {
+        if (stream) {
             addStreamOnServ({
                 ...values,
                 categories: values.categories.filter(c => !!c)
@@ -252,7 +251,6 @@ function StartStreamPageContainer({
                     return response.id
                 })
                 .then(id => openStreamerConnection(id))
-                .then(() => setStreamState(streamStates.OPENED))
                 .catch(err => {
                     alert(err.message)
                     console.log(err)
@@ -264,32 +262,28 @@ function StartStreamPageContainer({
 
     return <StartStreamPage
         onStartSharing={onStartSharing}
-        onStopSharing={onStopSharing}
-        streamState={streamState}
         selectOptions={selectOptions}
-        setSelectOptions={setSelectOptions}
         initialStartStreamFormValues={initialStartStreamFormValues}
-        startStreamFormValues={startStreamFormValues}
-        setStartStreamFormValues={setStartStreamFormValues}
-        height={height}
+        setSelectOptions={setSelectOptions}
         headerHei={headerHei}
+        height={height}
+        setStartStreamFormValues={setStartStreamFormValues}
+        startStreamFormValues={startStreamFormValues}
         onSubmit={onSubmit}
-        areNotificationOpen={areNotificationOpen}
-        streamStates={streamStates}
-        Notification={() => <Notification
+        Notification={<Notification
             content={'You must select screen for sharing'}
             setAreOpen={setNotificationOpen}
         />}
+        areNotificationOpen={areNotificationOpen}
         actualStream={actualStream}
-        onResumeStream={onResumeStream}
-        checkStreamState={checkStreamState}
-        onSuspendStream={onSuspendStream}
         onDeleteStream={onDeleteStream}
         isEditable={isEditable}
         setIsEditable={setIsEditable}
         getPrettyStreamCategories={getPrettyStreamCategories}
         actualUser={actualUser}
         onEditStream={onEditStream}
+        isStreamInitialized={isStreamInitialized}
+        onClose={onCloseStream}
     />
 }
 
@@ -309,5 +303,6 @@ export default connect(mapStateToProps, {
     setLoading: setLoadingAC,
     setActualStream,
     deleteStreamOnServ,
-    editStreamOnServ
+    editStreamOnServ,
+    closeStreamOnServ
 })(StartStreamPageContainer)

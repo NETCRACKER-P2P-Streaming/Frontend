@@ -1,7 +1,7 @@
-import {addStream, deleteStream, editStream, getStreams} from '../../API/streams_api'
+import {addStream, closeStream, deleteStream, editStream, getStreams} from '../../API/streams_api'
 import {getUser, logout} from '../../API/user_api'
 import {selectActualStream, selectStreamPageSize, selectStreamsList} from '../selectors/selectors'
-import {Cookies} from "react-cookie";
+import {Cookies} from 'react-cookie'
 
 const ADD_STREAMS = 'ADD_STREAMS'
 const SET_STREAMS = 'SET_STREAMS'
@@ -34,19 +34,7 @@ const defaultState = {
             title: 'Descending',
             value: false
         }
-    ],
-    streamerStreamStates: {
-        NON_INITIALIZED: 'NON_INITIALIZED',
-        PREPARED: 'PREPARED',
-        OPENED: 'OPENED',
-        SUSPENDED: 'SUSPENDED',
-        SUSPENDED_PREPARED: 'SUSPENDED_PREPARED'
-    },
-    viewerStreamStates: {
-        NON_INITIALIZED: 'NON_INITIALIZED',
-        OPENED: 'OPENED',
-        CLOSED: 'CLOSED'
-    }
+    ]
 }
 
 export default function streamReducer(state = defaultState, action) {
@@ -185,6 +173,18 @@ export function deleteStreamOnServ(streamId) {
         try {
             const cookies = new Cookies()
             await deleteStream(streamId, cookies.get('accessToken'))
+            return Promise.resolve()
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
+
+export function closeStreamOnServ(streamId) {
+    return async dispatch => {
+        try {
+            const cookies = new Cookies()
+            const response = await closeStream(streamId, cookies.get('accessToken'))
             return Promise.resolve()
         } catch (err) {
             return Promise.reject(err)

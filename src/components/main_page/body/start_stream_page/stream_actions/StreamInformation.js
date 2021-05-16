@@ -9,10 +9,9 @@ export default function StreamInformation({
                                               userId,
                                               streamDesc,
                                               fullCategories,
-                                              shareAction,
-                                              btnActionLabel,
                                               onDeleteStream,
-                                              setIsEditable
+                                              setIsEditable,
+                                              onClose
                                           }) {
 
     return (
@@ -136,8 +135,8 @@ export default function StreamInformation({
                 margin={'medium'}
             >
                 <Button
-                    label={btnActionLabel}
-                    onClick={shareAction}
+                    label={'Close stream'}
+                    onClick={onClose}
                     primary={true}
                     margin={'small'}
                 />

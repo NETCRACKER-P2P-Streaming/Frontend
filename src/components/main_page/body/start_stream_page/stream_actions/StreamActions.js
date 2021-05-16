@@ -10,19 +10,15 @@ export default function StreamActions({
                                           initialStartStreamFormValues,
                                           setStartStreamFormValues,
                                           onAddStreamSubmit,
-                                          streamState,
                                           actualStream,
-                                          streamStates,
-                                          onStopSharing,
-                                          onStartSharing,
-                                          onResumeStream,
-                                          onSuspendStream,
                                           onDeleteStream,
                                           setIsEditable,
                                           isEditable,
                                           getPrettyStreamCategories,
                                           actualUser,
-                                          onEditStream
+                                          onEditStream,
+                                          isStreamInitialized,
+                                          onClose
                                       }) {
     if (isEditable) {
         return <StreamEditFormContainer
@@ -34,69 +30,27 @@ export default function StreamActions({
         ? getPrettyStreamCategories(actualStream.streamDesc.categories)
         : []
 
-    switch (streamState) {
-        case (streamStates.OPENED): {
-            return <StreamInformation
-                fullCategories={prettyCategories}
-                avatarImage={actualUser.userAttributes['custom:linkImage']}
-                countViewers={actualStream.information.countViewers}
-                streamDesc={actualStream.streamDesc.description}
-                userId={actualStream.userId}
-                streamTitle={actualStream?.streamDesc.title}
-                shareAction={onSuspendStream}
-                btnActionLabel={'Suspend'}
-                onDeleteStream={onDeleteStream}
-                setIsEditable={setIsEditable}
-            />
-        }
-        case (streamStates.SUSPENDED): {
-            return <StreamInformation
-                fullCategories={prettyCategories}
-                avatarImage={actualUser.userAttributes['custom:linkImage']}
-                countViewers={actualStream.information.countViewers}
-                streamDesc={actualStream.streamDesc.description}
-                userId={actualStream.userId}
-                streamTitle={actualStream.streamDesc.title}
-                shareAction={onResumeStream}
-                btnActionLabel={'Resume'}
-                onDeleteStream={onDeleteStream}
-                setIsEditable={setIsEditable}
-            />
-        }
-        case(streamStates.SUSPENDED_PREPARED): {
-            return <StreamInformation
-                fullCategories={prettyCategories}
-                avatarImage={actualUser.userAttributes['custom:linkImage']}
-                countViewers={actualStream.information.countViewers}
-                streamDesc={actualStream.streamDesc.description}
-                userId={actualStream.userId}
-                streamTitle={actualStream.streamDesc.title}
-                shareAction={onResumeStream}
-                btnActionLabel={'Resume'}
-                setIsEditable={setIsEditable}
-            />
-        }
-        case (streamStates.NON_INITIALIZED): {
-            return <StartStreamPageForm
-                selectOptions={selectOptions}
-                setSelectOptions={setSelectOptions}
-                formValues={startStreamFormValues}
-                initialFormValues={initialStartStreamFormValues}
-                setFormValues={setStartStreamFormValues}
-                onSubmit={onAddStreamSubmit}
-            />
-        }
-        case (streamStates.PREPARED): {
-            return <StartStreamPageForm
-                selectOptions={selectOptions}
-                setSelectOptions={setSelectOptions}
-                formValues={startStreamFormValues}
-                initialFormValues={initialStartStreamFormValues}
-                setFormValues={setStartStreamFormValues}
-                onSubmit={onAddStreamSubmit}
-            />
-        }
-        default:
-            return null
+    if(actualStream) {
+        return <StreamInformation
+            fullCategories={prettyCategories}
+            avatarImage={actualUser.userAttributes['custom:linkImage']}
+            countViewers={actualStream.information.countViewers}
+            streamDesc={actualStream.streamDesc.description}
+            userId={actualStream.userId}
+            streamTitle={actualStream?.streamDesc.title}
+            onClose={onClose}
+            btnActionLabel={'Suspend'}
+            onDeleteStream={onDeleteStream}
+            setIsEditable={setIsEditable}
+        />
+    } else {
+        return <StartStreamPageForm
+            selectOptions={selectOptions}
+            setSelectOptions={setSelectOptions}
+            formValues={startStreamFormValues}
+            initialFormValues={initialStartStreamFormValues}
+            setFormValues={setStartStreamFormValues}
+            onSubmit={onAddStreamSubmit}
+        />
     }
 }
