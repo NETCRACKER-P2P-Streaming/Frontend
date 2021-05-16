@@ -19,7 +19,6 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
                 label={
                     userAvatar
                         ? <Avatar
-                            key={Date.now()}
                             src={`${userAvatar}?${global.Date.now()}`}
                             size={'medium'}
                         />

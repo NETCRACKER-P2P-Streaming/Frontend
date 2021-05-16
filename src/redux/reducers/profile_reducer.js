@@ -105,7 +105,7 @@ export const deletePhoto = () =>  {
         "userAttributes": [
           {
             "name": "custom:linkImage",
-            "value": ""
+            "value": "../../profile/profile_info/avatar_img.png"
           }
         ]
       }
