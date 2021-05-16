@@ -129,11 +129,11 @@ export default function StreamInfo({
             </Box>
 
         </Box>
-        <Button
-            label={<Close color={'light-1'}/>}
-            margin={'medium'}
-            plain={true}
-            onClick={() => setStreamInfoOpened(!isStreamInfoOpened)}
-        />
+        {/*<Button*/}
+        {/*    label={<Close color={'light-1'}/>}*/}
+        {/*    margin={'medium'}*/}
+        {/*    plain={true}*/}
+        {/*    onClick={() => setStreamInfoOpened(!isStreamInfoOpened)}*/}
+        {/*/>*/}
     </Stack>
 }

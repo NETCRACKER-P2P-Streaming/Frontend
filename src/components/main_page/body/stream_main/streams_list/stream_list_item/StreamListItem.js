@@ -137,9 +137,12 @@ export default function StreamListItem({
                 {
                     fullCategories.length > 3 &&
                     <Box
+                        background={'light-2'}
                         round={'small'}
-                        pad={'small'}
+                        pad={'xsmall'}
+                        margin={'xsmall'}
                         align={'center'}
+                        width={'156px'}
                     >
                         <Text
                             color={'dark-1'}

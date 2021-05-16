@@ -9,7 +9,7 @@ const SET_ACTUAL_STREAM = 'SET_ACTUAL_STREAM'
 
 const defaultState = {
     streamsList: [],
-    pageSize: 10,
+    pageSize: 6,
     actualStream: null,
     types: [
         {

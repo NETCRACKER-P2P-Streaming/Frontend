@@ -33,7 +33,7 @@ function StreamPageContainer({
     // Флаг, показывающий наличие элементов на сервере
     // для бесконечного скролла. Изначально false до первого
     // получения элементов
-    const [hasMore, setHasMore] = useState(false)
+    const [hasMore, setHasMore] = useState(true)
 
     useEffect(() => {
         setLoading(true)
