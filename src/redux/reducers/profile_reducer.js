@@ -1,5 +1,6 @@
-import { changeStatus, profileAPI, resetPassword, putUserData, change, upload, deleteUserPhoto } from "../../API/profile_api"
+import { changeStatus, resetPassword, putUserData, upload } from "../../API/profile_api"
 import {Cookies} from 'react-cookie'
+import { getUser } from "../../API/user_api"
 const SET_USER_PROFILE = 'SET_USER_PROFILE'
 const SAVE_PHOTO_SUCCESS = 'SAVE_PHOTO_SUCCESS'
 
@@ -31,10 +32,9 @@ export const setUserProfile = (profile) => {
 }
 
 export const getUserProfile = (username) => async (dispatch) => {
-  const response = await profileAPI.getProfile(username);
-  dispatch(setUserProfile(response.data));
+  const response = await getUser(username);
+  dispatch(setUserProfile(response));
 }
-
 
 export const saveProfile = (userData) =>  {
   return async (dispatch,getState) => {

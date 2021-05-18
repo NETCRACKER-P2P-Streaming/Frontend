@@ -8,6 +8,7 @@ import Loading from './components/util_components/Loading'
 import HeaderContainer from './components/main_page/header/HeaderContainer'
 import {loadApp} from './redux/reducers/app_reducer'
 import ProfileContainer from './components/profile/ProfileContainer'
+import CategoryPageContainer from './components/categories/CategoryPageContainer'
 
 function App({appLoading, isAuthFormOpen, loadApp}) {
 
@@ -35,6 +36,16 @@ function App({appLoading, isAuthFormOpen, loadApp}) {
                 path={'/sign_up'}
                 exact={true}
                 render={() => <SignUpContainer/>}
+            />
+            <Route
+                path={'/categories'}
+                exact={true}
+                render={() => (
+                    <>
+                        <HeaderContainer/>
+                        <CategoryPageContainer/>
+                    </>
+                )}
             />
             <Route 
                 path="/profile/:username?"

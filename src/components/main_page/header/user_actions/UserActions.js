@@ -7,6 +7,7 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
     let username = userData.username
     const history = useHistory()
     const openProfile = () => history.push(`/profile/${username}`)
+    const openCategories = () => history.push(`/categories`)
 
     return (
         <Box>
@@ -15,6 +16,7 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
                 items={[
                     {label: 'Profile', gap: 'large', onClick: () => openProfile()},
                     {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
+                    {label: 'Сategories', gap: 'large', onClick: () => openCategories()},
                 ]}
                 label={
                     userAvatar
