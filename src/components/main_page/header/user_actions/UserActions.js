@@ -9,7 +9,9 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
     const openProfile = () => history.push(`/profile/${username}`)
 
     return (
-        <Box>
+        <Box
+            pad={'none'}
+        >
             <Menu
                 dropProps={{align: {top: 'bottom', left: 'left'}}}
                 items={[

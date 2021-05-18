@@ -11,25 +11,16 @@ import {getStreamsFromServ} from '../../../../redux/reducers/stream_reducer'
 import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
 import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
 import StreamPage from './StreamPage'
-import useWindowDimensions from '../../../utils/useWindowDimention'
 import {ResponsiveContext} from 'grommet'
 
 function StreamPageContainer({
                                  getStreamsFromServ, getCategoriesToSearchFromServ,
                                  streamsList, categoriesList, setLoading,
                                  streamsSortingTypes, streamsSortingOrders,
-                                 appLoading
+                                 appLoading, headerHei, height, width
                              }) {
 
     const size = React.useContext(ResponsiveContext)
-
-    // Данные, необходимые для выбора высоты элемента
-    const {height, width} = useWindowDimensions()
-    const [headerHei, setHeaderHei] = useState(document.querySelector('header')?.clientHeight)
-    useEffect(
-        () => setHeaderHei(document.querySelector('header')?.clientHeight),
-        [height, width]
-    )
 
 
     const [values, setValues] = useState({

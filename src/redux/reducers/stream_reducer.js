@@ -1,4 +1,4 @@
-import {getStreams} from '../../API/streams_api'
+import {addStream, getStreams} from '../../API/streams_api'
 import {getUser} from '../../API/user_api'
 import {selectStreamPageSize, selectStreamsList} from '../selectors/selectors'
 
@@ -111,6 +111,23 @@ export function getStreamsFromServ(
             await Promise.all(usersPromises)
             dispatch(appendStreams(response))
         } catch(err) {
+            return Promise.reject(err)
+        }
+    }
+}
+
+export function addStreamOnServ(streamData) {
+    return async (dispatch, getState) => {
+        debugger
+        try {
+
+            const resultedStreamData = {
+                userId: getState().user.userData.username,
+                streamDesc: streamData
+            }
+
+            return addStream(resultedStreamData)
+        } catch (err) {
             return Promise.reject(err)
         }
     }

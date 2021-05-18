@@ -120,7 +120,41 @@ export function lengthValidatorCreate(minLength, maxLength) {
     }
 }
 
+/**
+ *
+ * @param regexp - Регулярное выражение, которому должно соответствовать значение
+ * @param message - Сообщение об ошибке, если значение не соответствует регулярному выражению
+ * @returns {function(*): ({message, status: string})} - Замыкание-валидатор
+ */
+export function commonRegExpValidator(regexp, message) {
+    return value => {
+        if (!value.match(regexp)) {
+            return {
+                message: <ErrorMessage message={message}/>,
+                status: 'error'
+            }
+        }
+        return {
+            message: <GoodMessage/>,
+            status: 'info'
+        }
+    }
+}
 
+export function customConditionValidator(condition, message) {
+    return value => {
+        if (!condition(value)) {
+            return {
+                message: <ErrorMessage message={message}/>,
+                status: 'error'
+            }
+        }
+        return {
+            message: <GoodMessage/>,
+            status: 'info'
+        }
+    }
+}
 function returnLengthValCondition(len, minLen, maxLen) {
     return (maxLen && len > maxLen) || (minLen && len < minLen)
 }
