@@ -22,7 +22,8 @@ export default function StartStreamPage({
                                             actualUser,
                                             onEditStream,
                                             isStreamInitialized,
-                                            onClose
+                                            onClose,
+                                            appLoading
                                         }) {
 
 
@@ -33,7 +34,7 @@ export default function StartStreamPage({
         flex={"shrink"}
     >
         {
-            areNotificationOpen && <Notification />
+            areNotificationOpen && <Notification/>
         }
         <Box
             height={'100%'}
@@ -79,6 +80,7 @@ export default function StartStreamPage({
                 isStreamInitialized={isStreamInitialized}
                 onClose={onClose}
                 onStartSharing={onStartSharing}
+                appLoading={appLoading}
             />
         </Box>
 

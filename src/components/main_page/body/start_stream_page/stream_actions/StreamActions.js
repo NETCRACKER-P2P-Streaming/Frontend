@@ -2,6 +2,7 @@ import React from 'react'
 import StartStreamPageForm from '../StartStreamPageForm'
 import StreamInformation from './StreamInformation'
 import StreamEditFormContainer from "./stream_edit_form/StreamEditFormContainer";
+import {Box} from "grommet";
 
 export default function StreamActions({
                                           selectOptions,
@@ -19,8 +20,18 @@ export default function StreamActions({
                                           onEditStream,
                                           isStreamInitialized,
                                           onClose,
-                                          onStartSharing
+                                          onStartSharing,
+                                          appLoading
                                       }) {
+
+    if (appLoading) {
+        return <Box
+            width={'medium'}
+            fill={'vertical'}
+            background={'light-1'}
+            pad={{horizontal: 'medium'}}
+        />
+    }
     if (isEditable) {
         return <StreamEditFormContainer
             onBack={() => setIsEditable(false)}
@@ -44,6 +55,7 @@ export default function StreamActions({
             onDeleteStream={onDeleteStream}
             setIsEditable={setIsEditable}
             onStartSharing={onStartSharing}
+            isStreamInitialized={isStreamInitialized}
         />
     } else {
         return <StartStreamPageForm

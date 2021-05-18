@@ -11,7 +11,7 @@ import {
 } from '../../../../redux/reducers/stream_reducer'
 import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
 import {
-    selectActualStream,
+    selectActualStream, selectAppLoading,
     selectCategoriesList,
     selectStreamerStreamStates, selectUserData
 } from '../../../../redux/selectors/selectors'
@@ -22,6 +22,7 @@ import {useHistory, useParams} from 'react-router-dom'
 
 export let stream = null
 const connections = new Map()
+let streamerPeerConnection
 let viewersCounterForCleaning = 0
 
 const peerConnectionConfig = {
@@ -45,9 +46,9 @@ export async function openStreamerConnection(streamId) {
 
         client.subscribe(`/queue/${streamId}/streamer/listen`, message => {
             const messageParsed = JSON.parse(message.body)
-            const streamerPeerConnection = new RTCPeerConnection(peerConnectionConfig)
+            streamerPeerConnection = new RTCPeerConnection(peerConnectionConfig)
             connections[messageParsed.id] = streamerPeerConnection
-            if(stream) {
+            if (stream) {
                 stream.getTracks().forEach(t => streamerPeerConnection.addTrack(t, stream))
             }
 
@@ -116,7 +117,8 @@ function StartStreamPageContainer({
                                       actualUser,
                                       editStreamOnServ,
                                       closeStreamOnServ,
-                                      getSingleStreamFromServ
+                                      getSingleStreamFromServ,
+                                      appLoading
                                   }) {
 
     const initialStartStreamFormValues = {
@@ -139,10 +141,9 @@ function StartStreamPageContainer({
         setLoading(true)
         window.addEventListener('onbeforeunload', onStopSharing)
         const promises = []
-        if(id) {
+        if (id) {
             const initStreamPromise = getSingleStreamFromServ(id)
                 .then(response => {
-                    debugger
                     setActualStream(response)
                     setStartStreamFormValues({
                         title: response.streamDesc.title,
@@ -174,6 +175,11 @@ function StartStreamPageContainer({
         return () => {
             window.removeEventListener('onbeforeunload', onStopSharing)
             onStopSharing()
+            setIsStreamInitialized(false)
+            setIsEditable(false)
+            setNotificationOpen(false)
+            setStartStreamFormValues(initialStartStreamFormValues)
+            setActualStream(null)
         }
     }, [])
 
@@ -203,11 +209,22 @@ function StartStreamPageContainer({
                 },
                 audio: true
             }
+
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop())
+            }
+
             stream = await navigator.mediaDevices.getDisplayMedia(options)
+            if (streamerPeerConnection) {
+                const senders = streamerPeerConnection.getSenders()
+
+                senders.map(s => s.replaceTrack(stream.getTracks().find(t => t.kind === s.track.kind, stream)))
+            }
             document.getElementById('share_video_container').srcObject = stream
             setIsStreamInitialized(true)
 
             stream.oninactive = () => onStopSharing()
+
 
         } catch (err) {
             console.error(err)
@@ -216,7 +233,7 @@ function StartStreamPageContainer({
 
     function onStopSharing() {
         try {
-            if(stream) {
+            if (stream) {
                 let tracks = stream.getTracks()
                 tracks.forEach(track => track.stop())
                 stream = null
@@ -311,6 +328,7 @@ function StartStreamPageContainer({
         onEditStream={onEditStream}
         isStreamInitialized={isStreamInitialized}
         onClose={onCloseStream}
+        appLoading={appLoading}
     />
 }
 
@@ -320,7 +338,8 @@ function mapStateToProps(state) {
         categories: selectCategoriesList(state),
         actualStream: selectActualStream(state),
         streamStates: selectStreamerStreamStates(state),
-        actualUser: selectUserData(state)
+        actualUser: selectUserData(state),
+        appLoading: selectAppLoading(state)
     }
 }
 

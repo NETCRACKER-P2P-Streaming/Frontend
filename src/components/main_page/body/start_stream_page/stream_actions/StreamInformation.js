@@ -12,7 +12,8 @@ export default function StreamInformation({
                                               onDeleteStream,
                                               setIsEditable,
                                               onClose,
-                                              onStartSharing
+                                              onStartSharing,
+                                              isStreamInitialized
                                           }) {
 
     return (
@@ -28,11 +29,14 @@ export default function StreamInformation({
             }}
             pad={{horizontal: 'medium'}}
         >
-            <Button
-                primary={true}
-                label={'Reselect screen'}
-                onClick={() => onStartSharing(true)}
-            />
+            {
+                isStreamInitialized && <Button
+                    primary={true}
+                    margin={{vertical: 'medium'}}
+                    label={'Reselect screen'}
+                    onClick={() => onStartSharing(true)}
+                />
+            }
             <Heading
                 textAlign={'center'}
                 margin={{vertical: 'medium'}}
@@ -149,7 +153,7 @@ export default function StreamInformation({
                 <Button
                     label={'Edit'}
                     secondary={true}
-                    margin={'small'}
+                    margin={{horizontal: 'small'}}
                     onClick={() => setIsEditable(true)}
                 />
                 <Button
