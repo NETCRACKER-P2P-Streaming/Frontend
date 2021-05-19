@@ -28,6 +28,10 @@ export function selectIsAuthFormOpen(state) {
     return state.app.isAuthFormOpen
 }
 
+export function selectIsPasswordFormOpen(state) {
+    return state.app.isPasswordFormOpen
+}
+
 /**
  * Селектор состояния данных пользователя из Redux state
  *
@@ -96,4 +100,8 @@ export function selectStreamsSortingTypes(state) {
  */
 export function selectStreamsSortingOrders(state) {
     return state.streams.orders
+}
+
+export function selectProfileStreamsList(state) {
+    return state.profilePage.streams
 }

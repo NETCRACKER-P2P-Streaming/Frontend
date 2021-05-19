@@ -1,7 +1,7 @@
 import {streamsAndCategoriesRequest} from './api'
 
 export function getCategoriesToSearch() {
-    return streamsAndCategoriesRequest.post('/api/category/page', {
+    return streamsAndCategoriesRequest.post('/api/v1/categories-page', {
         count: 100,
         page: 0
     })
