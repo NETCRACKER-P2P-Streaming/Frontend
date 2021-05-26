@@ -16,6 +16,7 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
                 dropProps={{align: {top: 'bottom', left: 'left'}}}
                 items={[
                     {label: 'Profile', gap: 'large', onClick: () => openProfile()},
+                    {label: 'Start', gap: 'large', onClick: () => openProfile()},
                     {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
                 ]}
                 label={

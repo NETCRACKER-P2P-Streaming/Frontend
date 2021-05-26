@@ -131,3 +131,7 @@ export function selectStreamerStreamStates(state) {
 export function selectViewerStreamStates(state) {
     return state.streams.viewerStreamStates
 }
+
+export function selectProfileStreamsList(state) {
+    return state.profilePage.streams
+}
