@@ -57,3 +57,16 @@ jobs:
         platforms: linux/amd64,linux/arm64,linux/386
         push: true
         tags: asmirnov30/streaming_project:latest
+
+    - 
+      name: Deploy on server
+      uses: appleboy/ssh-action@master
+      with:
+        debug: true
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        script: |
+          cd /root/streaming/Configuration
+          ./reload.sh streaming_project
