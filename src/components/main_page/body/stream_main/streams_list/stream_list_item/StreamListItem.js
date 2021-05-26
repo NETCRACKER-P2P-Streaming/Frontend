@@ -6,8 +6,14 @@ import {NavLink} from 'react-router-dom'
 export default function StreamListItem({
                                            streamImage, avatarImage, countViewers,
                                            streamTitle, userId, fullCategories,
-                                           streamId
+                                           streamId, status
                                        }) {
+    const statusColor = status === 'RUNNING'
+        ? 'status-ok'
+        : status === 'PAUSED'
+            ? 'status-warning'
+            : 'status-error'
+
     return (
         <Box
             height={'medium'}
@@ -93,7 +99,7 @@ export default function StreamListItem({
                     align={'center'}
                 >
                     <Text
-                        color={'dark-3'}
+                        color={statusColor}
                         weight={'bold'}
                         size={'large'}
                         margin={{bottom: 'xsmall'}}

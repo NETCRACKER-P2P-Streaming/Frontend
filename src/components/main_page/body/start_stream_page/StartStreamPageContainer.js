@@ -180,6 +180,7 @@ function StartStreamPageContainer({
             setNotificationOpen(false)
             setStartStreamFormValues(initialStartStreamFormValues)
             setActualStream(null)
+            streamerPeerConnection?.close()
         }
     }, [])
 

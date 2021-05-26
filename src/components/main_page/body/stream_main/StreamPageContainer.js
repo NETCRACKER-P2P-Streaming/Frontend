@@ -84,7 +84,8 @@ function StreamPageContainer({
                         title,
                         values.categories,
                         values.type.value,
-                        values.desc.value
+                        values.desc.value,
+                        'RUNNING'
                     )
                         .catch(err => {
                             console.log(err)
@@ -108,7 +109,8 @@ function StreamPageContainer({
             title,
             values.categories,
             values.type.value,
-            values.desc.value
+            values.desc.value,
+            'RUNNING'
         )
             .catch(err => {
                 console.log(err)

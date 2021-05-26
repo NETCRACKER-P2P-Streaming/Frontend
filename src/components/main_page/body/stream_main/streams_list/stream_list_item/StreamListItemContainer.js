@@ -5,7 +5,7 @@ import StreamListItem from './StreamListItem'
 export default function StreamListItemContainer({
                                                     countViewers, fullCategories, streamTitle,
                                                     userId, streamLinkImage, streamUserAttributes,
-                                                    streamId
+                                                    streamId, status
 }) {
 
     const [streamImage, setStreamImage] = useState(null)
@@ -41,5 +41,6 @@ export default function StreamListItemContainer({
         streamTitle={streamTitle}
         userId={userId}
         streamId={streamId}
+        status={status}
     />
 }

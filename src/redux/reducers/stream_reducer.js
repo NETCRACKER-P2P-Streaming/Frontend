@@ -1,4 +1,12 @@
-import {addStream, closeStream, deleteStream, editStream, getSingleStream, getStreams} from '../../API/streams_api'
+import {
+    addStream,
+    closeStream, decreaseViewers,
+    deleteStream,
+    editStream,
+    getSingleStream,
+    getStreams,
+    increaseViewers, increaseViews
+} from '../../API/streams_api'
 import {getUser, logout} from '../../API/user_api'
 import {selectActualStream, selectStreamPageSize, selectStreamsList} from '../selectors/selectors'
 import {Cookies} from 'react-cookie'
@@ -136,7 +144,8 @@ export function getStreamsFromServ(
     title,
     categoriesColl,
     type,
-    desc
+    desc,
+    status
 ) {
     return async (dispatch, getState) => {
         try {
@@ -151,11 +160,11 @@ export function getStreamsFromServ(
                 categories: categoriesColl,
                 type: type,
                 page: withReplace ? 0 : Math.ceil(streamsTotalCount / pageSize),
-                count: pageSize
+                count: pageSize,
+                status: status
             })
             let usersPromises = []
             for (let i = 0; i < response.length; i++) {
-
                 usersPromises[i] = getUser(response[i].userId)
                     .then(u => {
                         response[i].user = u.userAttributes.reduce((acc, item) => {
@@ -184,8 +193,8 @@ export function addStreamOnServ(streamData) {
                 userId: getState().user.userData.username,
                 streamDesc: streamData
             }
-
-            return addStream(resultedStreamData)
+            const cookies = new Cookies()
+            return addStream(resultedStreamData, cookies.get('accessToken'))
         } catch (err) {
             return Promise.reject(err)
         }
@@ -209,6 +218,43 @@ export function closeStreamOnServ(streamId) {
         try {
             const cookies = new Cookies()
             const response = await closeStream(streamId, cookies.get('accessToken'))
+            return Promise.resolve()
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
+
+export function increaseViewersOnServ(streamId) {
+    return async dispatch => {
+        try {
+            const cookies = new Cookies()
+            const response = await increaseViewers(streamId, cookies.get('accessToken'))
+            return Promise.resolve()
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
+
+export function decreaseViewersOnServ(streamId) {
+    return async dispatch => {
+        try {
+            const cookies = new Cookies()
+            const response = await decreaseViewers(streamId, cookies.get('accessToken'))
+            return Promise.resolve()
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
+
+export function increaseViewsOnServ(streamId) {
+    return async dispatch => {
+        try {
+            debugger
+            const cookies = new Cookies()
+            const response = await increaseViews(streamId, cookies.get('accessToken'))
             return Promise.resolve()
         } catch (err) {
             return Promise.reject(err)

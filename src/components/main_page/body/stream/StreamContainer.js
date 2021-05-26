@@ -4,6 +4,11 @@ import Stream from './Stream'
 import * as Stomp from 'stomp-websocket'
 import useWindowDimensions from '../../../utils/useWindowDimention'
 import {selectStreamsList, selectUserData, selectViewerStreamStates} from '../../../../redux/selectors/selectors'
+import {
+    increaseViewsOnServ,
+    increaseViewersOnServ,
+    decreaseViewersOnServ
+} from '../../../../redux/reducers/stream_reducer'
 import ReactPlayer from 'react-player'
 import {Redirect} from 'react-router-dom'
 
@@ -33,7 +38,11 @@ const MyPlayer = () => {
     </ReactPlayer>
 }
 
-function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
+function StreamContainer({
+                             streamsList, watcherId, streamStates, increaseViewsOnServ,
+                             increaseViewersOnServ,
+                             decreaseViewersOnServ, ...props
+                         }) {
 
     const [isStreamInitialized, setStreamInitialized] = useState(streamStates.NON_INITIALIZED)
 
@@ -43,6 +52,9 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
 
         const onConnect = frame => {
             const watcherPeerConnection = new RTCPeerConnection(connectionConfig)
+
+            increaseViewsOnServ(streamId)
+            increaseViewersOnServ(streamId)
 
             watcherPeerConnection.ontrack = e => {
                 tracks = e.streams[0]
@@ -104,8 +116,6 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
                         )
                     })
             }, 500)
-
-
         }
         if (ws.readyState === WebSocket.OPEN) {
             onConnect()
@@ -113,6 +123,7 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
             client.connect({}, onConnect)
         }
     }
+
     const actualStreamId = props.match.params.streamId
     const actualStream = streamsList.filter(s => s.id === actualStreamId)[0]
     const {height, width} = useWindowDimensions()
@@ -126,10 +137,14 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
         // идет проверка на валидность используемого изображения. Если изображение
         // не может быть загружено, тогда идет установка изображения в null
         // -> будет отображена заглушка
-        if(streamUserAttributes && streamUserAttributes['custom:linkImage']) {
+        if (streamUserAttributes && streamUserAttributes['custom:linkImage']) {
             const img = new Image()
-            img.onload = () => {setAvatarImage(streamUserAttributes['custom:linkImage'])}
-            img.onerror = () => {setAvatarImage(null)}
+            img.onload = () => {
+                setAvatarImage(streamUserAttributes['custom:linkImage'])
+            }
+            img.onerror = () => {
+                setAvatarImage(null)
+            }
             img.src = streamUserAttributes['custom:linkImage']
         }
     }, [streamUserAttributes])
@@ -142,13 +157,17 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
     useEffect(() => {
         connectToStream(actualStreamId)
             .catch(e => console.log(e.message))
+
+        return () => {
+            decreaseViewersOnServ(actualStreamId)
+        }
     }, [])
 
     const [isStreamCommonInfoOpened, setStreamCommonInfoOpened] = useState(false)
 
     let mustBeClosed = true
     const openStreamCommonInfo = () => {
-        if(isStreamInitialized === streamStates.OPENED) {
+        if (isStreamInitialized === streamStates.OPENED) {
             mustBeClosed = false
             setStreamCommonInfoOpened(true)
         }
@@ -158,7 +177,7 @@ function StreamContainer({streamsList, watcherId, streamStates, ...props}) {
         setTimeout(() => mustBeClosed ? setStreamCommonInfoOpened(false) : null, 500)
     }
 
-    if(watcherId && watcherId === actualStream.userId) {
+    if (watcherId && watcherId === actualStream.userId) {
         return <Redirect
             to={`/start-stream/${actualStream.id}`}
         />
@@ -189,4 +208,8 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, {})(StreamContainer)
+export default connect(mapStateToProps, {
+    increaseViewsOnServ,
+    increaseViewersOnServ,
+    decreaseViewersOnServ
+})(StreamContainer)

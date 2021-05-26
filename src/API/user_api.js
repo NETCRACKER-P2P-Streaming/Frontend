@@ -4,7 +4,6 @@ export function register(userData) {
     const formData = new FormData()
     formData.append('user', JSON.stringify(userData.user))
     formData.append('file', userData.file)
-    debugger
     return userRequest
         .post('/api/v1/registration', formData)
         .catch(err => {

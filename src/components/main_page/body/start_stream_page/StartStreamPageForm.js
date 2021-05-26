@@ -1,5 +1,5 @@
 import React from 'react'
-import {Box, Button, CheckBox, Form, FormField, Heading, Select, Text, TextArea, TextInput} from 'grommet'
+import {Box, Button, CheckBox, FileInput, Form, FormField, Heading, Select, Text, TextArea, TextInput} from 'grommet'
 import {validateField} from '../../../utils/validators'
 import {Close} from 'grommet-icons'
 import {startStreamFormValidators as validators} from '../../../utils/componentValidation'
@@ -85,16 +85,12 @@ export default function StartStreamPageForm({
                 width={'large'}
             />
         </FormField>
-        <FormField
-            margin={{vertical: 'medium'}}
-            label={'Preview image'}
-            name={'linkImage'}
-        >
-            <TextInput
-                name={'linkImage'}
-                width={'large'}
-            />
-        </FormField>
+        <FileInput
+            onChange={event => setFormValues({
+                ...formValues,
+                linkImage: event.target.files[0]
+            })}
+        />
         <FormField
             margin={{vertical: 'medium'}}
             label={'Stream categories'}
