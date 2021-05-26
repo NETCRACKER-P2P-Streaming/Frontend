@@ -28,6 +28,10 @@ export function selectIsAuthFormOpen(state) {
     return state.app.isAuthFormOpen
 }
 
+export function selectIsPasswordFormOpen(state) {
+    return state.app.isPasswordFormOpen
+}
+
 /**
  * Селектор состояния данных пользователя из Redux state
  *
@@ -96,4 +100,34 @@ export function selectStreamsSortingTypes(state) {
  */
 export function selectStreamsSortingOrders(state) {
     return state.streams.orders
+}
+
+/**
+ * Селектор открытого актуального стрима
+ *
+ * @param state - redux state
+ * @returns {*} Объект актуального стрима
+ */
+export function selectActualStream(state) {
+    return state.streams.actualStream
+}
+
+/**
+ * Селектор возможных состояний stream для стримера
+ *
+ * @param state - redux state
+ * @returns {*} Объект возможных состояний стрима
+ */
+export function selectStreamerStreamStates(state) {
+    return state.streams.streamerStreamStates
+}
+
+/**
+ * Селектор возможных состояний stream для зрителя
+ *
+ * @param state - redux state
+ * @returns {*} Объект возможных состояний стрима
+ */
+export function selectViewerStreamStates(state) {
+    return state.streams.viewerStreamStates
 }

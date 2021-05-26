@@ -45,16 +45,16 @@ export default function SignUpFormFirstPage() {
                     width={'large'}
                 />
             </FormField>
-            <FormField
-                label={'Avatar'}
-                name={'linkImage'}
-                required={true}
-            >
-                <TextInput
-                    name={'linkImage'}
-                    width={'large'}
-                />
-            </FormField>
+            {/*<FormField*/}
+            {/*    label={'Avatar'}*/}
+            {/*    name={'linkImage'}*/}
+            {/*    required={true}*/}
+            {/*>*/}
+            {/*    <TextInput*/}
+            {/*        name={'linkImage'}*/}
+            {/*        width={'large'}*/}
+            {/*    />*/}
+            {/*</FormField>*/}
         </>
     )
 }

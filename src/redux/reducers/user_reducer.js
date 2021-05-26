@@ -55,7 +55,7 @@ export function regUser(userData) {
                     },
                     {
                         name: "custom:linkImage",
-                        value: userData.linkImage
+                        value: userData.linkImage.name
                     },
                     {
                         name: "custom:description",
@@ -71,7 +71,10 @@ export function regUser(userData) {
                     }
                 ]
             }
-            const result = await register(validUserData)
+            const result = await register({
+                user: validUserData,
+                file: userData.linkImage
+            })
             if (!result) {
                 throw new Error('Registration failed. Try again later')
             }

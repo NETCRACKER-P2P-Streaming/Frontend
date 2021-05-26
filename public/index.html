@@ -28,6 +28,8 @@
     <style type="text/css">
       * {
         margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
       html {
         overflow: scroll;
@@ -59,6 +61,20 @@
       .scrolled:hover::-webkit-scrollbar-thumb {
         background-color: #7D4CDB;
         border-radius: 3px;
+      }
+
+      video::-webkit-media-controls-play-button {}
+
+      video::-webkit-media-controls-volume-slider {}
+
+      video::-webkit-media-controls-mute-button {}
+
+      video::-webkit-media-controls-timeline {
+        display: none;
+      }
+
+      video::-webkit-media-controls-current-time-display {
+        direction: none;
       }
     </style>
     <title>React App</title>

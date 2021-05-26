@@ -7,6 +7,7 @@ import {selectAppLoading, selectIsAuthFormOpen} from './redux/selectors/selector
 import Loading from './components/util_components/Loading'
 import HeaderContainer from './components/main_page/header/HeaderContainer'
 import {loadApp} from './redux/reducers/app_reducer'
+import ProfileContainer from './components/profile/ProfileContainer'
 
 function App({appLoading, isAuthFormOpen, loadApp}) {
 
@@ -22,7 +23,6 @@ function App({appLoading, isAuthFormOpen, loadApp}) {
         <>
             <Route
                 path={'/'}
-                exact={true}
                 render={() => (
                     <>
                         <HeaderContainer/>
@@ -35,7 +35,16 @@ function App({appLoading, isAuthFormOpen, loadApp}) {
                 exact={true}
                 render={() => <SignUpContainer/>}
             />
-
+            <Route 
+                path="/profile/:username?"
+                render={() => (
+                    <>
+                        <HeaderContainer/>
+                        <ProfileContainer/>                   
+                    </>
+                )} 
+            />
+         
             {/* Если флаг состояния загрузки всего прилоежния в true -
             отображается модальное окно с индикатором загрузки. */}
             {appLoading && !isAuthFormOpen && <Loading/>}

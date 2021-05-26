@@ -15,7 +15,7 @@ function SignInFormContainer({
     }
     const [value, setValue] = useState(primaryValue)
 
-    //Ошибка, приходящая с сервера или позникающая в ходе запроса
+    //Ошибка, приходящая с сервера или возникающая в ходе запроса
     const [authErrorMessage, setAuthErrorMessage] = useState(undefined)
 
     async function authSubmit() {
