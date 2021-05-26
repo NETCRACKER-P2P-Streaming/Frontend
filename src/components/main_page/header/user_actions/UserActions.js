@@ -1,8 +1,13 @@
 import React from 'react'
 import {Avatar, Box, Menu} from 'grommet'
 import {CaretDownFill, User} from 'grommet-icons'
+import {useHistory} from 'react-router-dom'
 
-export default function UserActions({userAvatar, logoutUserAction, history}) {
+export default function UserActions({userAvatar, logoutUserAction, userData}) {
+    let username = userData.username
+    const history = useHistory()
+    const openProfile = () => history.push(`/profile/${username}`)
+
     return (
         <Box
             pad={'none'}
@@ -10,14 +15,13 @@ export default function UserActions({userAvatar, logoutUserAction, history}) {
             <Menu
                 dropProps={{align: {top: 'bottom', left: 'left'}}}
                 items={[
-                    {label: 'Profile', gap: 'large', onClick: () => {}},
-                    {label: 'Start stream', gap: 'large', onClick: () => history.push('/start-stream')},
+                    {label: 'Profile', gap: 'large', onClick: () => openProfile()},
                     {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
                 ]}
                 label={
                     userAvatar
                         ? <Avatar
-                            src={userAvatar}
+                            src={`${userAvatar}?${global.Date.now()}`}
                             size={'medium'}
                         />
                         : <Box

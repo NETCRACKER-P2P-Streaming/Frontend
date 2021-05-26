@@ -20,6 +20,7 @@
     "react-scripts": "4.0.1",
     "react-types": "^0.1.0",
     "redux": "^4.0.5",
+    "redux-form": "^8.3.7",
     "redux-thunk": "^2.3.0",
     "stomp-websocket": "^2.3.4-next",
     "styled-components": "^5.2.3",

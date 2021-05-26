@@ -28,6 +28,10 @@ export function selectIsAuthFormOpen(state) {
     return state.app.isAuthFormOpen
 }
 
+export function selectIsPasswordFormOpen(state) {
+    return state.app.isPasswordFormOpen
+}
+
 /**
  * Селектор состояния данных пользователя из Redux state
  *
