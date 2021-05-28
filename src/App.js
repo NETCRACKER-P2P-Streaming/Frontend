@@ -9,6 +9,7 @@ import HeaderContainer from './components/main_page/header/HeaderContainer'
 import {loadApp} from './redux/reducers/app_reducer'
 import ProfileContainer from './components/profile/ProfileContainer'
 import CategoryPageContainer from './components/categories/CategoryPageContainer'
+import StreamPageContainer from './components/streams/StreamPageContainer'
 
 function App({appLoading, isAuthFormOpen, loadApp}) {
 
@@ -47,6 +48,16 @@ function App({appLoading, isAuthFormOpen, loadApp}) {
                     </>
                 )}
             />
+            <Route
+                path={'/users'}
+                exact={true}
+                render={() => (
+                    <>
+                        <HeaderContainer/>
+                        <CategoryPageContainer/>
+                    </>
+                )}
+            />
             <Route 
                 path="/profile/:username?"
                 render={() => (
@@ -56,7 +67,15 @@ function App({appLoading, isAuthFormOpen, loadApp}) {
                     </>
                 )} 
             />
-         
+            <Route 
+                path="/streams"
+                render={() => (
+                    <>
+                        <HeaderContainer/>
+                        <StreamPageContainer/>                   
+                    </>
+                )} 
+            />
             {/* Если флаг состояния загрузки всего прилоежния в true -
             отображается модальное окно с индикатором загрузки. */}
             {appLoading && !isAuthFormOpen && <Loading/>}

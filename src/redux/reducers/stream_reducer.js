@@ -1,7 +1,7 @@
-import {getStreams} from '../../API/streams_api'
 import {getUser} from '../../API/user_api'
 import {selectStreamPageSize, selectStreamsList} from '../selectors/selectors'
-
+import {closeStream, deleteStream, getStreams} from '../../API/streams_api'
+import {Cookies} from 'react-cookie'
 const ADD_STREAMS = 'ADD_STREAMS'
 const SET_STREAMS = 'SET_STREAMS'
 
@@ -111,6 +111,54 @@ export function getStreamsFromServ(
             await Promise.all(usersPromises)
             dispatch(appendStreams(response))
         } catch(err) {
+            return Promise.reject(err)
+        }
+    }
+}
+export function getStreamsToSearch() {
+    return async (dispatch, getState) => {
+        try {
+            const pageSize = selectStreamPageSize(getState())
+            const cookies = new Cookies()
+            await getStreams({
+                desc: true,
+                type: 'DATE',
+                page: 0,
+                count: pageSize})
+            return Promise.resolve()
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
+export function deleteOneStreamOnServ(streamId) {
+    return async (dispatch, getState) => {
+        const pageSize = selectStreamPageSize(getState())
+
+        try {
+            const cookies = new Cookies()
+            await deleteStream(streamId, cookies.get('accessToken'))
+            const res=await getStreams({
+                desc: true,
+                type: 'DATE',
+                page: 0,
+                count: pageSize})
+            dispatch(setStreamsAC(res))    
+            return Promise.resolve()
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
+
+export function closeOneStreamOnServ(streamId) {
+    return async dispatch => {
+        try {
+            const cookies = new Cookies()
+            const response = await closeStream(streamId, cookies.get('accessToken'))
+            //dispatch(getStreamsToSearch())
+            return Promise.resolve()
+        } catch (err) {
             return Promise.reject(err)
         }
     }

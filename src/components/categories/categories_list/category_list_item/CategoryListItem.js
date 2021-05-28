@@ -50,7 +50,6 @@ export default function CategoryListItem({
 
                         />&nbsp;&nbsp;&nbsp;
                         <Button 
-                            margin={{ top: 'small' }}
                             size={'small'} 
                             onClick={()=>{deleteOneCategory(categoryId)}}
                             icon={<Trash />}
