@@ -5,7 +5,7 @@ import CategoriesList from './categories_list/CategoriesList'
 
 export default function CategoryPage({
                                        categoriesList, windowHeight, categoriesSortingOrders,
-                                       topHeight, values, setValues, onMore, hasMore, updateOneCategory,
+                                       topHeight, values, setValues, onMore, hasMore, 
                                        size, appLoading, addOneCategory, deleteOneCategory
 }) {
     return (
@@ -29,7 +29,6 @@ export default function CategoryPage({
                 size={size}
                 appLoading={appLoading}
                 deleteOneCategory={deleteOneCategory}
-                updateOneCategory={updateOneCategory}
             />
         </Box>
     )

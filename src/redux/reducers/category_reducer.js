@@ -138,7 +138,7 @@ export function addOneCategory(category) {
         }
     }
 }
-export function updateOneCategory(category, id) {
+export function changeCategory(category, id) {
     return async (dispatch, getState) => {
         try {
             const data={
@@ -147,7 +147,7 @@ export function updateOneCategory(category, id) {
                 "name": category.name
             }
             const response = await updateCategory(data)
-            dispatch(addCategoriesAC(response))
+            dispatch(getCategoriesToSearchFromServ())
         } catch(err) {
             return Promise.reject(err)
         }

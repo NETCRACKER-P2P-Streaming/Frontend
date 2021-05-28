@@ -8,7 +8,6 @@ import {
     getCategoriesFromServ, 
     addOneCategory, 
     deleteOneCategory,
-    updateOneCategory
 } from '../../redux/reducers/category_reducer'
 import {setLoadingAC} from '../../redux/reducers/app_reducer'
 import CategoryPage from './CategoryPage'
@@ -17,7 +16,7 @@ import {ResponsiveContext} from 'grommet'
 
 function CategoryPageContainer({
                                  getCategoriesFromServ, categoriesList, setLoading, 
-                                 deleteOneCategory, appLoading, addOneCategory, updateOneCategory
+                                 deleteOneCategory, appLoading, addOneCategory
                                }) {
 
     const size = React.useContext(ResponsiveContext)
@@ -127,7 +126,6 @@ function CategoryPageContainer({
         appLoading={appLoading}
         addOneCategory={addOneCategory}
         deleteOneCategory={deleteOneCategory}
-        updateOneCategory={updateOneCategory}
     />
 }
 
@@ -143,7 +141,6 @@ export default connect(mapStateToProps, {
     setLoading: setLoadingAC,
     addOneCategory,
     deleteOneCategory,
-    updateOneCategory
-})(CategoryPageContainer)
+    })(CategoryPageContainer)
 
 

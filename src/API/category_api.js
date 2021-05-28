@@ -25,6 +25,17 @@ export function getCategories(getCategoriesData) {
             }
         })
 }
+export function getCategory(categoryId) {
+    return streamsAndCategoriesRequest.get(`/api/v1/categories/${categoryId}`)
+        .then(response => response.data)
+        .catch(err => {
+            if(err.response) {
+                throw new Error(err.response.data.message)
+            } else {
+                throw err
+            }
+        })
+}
 export function addCategory(categoryData) {
     return streamsAndCategoriesRequest.post('/api/v1/admin/category', categoryData)
         .then(response => response.data)

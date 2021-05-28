@@ -1,10 +1,13 @@
 import React from 'react'
 import { Box, Button, Text } from 'grommet'
+import { Trash } from 'grommet-icons'
+
 
 export default function CategoryListItem({ 
                                             categoryTitle, categoryDesc, 
-                                            categoryId, deleteOneCategory 
+                                            categoryId, deleteOneCategory, goToEditMode 
                                          }) {
+  
     return (
         <Box
             height={'140px'}
@@ -32,13 +35,29 @@ export default function CategoryListItem({
                         color={'dark-4'}
                         size={'medium'}
                     >{categoryDesc}</Text>
-                    <Button 
-                        margin={{ top: 'small' }}
-                        label={'Delete category'} 
-                        size={'small'} 
-                        onClick={()=>{deleteOneCategory(categoryId)}}
+                    <Box
+                        direction={'row'}
+                        pad={ 'xsmall'}
+                        justify={'stretch'}
+
                     >
-                    </Button>
+                        <Button
+                            default={true}
+                            label={'Edit category'}
+                            size={'small'} 
+                            onClick={goToEditMode} 
+                            color={'Silver'}
+
+                        />&nbsp;&nbsp;&nbsp;
+                        <Button 
+                            margin={{ top: 'small' }}
+                            size={'small'} 
+                            onClick={()=>{deleteOneCategory(categoryId)}}
+                            icon={<Trash />}
+                            plain={'true'}
+
+                        />
+                    </Box>
                 </Box>
             </Box>
         </Box>

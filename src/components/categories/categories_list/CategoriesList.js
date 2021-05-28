@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import {InProgress} from 'grommet-icons'
 import CategoryListItemContainer from './category_list_item/CategoryListItemContainer'
 
-export default function CategoriesList({ categoriesList, height, onMore, updateOneCategory,
+export default function CategoriesList({ categoriesList, height, onMore, changeCategory, 
                                          hasMore, size, appLoading, deleteOneCategory }) {
     return <Box
         margin={{vertical: '0', horizontal: 'auto'}}
@@ -38,11 +38,12 @@ export default function CategoriesList({ categoriesList, height, onMore, updateO
                             categoryTitle={c.name}
                             categoryId={c.id}
                             deleteOneCategory={deleteOneCategory}
-                            updateOneCategory={updateOneCategory}
+                            changeCategory={changeCategory}
                         />)
                     }
                 </InfiniteScroll>
         }
+
     </Box>
 }
 

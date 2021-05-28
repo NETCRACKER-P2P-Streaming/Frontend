@@ -13,11 +13,18 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
         <Box>
             <Menu
                 dropProps={{align: {top: 'bottom', left: 'left'}}}
-                items={[
-                    {label: 'Profile', gap: 'large', onClick: () => openProfile()},
-                    {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
-                    {label: 'Сategories', gap: 'large', onClick: () => openCategories()},
-                ]}
+                items={userData.role==="ADMIN"
+                    ?[
+                        {label: 'Profile', gap: 'large', onClick: () => openProfile()},
+                        {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
+                        {label: 'Сategories', gap: 'large', onClick: () => openCategories()},
+                    ]
+                    :[
+                        {label: 'Profile', gap: 'large', onClick: () => openProfile()},
+                        {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
+                        {label: 'Сategories', gap: 'large', onClick: () => openCategories()},//нужно будет убрать строку после проверки
+
+                    ]}
                 label={
                     userAvatar
                         ? <Avatar
