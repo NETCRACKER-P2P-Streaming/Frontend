@@ -2,11 +2,11 @@ import React from 'react'
 import {Avatar, Box, Image, Stack, Text, Button} from 'grommet'
 import {Image as ImageIcon, User} from 'grommet-icons'
 
-export default function StreamListItem({
+export default function StreamListItem ({
                                            streamImage, avatarImage, countViewers,
                                            closeOneStreamOnServ, deleteOneStreamOnServ,
                                            streamTitle, userId, fullCategories, streamId
-}) {
+                                        }) {
     return (
         <Box
             width={'350px'}
@@ -22,7 +22,6 @@ export default function StreamListItem({
                     align={'center'}
                     justify={'center'}
                     background={'light-1'}
-
                 >
                     {
                         streamImage

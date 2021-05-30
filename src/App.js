@@ -10,6 +10,7 @@ import {loadApp} from './redux/reducers/app_reducer'
 import ProfileContainer from './components/profile/ProfileContainer'
 import CategoryPageContainer from './components/categories/CategoryPageContainer'
 import StreamPageContainer from './components/streams/StreamPageContainer'
+import UsersPageContainer from './components/users/UsersPageContainer'
 
 function App({appLoading, isAuthFormOpen, loadApp}) {
 
@@ -54,7 +55,7 @@ function App({appLoading, isAuthFormOpen, loadApp}) {
                 render={() => (
                     <>
                         <HeaderContainer/>
-                        <CategoryPageContainer/>
+                        <UsersPageContainer/>
                     </>
                 )}
             />
