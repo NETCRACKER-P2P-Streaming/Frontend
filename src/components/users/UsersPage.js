@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { User } from 'grommet-icons'
 
 export default function UsersPage({
-    username, role, userAttributes, 
-    disableUser, enableUser, block, unblock, blocked, replace, 
+    username, userAttributes, enabled, setUsers, setAdmins,
+    disableUser, enableUser, getUsers, getAdmins, replace, 
 }) {
     const [avatarImage, setAvatarImage] = useState(null)
 
@@ -32,8 +32,7 @@ export default function UsersPage({
                 align={'center'}
                 justify={'center'}
                 background={'light-1'}
-                pad={'small'}
-
+                width={'270px'}
             >
                 {
                     avatarImage
@@ -58,24 +57,25 @@ export default function UsersPage({
                 <Text
                     color={'dark-3'}
                     weight={'bold'}
-                    size={'large'}
-                    margin={{ bottom: 'xsmall' }}
-                >{role}</Text>
+                >{userAttributes['name']}</Text>
+                  
                 <Text
                     color={'dark-3'}
                     weight={'bold'}
-                    size={'large'}
-                    margin={{ bottom: 'xsmall' }}
-                >{username}</Text>
-                <Box direction={'row'}>
-                    {blocked
+                >{userAttributes['family_name']}</Text>
+                <Box 
+                    direction={'row'}
+                    margin={{top:'xsmall'}}
+                >
+                    {!enabled
                         ?<Button 
                             color={'green'}
                             size={'small'}
                             label={'Unblock'} 
                             onClick={()=>{enableUser(username).then(
                                 () => {
-                                    unblock(username)
+                                    setUsers(getUsers('USER'))
+                                    setAdmins(getAdmins('ADMIN'))
                                 }
                             )}}
                         ></Button>
@@ -85,7 +85,8 @@ export default function UsersPage({
                             label={'Block'} 
                             onClick={()=>{disableUser(username).then(
                                 () => {
-                                    block(username)
+                                    setUsers(getUsers('USER'))
+                                    setAdmins(getAdmins('ADMIN'))
                                 }
                             )}}
                         ></Button>
@@ -100,5 +101,4 @@ export default function UsersPage({
             </Box>
         </Stack>
     </Box>
-
 }
