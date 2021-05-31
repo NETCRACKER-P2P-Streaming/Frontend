@@ -8,7 +8,8 @@ import {
     Button,
     Form,
     Heading,
-    Layer
+    Layer,
+    FileInput
 } from 'grommet'
 
 
@@ -82,7 +83,15 @@ export default function SignUpForm({
                     </Box>
                     {
                         formPage === 1
-                            ? <SignUpFormFirstPage />
+                            ? <>
+                                <SignUpFormFirstPage />
+                                <FileInput
+                                    onChange={event =>  setValue({
+                                        ...value,
+                                        linkImage: event.target.files[0]
+                                    })}
+                                />
+                            </>
                             : <SignUpFormSecondPage
                                 validateField={validateField}
                                 validators={validators}

@@ -29,17 +29,19 @@ export default function StreamsList({streamsList, height, onMore, hasMore, size,
                     next={onMore}
                     loader={!appLoading && hasMore && <CustomLoader/>}
                     scrollableTarget={'stream_container'}
-                    style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around'}}
+                    style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}
                 >
                     {
                         streamsList.map((s) => <StreamListItemContainer
-                            key={s.userId}
+                            key={s.id}
+                            streamId={s.id}
                             userId={s.userId}
                             streamTitle={s.streamDesc.title}
                             fullCategories={s.streamDesc.fullCategories}
                             countViewers={s.information.countViewers}
                             streamLinkImage={s.streamDesc.linkImage}
                             streamUserAttributes={s.user}
+                            status={s.information.status}
                         />)
                     }
                 </InfiniteScroll>

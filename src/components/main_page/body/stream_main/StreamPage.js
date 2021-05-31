@@ -1,14 +1,14 @@
-import React from 'react'
+import React, {memo} from 'react'
 import {Box} from 'grommet'
 import StreamSearchFormContainer from './search_form/StreamSearchFormContainer'
 import StreamsList from './streams_list/StreamsList'
 
-export default function StreamPage({
+const StreamPage = memo(({
                                        categoriesList, windowHeight, streamsList,
                                        streamsSortingTypes, streamsSortingOrders,
                                        topHeight, values, setValues, onMore, hasMore,
                                        size, appLoading
-}) {
+}) => {
     return (
         <Box
             direction={'row'}
@@ -32,4 +32,6 @@ export default function StreamPage({
             />
         </Box>
     )
-}
+})
+
+export default StreamPage

@@ -13,8 +13,8 @@ export default function StreamSearchForm({
                 direction={'row'}
                 margin={{left: 'xsmall', right: 'small'}}
                 basis={'medium'}
-                height={componentHeight}
                 overflow={'auto'}
+                height={componentHeight}
             >
                 <Box
                     flex={true}

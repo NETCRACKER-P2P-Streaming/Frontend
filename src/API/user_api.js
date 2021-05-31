@@ -1,8 +1,11 @@
 import { userRequest } from './api'
 
 export function register(userData) {
+    const formData = new FormData()
+    formData.append('user', JSON.stringify(userData.user))
+    formData.append('file', userData.file)
     return userRequest
-        .post('/api/v1/registration', userData)
+        .post('/api/v1/registration', formData)
         .catch(err => {
             if (err.response) {
                 throw new Error(err.response.data.message)

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import { setUserDataAC } from '../../../redux/reducers/user_reducer'
 import { selectUserData } from '../../../redux/selectors/selectors'
 import ProfileAvatar from './ProfileAvatar'
 
-function ProfileAvatarContainer({ userData, isOwner,changePhoto,
-                                  deletePhoto,uploadPhoto ,profile }) {
+function ProfileAvatarContainer({ userData, isOwner, changePhoto, setUserData,
+                                  deletePhoto, uploadPhoto, profile }) {
 
     const [avatarImage, setAvatarImage] = useState(null)
 
@@ -23,6 +24,7 @@ function ProfileAvatarContainer({ userData, isOwner,changePhoto,
 
     return <>
         <ProfileAvatar
+            setUserData={setUserData}
             profile={profile}
             userAvatar={avatarImage}
             userData={userData}
@@ -40,4 +42,6 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, {})(ProfileAvatarContainer)
+export default connect(mapStateToProps, {
+    setUserData: setUserDataAC,
+})(ProfileAvatarContainer)

@@ -13,8 +13,20 @@ export function getStreams(getStreamsData) {
         })
 }
 
-export function addStream(streamData) {
-    return streamsAndCategoriesRequest.post('/api/v1/stream', streamData)
+export function addStream(streamData, accessToken) {
+    const formData = new FormData()
+    formData.append('preview', streamData.streamDesc.linkImage)
+    delete streamData.streamDesc.linkImage
+    formData.append('stream', JSON.stringify({
+        ...streamData,
+        streamDesc: {
+            ...streamData.streamDesc,
+            linkImage: undefined
+        }
+    }))
+    return streamsAndCategoriesRequest.post('/api/v1/stream', formData, {
+        headers: {'Authorization' : `Bearer ${accessToken}`}
+    })
         .then(response => response.data)
         .catch(err => {
             if(err.response) {
@@ -26,10 +38,14 @@ export function addStream(streamData) {
 }
 
 export function editStream(streamId, streamData, accessToken) {
-    return streamsAndCategoriesRequest.put('/api/v1/stream', {
+    const formData = new FormData()
+    formData.append('preview', streamData.linkImage)
+    delete streamData.linkImage
+    formData.append('stream', JSON.stringify({
         id: streamId,
         streamDesc: streamData
-    }, {
+    }))
+    return streamsAndCategoriesRequest.put('/api/v1/stream', formData, {
         headers: {'Authorization' : `Bearer ${accessToken}`}
     })
         .then(response => response.data)
@@ -86,4 +102,53 @@ export function getSingleStream(streamId/*, accessToken*/) {
                 throw err
             }
         })
+
 }
+
+export function increaseViewers(streamId, accessToken) {
+    return streamsAndCategoriesRequest.patch(`/api/v1/stream/increase-viewers`, {
+        id: streamId
+    }, {
+        headers: {'Authorization' : `Bearer ${accessToken}`},
+    })
+        .then(response => response.data)
+        .catch(err => {
+            if(err.response) {
+                throw new Error(err.response.data.message)
+            } else {
+                throw err
+            }
+        })
+}
+
+export function decreaseViewers(streamId, accessToken) {
+    return streamsAndCategoriesRequest.patch(`/api/v1/stream/decrease-viewers`, {
+        id: streamId
+    }, {
+        headers: {'Authorization' : `Bearer ${accessToken}`},
+    })
+        .then(response => response.data)
+        .catch(err => {
+            if(err.response) {
+                throw new Error(err.response.data.message)
+            } else {
+                throw err
+            }
+        })
+}
+export function increaseViews(streamId, accessToken) {
+    return streamsAndCategoriesRequest.patch(`/api/v1/stream/increase-views`, {
+        id: streamId
+    }, {
+        headers: {'Authorization' : `Bearer ${accessToken}`},
+    })
+        .then(response => response.data)
+        .catch(err => {
+            if(err.response) {
+                throw new Error(err.response.data.message)
+            } else {
+                throw err
+            }
+        })
+}
+

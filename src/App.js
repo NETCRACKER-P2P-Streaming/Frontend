@@ -26,7 +26,6 @@ function App({appLoading, isAuthFormOpen, loadApp}) {
         <>
             <Route
                 path={'/'}
-                exact={true}
                 render={() => (
                     <>
                         <HeaderContainer/>

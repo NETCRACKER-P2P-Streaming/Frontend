@@ -11,25 +11,16 @@ import {getStreamsFromServ} from '../../../../redux/reducers/stream_reducer'
 import {getCategoriesToSearchFromServ} from '../../../../redux/reducers/category_reducer'
 import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
 import StreamPage from './StreamPage'
-import useWindowDimensions from '../../../utils/useWindowDimention'
 import {ResponsiveContext} from 'grommet'
 
 function StreamPageContainer({
                                  getStreamsFromServ, getCategoriesToSearchFromServ,
                                  streamsList, categoriesList, setLoading,
                                  streamsSortingTypes, streamsSortingOrders,
-                                 appLoading
+                                 appLoading, headerHei, height, width
                              }) {
 
     const size = React.useContext(ResponsiveContext)
-
-    // Данные, необходимые для выбора высоты элемента
-    const {height, width} = useWindowDimensions()
-    const [headerHei, setHeaderHei] = useState(document.querySelector('header')?.clientHeight)
-    useEffect(
-        () => setHeaderHei(document.querySelector('header')?.clientHeight),
-        [height, width]
-    )
 
 
     const [values, setValues] = useState({
@@ -42,22 +33,22 @@ function StreamPageContainer({
     // Флаг, показывающий наличие элементов на сервере
     // для бесконечного скролла. Изначально false до первого
     // получения элементов
-    const [hasMore, setHasMore] = useState(false)
+    const [hasMore, setHasMore] = useState(true)
 
     useEffect(() => {
         setLoading(true)
 
         // Получение стримов и категорий при монтировании компоненты
-        Promise.all([
-            getStreamsFromServ(
-                true,
-                undefined,
-                [],
-                streamsSortingTypes[0].value,
-                streamsSortingOrders[0].value
-            ),
+        // Promise.all([
+            // getStreamsFromServ(
+            //     true,
+            //     undefined,
+            //     [],
+            //     streamsSortingTypes[0].value,
+            //     streamsSortingOrders[0].value
+            // ),
             getCategoriesToSearchFromServ()
-        ])
+        // ])
             .catch(err => {
                 console.log(err)
                 alert(err.message)
@@ -93,7 +84,8 @@ function StreamPageContainer({
                         title,
                         values.categories,
                         values.type.value,
-                        values.desc.value
+                        values.desc.value,
+                        'RUNNING'
                     )
                         .catch(err => {
                             console.log(err)
@@ -101,7 +93,7 @@ function StreamPageContainer({
                         })
                         .finally(() => setLoading(false))
                 },
-                1000
+                500
             )
         )
     }
@@ -117,7 +109,8 @@ function StreamPageContainer({
             title,
             values.categories,
             values.type.value,
-            values.desc.value
+            values.desc.value,
+            'RUNNING'
         )
             .catch(err => {
                 console.log(err)

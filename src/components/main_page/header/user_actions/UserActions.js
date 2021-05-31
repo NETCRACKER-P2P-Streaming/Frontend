@@ -11,12 +11,13 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
     const openUsers = () => history.push(`/users`)
     const openStreams = () => history.push(`/streams`)
 
-
-
     return (
-        <Box>
+        <Box
+            pad={'none'}
+        >
             <Menu
                 dropProps={{align: {top: 'bottom', left: 'left'}}}
+
                 items={userData.role[0]==="ADMIN"
                     ?[
                         {label: 'Profile', gap: 'large', onClick: () => openProfile()},
@@ -27,12 +28,13 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
                     ]
                     :[
                         {label: 'Profile', gap: 'large', onClick: () => openProfile()},
+                        {label: 'Start stream', gap: 'large', onClick: () => history.push('/start-stream')},
                         {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
                     ]}
+
                 label={
                     userAvatar
                         ? <Avatar
-                            key={Date.now()}
                             src={`${userAvatar}?${global.Date.now()}`}
                             size={'medium'}
                         />
