@@ -8,6 +8,9 @@ import Loading from './components/util_components/Loading'
 import HeaderContainer from './components/main_page/header/HeaderContainer'
 import {loadApp} from './redux/reducers/app_reducer'
 import ProfileContainer from './components/profile/ProfileContainer'
+import CategoryPageContainer from './components/categories/CategoryPageContainer'
+import StreamPageContainer from './components/streams/StreamPageContainer'
+import UsersPageContainer from './components/users/UsersPageContainer'
 
 function App({appLoading, isAuthFormOpen, loadApp}) {
 
@@ -35,6 +38,26 @@ function App({appLoading, isAuthFormOpen, loadApp}) {
                 exact={true}
                 render={() => <SignUpContainer/>}
             />
+            <Route
+                path={'/categories'}
+                exact={true}
+                render={() => (
+                    <>
+                        <HeaderContainer/>
+                        <CategoryPageContainer/>
+                    </>
+                )}
+            />
+            <Route
+                path={'/users'}
+                exact={true}
+                render={() => (
+                    <>
+                        <HeaderContainer/>
+                        <UsersPageContainer/>
+                    </>
+                )}
+            />
             <Route 
                 path="/profile/:username?"
                 render={() => (
@@ -44,7 +67,15 @@ function App({appLoading, isAuthFormOpen, loadApp}) {
                     </>
                 )} 
             />
-         
+            <Route 
+                path="/streams"
+                render={() => (
+                    <>
+                        <HeaderContainer/>
+                        <StreamPageContainer/>                   
+                    </>
+                )} 
+            />
             {/* Если флаг состояния загрузки всего прилоежния в true -
             отображается модальное окно с индикатором загрузки. */}
             {appLoading && !isAuthFormOpen && <Loading/>}

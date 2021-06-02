@@ -24,8 +24,6 @@ export function addStream(streamData, accessToken) {
             linkImage: undefined
         }
     }))
-
-
     return streamsAndCategoriesRequest.post('/api/v1/stream', formData, {
         headers: {'Authorization' : `Bearer ${accessToken}`}
     })
@@ -40,7 +38,6 @@ export function addStream(streamData, accessToken) {
 }
 
 export function editStream(streamId, streamData, accessToken) {
-
     const formData = new FormData()
     formData.append('preview', streamData.linkImage)
     delete streamData.linkImage
@@ -48,7 +45,6 @@ export function editStream(streamId, streamData, accessToken) {
         id: streamId,
         streamDesc: streamData
     }))
-
     return streamsAndCategoriesRequest.put('/api/v1/stream', formData, {
         headers: {'Authorization' : `Bearer ${accessToken}`}
     })
@@ -106,6 +102,7 @@ export function getSingleStream(streamId/*, accessToken*/) {
                 throw err
             }
         })
+
 }
 
 export function increaseViewers(streamId, accessToken) {
@@ -154,3 +151,4 @@ export function increaseViews(streamId, accessToken) {
             }
         })
 }
+

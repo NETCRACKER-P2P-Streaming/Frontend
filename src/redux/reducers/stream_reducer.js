@@ -261,3 +261,51 @@ export function increaseViewsOnServ(streamId) {
         }
     }
 }
+export function getStreamsToSearch() {
+    return async (dispatch, getState) => {
+        try {
+            const pageSize = selectStreamPageSize(getState())
+            const cookies = new Cookies()
+            await getStreams({
+                desc: true,
+                type: 'DATE',
+                page: 0,
+                count: pageSize})
+            return Promise.resolve()
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
+export function deleteOneStreamOnServ(streamId) {
+    return async (dispatch, getState) => {
+        const pageSize = selectStreamPageSize(getState())
+
+        try {
+            const cookies = new Cookies()
+            await deleteStream(streamId, cookies.get('accessToken'))
+            const res=await getStreams({
+                desc: true,
+                type: 'DATE',
+                page: 0,
+                count: pageSize})
+            dispatch(setStreamsAC(res))    
+            return Promise.resolve()
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}
+
+export function closeOneStreamOnServ(streamId) {
+    return async dispatch => {
+        try {
+            const cookies = new Cookies()
+            const response = await closeStream(streamId, cookies.get('accessToken'))
+            //dispatch(getStreamsToSearch())
+            return Promise.resolve()
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+}

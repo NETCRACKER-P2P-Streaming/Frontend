@@ -7,6 +7,9 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
     let username = userData.username
     const history = useHistory()
     const openProfile = () => history.push(`/profile/${username}`)
+    const openCategories = () => history.push(`/categories`)
+    const openUsers = () => history.push(`/users`)
+    const openStreams = () => history.push(`/streams`)
 
     return (
         <Box
@@ -14,11 +17,21 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
         >
             <Menu
                 dropProps={{align: {top: 'bottom', left: 'left'}}}
-                items={[
-                    {label: 'Profile', gap: 'large', onClick: () => openProfile()},
-                    {label: 'Start stream', gap: 'large', onClick: () => history.push('/start-stream')},
-                    {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
-                ]}
+
+                items={userData.role[0]==="ADMIN"
+                    ?[
+                        {label: 'Profile', gap: 'large', onClick: () => openProfile()},
+                        {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
+                        {label: 'Users', gap: 'large', onClick: () => openUsers()},
+                        {label: 'Streams', gap: 'large', onClick: () => openStreams()},
+                        {label: 'Сategories', gap: 'large', onClick: () => openCategories()},
+                    ]
+                    :[
+                        {label: 'Profile', gap: 'large', onClick: () => openProfile()},
+                        {label: 'Start stream', gap: 'large', onClick: () => history.push('/start-stream')},
+                        {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
+                    ]}
+
                 label={
                     userAvatar
                         ? <Avatar

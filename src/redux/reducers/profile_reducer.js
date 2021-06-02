@@ -38,7 +38,6 @@ export const getUserProfile = (username) => async (dispatch) => {
   dispatch(setUserProfile(response))
 }
 
-
 export const saveProfile = (userData) =>  {
   return async (dispatch,getState) => {
     try {
