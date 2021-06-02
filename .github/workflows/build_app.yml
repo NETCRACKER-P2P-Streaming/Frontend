@@ -32,7 +32,6 @@ jobs:
 
     - name: Build
       run: npm run-script build
-
     -
         name: Checkout
         uses: actions/checkout@v2
