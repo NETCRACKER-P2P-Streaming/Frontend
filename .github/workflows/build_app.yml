@@ -31,8 +31,10 @@ jobs:
       run: npm test
 
     - name: Build
-      run: npm run build
-      
+      run: npm run-script build
+      env:
+        CI: false
+
     -
         name: Checkout
         uses: actions/checkout@v2
