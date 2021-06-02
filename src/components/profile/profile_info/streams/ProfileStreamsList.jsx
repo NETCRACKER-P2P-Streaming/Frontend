@@ -32,7 +32,7 @@ export default function ProfileStreamsList({streamsList, height, onMore, hasMore
                     next={onMore}
                     loader={!appLoading && hasMore && <CustomLoader/>}
                     scrollableTarget={'stream_container'}
-                    style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around'}}
+                    style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}
                 >
                     {
                         streams.map((s) => <ProfileStreamListItemContainer

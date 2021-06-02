@@ -25,8 +25,12 @@ export function getCategories(getCategoriesData) {
             }
         })
 }
-export function addCategory(categoryData) {
-    return streamsAndCategoriesRequest.post('/api/v1/admin/category', categoryData)
+export function addCategory(categoryData, accessToken) {
+    return streamsAndCategoriesRequest.post('/api/v1/admin/category', categoryData, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
         .then(response => response.data)
         .catch(err => {
             if(err.response) {
@@ -36,8 +40,12 @@ export function addCategory(categoryData) {
             }
         })
 }
-export function updateCategory(categoryData) {
-    return streamsAndCategoriesRequest.put('/api/v1/admin/category', categoryData)
+export function updateCategory(categoryData, accessToken) {
+    return streamsAndCategoriesRequest.put('/api/v1/admin/category', categoryData, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
         .then(response => response.data)
         .catch(err => {
             if(err.response) {
@@ -47,10 +55,13 @@ export function updateCategory(categoryData) {
             }
         })
 }
-export function deleteCategory(categoryId) {
+export function deleteCategory(categoryId, accessToken) {
     return streamsAndCategoriesRequest.delete('/api/v1/admin/category', {
         method: 'DELETE',
-        data: {id: categoryId}
+        data: {id: categoryId},
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
     })
         .then(response => response.data)
         .catch(err => {

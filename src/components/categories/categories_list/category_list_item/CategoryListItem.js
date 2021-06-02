@@ -34,7 +34,7 @@ export default function CategoryListItem({
                     <Text
                         color={'dark-4'}
                         size={'medium'}
-                    >{categoryDesc}</Text>
+                    >{categoryDesc || 'No description'}</Text>
                     <Box
                         direction={'row'}
                         pad={ 'xsmall'}

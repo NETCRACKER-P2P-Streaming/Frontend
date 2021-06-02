@@ -41,7 +41,7 @@ export default function StreamsList({streamsList, height, onMore, hasMore, size,
                             streamLinkImage={s.streamDesc.linkImage}
                             streamUserAttributes={s.user}
                             streamId={s.id}
-
+                            status={s.information.status}
                         />)
                     }
                 </InfiniteScroll>

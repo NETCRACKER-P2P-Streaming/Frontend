@@ -10,6 +10,7 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
     const openCategories = () => history.push(`/categories`)
     const openUsers = () => history.push(`/users`)
     const openStreams = () => history.push(`/streams`)
+    const openStartStreamPage =() => history.push('/start-stream')
 
     return (
         <Box
@@ -23,7 +24,8 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
                         {label: 'Profile', gap: 'large', onClick: () => openProfile()},
                         {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
                         {label: 'Users', gap: 'large', onClick: () => openUsers()},
-                        {label: 'Streams', gap: 'large', onClick: () => openStreams()},
+                        {label: 'Start stream', gap: 'large', onClick: () => openStartStreamPage()},
+                        {label: 'Manage streams', gap: 'large', onClick: () => openStreams()},
                         {label: 'Сategories', gap: 'large', onClick: () => openCategories()},
                     ]
                     :[

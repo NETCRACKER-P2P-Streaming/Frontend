@@ -42,39 +42,23 @@ function App({appLoading, isAuthFormOpen, loadApp}) {
                 path={'/categories'}
                 exact={true}
                 render={() => (
-                    <>
-                        <HeaderContainer/>
                         <CategoryPageContainer/>
-                    </>
                 )}
             />
             <Route
                 path={'/users'}
                 exact={true}
-                render={() => (
-                    <>
-                        <HeaderContainer/>
-                        <UsersPageContainer/>
-                    </>
-                )}
+                render={() => (<UsersPageContainer/>)}
             />
             <Route 
                 path="/profile/:username?"
                 render={() => (
-                    <>
-                        <HeaderContainer/>
-                        <ProfileContainer/>                   
-                    </>
+                    <ProfileContainer/>
                 )} 
             />
             <Route 
                 path="/streams"
-                render={() => (
-                    <>
-                        <HeaderContainer/>
-                        <StreamPageContainer/>                   
-                    </>
-                )} 
+                render={() => (<StreamPageContainer/>)}
             />
             {/* Если флаг состояния загрузки всего прилоежния в true -
             отображается модальное окно с индикатором загрузки. */}

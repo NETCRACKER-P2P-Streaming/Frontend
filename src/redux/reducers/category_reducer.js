@@ -6,6 +6,7 @@ import {
     updateCategory
 } from '../../API/category_api'
 import {selectCategoriesPageSize, selectCategoriesList} from '../selectors/selectors'
+import {Cookies} from "react-cookie";
 
 const ADD_CATEGORIES = 'ADD_CATEGORIES'
 const ADD_CATEGORY = 'ADD_CATEGORY'
@@ -130,7 +131,8 @@ export function addOneCategory(category) {
                 "description": category.description,
                 "name": category.name
             }
-            const response = await addCategory(data)
+            const cookies = new Cookies()
+            const response = await addCategory(data, cookies.get('accessToken'))
             dispatch(addCategoryAC(response))
             dispatch(getCategoriesToSearchFromServ())
         } catch(err) {
@@ -146,7 +148,8 @@ export function changeCategory(category, id) {
                 "description": category.description,
                 "name": category.name
             }
-            const response = await updateCategory(data)
+            const cookies = new Cookies()
+            const response = await updateCategory(data, cookies.get('accessToken'))
             dispatch(getCategoriesToSearchFromServ())
         } catch(err) {
             return Promise.reject(err)
@@ -156,7 +159,9 @@ export function changeCategory(category, id) {
 export function deleteOneCategory(id) {
     return async (dispatch, getState) => {
         try {
-            await deleteCategory(id)
+            const cookies = new Cookies()
+            await deleteCategory(id, cookies.get('accessToken'))
+
             dispatch(getCategoriesToSearchFromServ())
         } catch(err) {
             return Promise.reject(err)

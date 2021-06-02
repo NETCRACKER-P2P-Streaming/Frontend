@@ -5,8 +5,15 @@ import {Image as ImageIcon, User} from 'grommet-icons'
 export default function StreamListItem ({
                                            streamImage, avatarImage, countViewers,
                                            closeOneStreamOnServ, deleteOneStreamOnServ,
-                                           streamTitle, userId, fullCategories, streamId
+                                           streamTitle, userId, fullCategories, streamId,
+                                           status
                                         }) {
+    const statusColor = status === 'RUNNING'
+        ? 'status-ok'
+        : status === 'PAUSED'
+            ? 'status-warning'
+            : 'status-error'
+
     return (
         <Box
             width={'350px'}
@@ -91,6 +98,7 @@ export default function StreamListItem ({
                         weight={'bold'}
                         size={'large'}
                         margin={{bottom: 'xsmall'}}
+                        color={statusColor}
                     >{streamTitle}</Text>
                     <Text
                         color={'dark-4'}

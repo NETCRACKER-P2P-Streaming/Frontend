@@ -7,7 +7,8 @@ import {connect} from 'react-redux'
 function StreamListItemContainer({
                                                     countViewers, fullCategories, streamTitle, 
                                                     streamId, deleteOneStreamOnServ, closeOneStreamOnServ,
-                                                    userId, streamLinkImage, streamUserAttributes
+                                                    userId, streamLinkImage, streamUserAttributes,
+                                                    status
 }) {
 
     const [streamImage, setStreamImage] = useState(null)
@@ -45,6 +46,7 @@ function StreamListItemContainer({
         streamId={streamId}
         deleteOneStreamOnServ={deleteOneStreamOnServ}
         closeOneStreamOnServ={closeOneStreamOnServ}
+        status={status}
     />
 }
 function mapStateToProps(state) {

@@ -30,7 +30,7 @@ export default function CategoriesList({ categoriesList, height, onMore, changeC
                     next={onMore}
                     loader={!appLoading && hasMore && <CustomLoader/>}
                     scrollableTarget={'category_container'}
-                    style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around'}}
+                    style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}
                 >
                     {
                         categoriesList.map((c) => <CategoryListItemContainer
