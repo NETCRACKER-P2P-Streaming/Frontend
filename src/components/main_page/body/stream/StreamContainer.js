@@ -11,6 +11,7 @@ import {
 } from '../../../../redux/reducers/stream_reducer'
 import ReactPlayer from 'react-player'
 import {Redirect} from 'react-router-dom'
+import {config} from '../../../../config/config'
 
 let tracks = null
 const connectionConfig = {
@@ -47,7 +48,7 @@ function StreamContainer({
     const [isStreamInitialized, setStreamInitialized] = useState(streamStates.NON_INITIALIZED)
 
     async function connectToStream(streamId) {
-        const ws = new WebSocket('ws://localhost:8081/signaling')
+        const ws = new WebSocket(config.signalingSocketAddress)
         const client = Stomp.over(ws)
 
         const onConnect = frame => {
