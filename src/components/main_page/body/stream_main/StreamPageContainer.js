@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import {
     selectAppLoading,
-    selectCategoriesList,
+    selectCategoriesList, selectSortStatuses,
     selectStreamsList,
     selectStreamsSortingOrders,
     selectStreamsSortingTypes
@@ -17,7 +17,7 @@ function StreamPageContainer({
                                  getStreamsFromServ, getCategoriesToSearchFromServ,
                                  streamsList, categoriesList, setLoading,
                                  streamsSortingTypes, streamsSortingOrders,
-                                 appLoading, headerHei, height, width
+                                 appLoading, headerHei, height, width, streamsSortingStatuses
                              }) {
 
     const size = React.useContext(ResponsiveContext)
@@ -27,7 +27,8 @@ function StreamPageContainer({
         title: '',
         categories: [],
         type: streamsSortingTypes[0],
-        desc: streamsSortingOrders[0]
+        desc: streamsSortingOrders[0],
+        status: streamsSortingStatuses[0]
     })
 
     // Флаг, показывающий наличие элементов на сервере
@@ -79,13 +80,14 @@ function StreamPageContainer({
                     if (/^[\w ]{6,50}$/.test(values.title)) {
                         title = values.title
                     }
+                    debugger
                     getStreamsFromServ(
                         true,
                         title,
                         values.categories,
                         values.type.value,
                         values.desc.value,
-                        'RUNNING'
+                        values.status.value
                     )
                         .catch(err => {
                             console.log(err)
@@ -110,7 +112,7 @@ function StreamPageContainer({
             values.categories,
             values.type.value,
             values.desc.value,
-            'RUNNING'
+            values.status.value
         )
             .catch(err => {
                 console.log(err)
@@ -132,6 +134,7 @@ function StreamPageContainer({
         hasMore={hasMore}
         size={size}
         appLoading={appLoading}
+        streamsSortingStatuses={streamsSortingStatuses}
     />
 }
 
@@ -141,6 +144,7 @@ function mapStateToProps(state) {
         categoriesList: selectCategoriesList(state),
         streamsSortingTypes: selectStreamsSortingTypes(state),
         streamsSortingOrders: selectStreamsSortingOrders(state),
+        streamsSortingStatuses: selectSortStatuses(state),
         appLoading: selectAppLoading(state)
     }
 }

@@ -7,7 +7,7 @@ import StreamSearchFormMobile from './StreamSearchFormMobile'
 export default function StreamSearchFormContainer({
                                                       categoriesList, streamsSortingTypes,
                                                       streamsSortingOrders, componentHeight,
-                                                      values, setValues
+                                                      values, setValues, streamsSortingStatuses
 }) {
 
 
@@ -26,6 +26,7 @@ export default function StreamSearchFormContainer({
             streamsSortingTypes={streamsSortingTypes}
             streamsSortingOrders={streamsSortingOrders}
             componentHeight={componentHeight}
+            streamsSortingStatuses={streamsSortingStatuses}
         />
         : <StreamSearchForm
             values={values}
@@ -37,5 +38,6 @@ export default function StreamSearchFormContainer({
             streamsSortingTypes={streamsSortingTypes}
             streamsSortingOrders={streamsSortingOrders}
             componentHeight={componentHeight}
+            streamsSortingStatuses={streamsSortingStatuses}
         />
 }

@@ -5,7 +5,7 @@ import FormCore from './FormCore'
 export default function StreamSearchForm({
                                              setValues, values, categoriesColl, size,
                                              streamsSortingTypes, streamsSortingOrders,
-                                             componentHeight
+                                             componentHeight, streamsSortingStatuses
                                          }) {
     return (
         <>
@@ -28,6 +28,7 @@ export default function StreamSearchForm({
                         values={values}
                         streamsSortingTypes={streamsSortingTypes}
                         streamsSortingOrders={streamsSortingOrders}
+                        streamsSortingStatuses={streamsSortingStatuses}
                     />
                 </Box>
             </Box>

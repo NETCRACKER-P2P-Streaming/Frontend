@@ -7,7 +7,7 @@ const StreamPage = memo(({
                                        categoriesList, windowHeight, streamsList,
                                        streamsSortingTypes, streamsSortingOrders,
                                        topHeight, values, setValues, onMore, hasMore,
-                                       size, appLoading
+                                       size, appLoading, streamsSortingStatuses
 }) => {
     return (
         <Box
@@ -21,6 +21,7 @@ const StreamPage = memo(({
                 componentHeight={windowHeight}
                 values={values}
                 setValues={setValues}
+                streamsSortingStatuses={streamsSortingStatuses}
             />
             <StreamsList
                 onMore={onMore}

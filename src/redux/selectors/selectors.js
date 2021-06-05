@@ -136,3 +136,7 @@ export function selectProfileStreamsList(state) {
     return state.profilePage.streams
 }
 
+export function selectSortStatuses(state) {
+    return state.streams.statuses
+}
+

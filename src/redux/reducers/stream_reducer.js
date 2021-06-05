@@ -43,6 +43,11 @@ const defaultState = {
             value: false
         }
     ],
+    statuses: [
+        {title: 'Active', value: 'RUNNING'},
+        {title: 'Paused', value: 'PAUSED'},
+        {title: 'Closed', value: 'CLOSED'}
+    ],
     viewerStreamStates: {
         NON_INITIALIZED: 'NON_INITIALIZED',
         OPENED: 'OPENED',
@@ -153,7 +158,7 @@ export function getStreamsFromServ(
 
             const pageSize = selectStreamPageSize(getState())
             const streamsTotalCount = selectStreamsList(getState()).length
-
+debugger
             const response = await getStreams({
                 title: title,
                 desc: desc,

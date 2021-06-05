@@ -5,7 +5,8 @@ import {Search} from 'grommet-icons'
 
 export default function FormCore({
                                      values, setValues, categoriesColl,
-                                     size, streamsSortingTypes, streamsSortingOrders
+                                     size, streamsSortingTypes, streamsSortingOrders,
+                                     streamsSortingStatuses
                                  }) {
     return (
         <Form
@@ -69,6 +70,8 @@ export default function FormCore({
                     margin={{top: 'medium'}}
                 />
             </FormField>
+
+
             <FormField
                 name={'desc'}
                 margin={
@@ -76,10 +79,38 @@ export default function FormCore({
                         ? {vertical: 'large'}
                         : {vertical: 'medium'}
                 }
+
             >
                 <Select
                     name={'desc'}
                     options={streamsSortingOrders}
+                    labelKey={'title'}
+                />
+            </FormField>
+
+            <FormField
+                label={<Text
+                    color={'brand'}
+                    weight={'bold'}
+                    size={
+                        size === 'small'
+                            ? 'medium'
+                            : 'large'
+                    }
+                >
+                    Status
+                </Text>
+                }
+                name={'status'}
+                margin={
+                    size === 'small'
+                        ? {vertical: 'large'}
+                        : {vertical: 'medium'}
+                }
+            >
+                <Select
+                    name={'status'}
+                    options={streamsSortingStatuses}
                     labelKey={'title'}
                 />
             </FormField>

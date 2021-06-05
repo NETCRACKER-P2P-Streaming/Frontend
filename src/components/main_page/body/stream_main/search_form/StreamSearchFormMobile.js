@@ -6,7 +6,7 @@ import FormCore from './FormCore'
 export default function StreamSearchFormMobile({
                                              setValues, values, categoriesColl,
                                              collapse, setCollapse, size, streamsSortingTypes,
-                                             streamsSortingOrders, componentHeight
+                                             streamsSortingOrders, componentHeight, streamsSortingStatuses
                                          }) {
     return (
         <>
@@ -59,6 +59,7 @@ export default function StreamSearchFormMobile({
                                 values={values}
                                 streamsSortingTypes={streamsSortingTypes}
                                 streamsSortingOrders={streamsSortingOrders}
+                                streamsSortingStatuses={streamsSortingStatuses}
                             />
                             </Box>
                         </Box>
