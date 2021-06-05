@@ -116,7 +116,7 @@ function StreamContainer({
                             JSON.stringify({id: streamId})
                         )
                     })
-            }, 500)
+            }, 3000)
         }
         if (ws.readyState === WebSocket.OPEN) {
             onConnect()
