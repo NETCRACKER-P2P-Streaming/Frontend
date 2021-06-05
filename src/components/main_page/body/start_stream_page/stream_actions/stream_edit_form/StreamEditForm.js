@@ -95,6 +95,7 @@ export default function StreamEditForm({
             />
         </FormField>
         <FileInput
+            accept={'image/*'}
             onChange={event => setFormValues({
                 ...formValues,
                 linkImage: event.target.files[0]

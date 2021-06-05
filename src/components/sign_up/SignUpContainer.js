@@ -45,7 +45,6 @@ function SignUpContainer({regUser, setAppLoading, appLoading, setAuthFormOpen}) 
 
     async function registerSubmit() {
         try {
-            debugger
             setAppLoading(true)
             await regUser(value)
             history.push('/')

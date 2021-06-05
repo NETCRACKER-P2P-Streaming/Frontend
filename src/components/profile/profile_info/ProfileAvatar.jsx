@@ -35,7 +35,7 @@ export default function ProfileAvatar({ userAvatar, deletePhoto,
                 direction={'row'}
                 margin={{'top':'xsmall'}}
             >
-                <FileInput onChange={onUploadPhoto} />
+                <FileInput onChange={onUploadPhoto} accept={'image/*'}/>
                 <Button
                     margin={{'left':'medium'}}
                     icon={<Trash />}

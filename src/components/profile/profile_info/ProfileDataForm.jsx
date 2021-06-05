@@ -59,7 +59,7 @@ const ProfileData = ({ profile, isOwner, goToEditMode, updateStatus,
           <ProfileStatus
             status={userAtt['custom:description']}
             updateStatus={updateStatus}
-          /> <br></br>
+          /> <br/>
           </Box>
           <Box direction={'row'}>
             <Box direction={'column'}>

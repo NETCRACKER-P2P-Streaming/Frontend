@@ -25,7 +25,7 @@ export default function Header({isAuthFormOpen, setAuthFormOpen, userAvatar, use
                         level={2}
                         color={'light-1'}
                     >
-                        P2P&nbsp;SERVICE
+                        P2Pitch
                     </Heading>
                 </NavLink>
 
