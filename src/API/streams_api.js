@@ -88,9 +88,8 @@ export function closeStream(streamId, accessToken) {
             }
         })
 }
-//
 
-export function getSingleStream(streamId/*, accessToken*/) {
+export function getSingleStream(streamId) {
     return streamsAndCategoriesRequest.get(`/api/v1/streams/${streamId}`)
         .then(response => response.data)
         .catch(err => {
@@ -103,7 +102,7 @@ export function getSingleStream(streamId/*, accessToken*/) {
 
 }
 
-export function increaseViewers(streamId, accessToken) {
+export function increaseViewers(streamId) {
     return streamsAndCategoriesRequest.patch(`/api/v1/stream/increase-viewers`, {
         id: streamId
     })
@@ -117,7 +116,7 @@ export function increaseViewers(streamId, accessToken) {
         })
 }
 
-export function decreaseViewers(streamId, accessToken) {
+export function decreaseViewers(streamId) {
     return streamsAndCategoriesRequest.patch(`/api/v1/stream/decrease-viewers`, {
         id: streamId
     })
@@ -130,7 +129,7 @@ export function decreaseViewers(streamId, accessToken) {
             }
         })
 }
-export function increaseViews(streamId, accessToken) {
+export function increaseViews(streamId) {
     return streamsAndCategoriesRequest.patch(`/api/v1/stream/increase-views`, {
         id: streamId
     })

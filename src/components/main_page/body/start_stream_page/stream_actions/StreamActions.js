@@ -45,7 +45,7 @@ export default function StreamActions({
     if (actualStream) {
         return <StreamInformation
             fullCategories={prettyCategories}
-            avatarImage={actualUser.userAttributes['custom:linkImage']}
+            avatarImage={actualUser.userAttributes.avatar}
             countViewers={actualStream.information.countViewers}
             streamDesc={actualStream.streamDesc.description}
             userId={actualStream.userId}

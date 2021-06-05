@@ -19,11 +19,11 @@ function StreamListItemContainer({
         // идет проверка на валидность используемого изображения. Если изображение
         // не может быть загружено, тогда идет установка изображения в null
         // -> будет отображена заглушка
-        if(streamUserAttributes && streamUserAttributes['custom:linkImage']) {
+        if(streamUserAttributes && streamUserAttributes.avatar) {
             const img = new Image()
-            img.onload = () => {setAvatarImage(streamUserAttributes['custom:linkImage'])}
+            img.onload = () => {setAvatarImage(streamUserAttributes.avatar)}
             img.onerror = () => {setAvatarImage(null)}
-            img.src = streamUserAttributes['custom:linkImage']
+            img.src = streamUserAttributes.avatar
         }
     }, [streamUserAttributes])
 
