@@ -10,8 +10,6 @@ export default function StreamSearchFormContainer({
                                                       values, setValues, streamsSortingStatuses
 }) {
 
-
-
     const size = useContext(ResponsiveContext)
     const [collapse, setCollapse] = useState(false)
 

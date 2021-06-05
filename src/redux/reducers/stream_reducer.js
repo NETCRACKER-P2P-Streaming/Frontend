@@ -158,7 +158,6 @@ export function getStreamsFromServ(
 
             const pageSize = selectStreamPageSize(getState())
             const streamsTotalCount = selectStreamsList(getState()).length
-debugger
             const response = await getStreams({
                 title: title,
                 desc: desc,
@@ -168,22 +167,8 @@ debugger
                 count: pageSize,
                 status: status
             })
-            let usersPromises = []
-            for (let i = 0; i < response.length; i++) {
-                usersPromises[i] = getUser(response[i].userId)
-                    .then(u => {
-                        response[i].user = u.userAttributes.reduce((acc, item) => {
-                            acc[item.name] = item.value
-                            return acc
-                        }, {})
-                    })
-                    .catch(err => {
-                        console.log(err)
-                        response[i].user = null
-                    })
-            }
             dispatch(appendStreams(response))
-            return Promise.all(usersPromises)
+            return Promise.resolve()
         } catch (err) {
             return Promise.reject(err)
         }
@@ -257,7 +242,6 @@ export function decreaseViewersOnServ(streamId) {
 export function increaseViewsOnServ(streamId) {
     return async dispatch => {
         try {
-            debugger
             const cookies = new Cookies()
             const response = await increaseViews(streamId, cookies.get('accessToken'))
             return Promise.resolve()

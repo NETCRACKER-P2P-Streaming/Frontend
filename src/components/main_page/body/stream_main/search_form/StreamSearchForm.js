@@ -8,6 +8,7 @@ export default function StreamSearchForm({
                                              componentHeight, streamsSortingStatuses
                                          }) {
     return (
+
         <>
             <Box
                 direction={'row'}

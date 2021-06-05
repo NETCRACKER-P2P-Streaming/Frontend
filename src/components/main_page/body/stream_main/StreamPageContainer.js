@@ -80,7 +80,6 @@ function StreamPageContainer({
                     if (/^[\w ]{6,50}$/.test(values.title)) {
                         title = values.title
                     }
-                    debugger
                     getStreamsFromServ(
                         true,
                         title,

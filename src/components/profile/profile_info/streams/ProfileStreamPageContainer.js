@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import {
     selectAppLoading,
-    selectCategoriesList,
+    selectCategoriesList, selectSortStatuses,
     selectStreamsList,
     selectStreamsSortingOrders,
     selectStreamsSortingTypes
@@ -18,7 +18,7 @@ function ProfileStreamPageContainer({
                                  getStreamsFromServ, getCategoriesToSearchFromServ,
                                  streamsList, categoriesList, setLoading,
                                  streamsSortingTypes, streamsSortingOrders,
-                                 appLoading, profile
+                                 appLoading, profile, streamsSortingStatuses
                              }) {
 
     const size = React.useContext(ResponsiveContext)
@@ -36,7 +36,8 @@ function ProfileStreamPageContainer({
         title: '',
         categories: [],
         type: streamsSortingTypes[0],
-        desc: streamsSortingOrders[0]
+        desc: streamsSortingOrders[0],
+        status: streamsSortingStatuses[0]
     })
 
     // Флаг, показывающий наличие элементов на сервере
@@ -54,7 +55,8 @@ function ProfileStreamPageContainer({
                 undefined,
                 [],
                 streamsSortingTypes[0].value,
-                streamsSortingOrders[0].value
+                streamsSortingOrders[0].value,
+                values.status.value
             ),
             getCategoriesToSearchFromServ()
         ])
@@ -93,7 +95,8 @@ function ProfileStreamPageContainer({
                         title,
                         values.categories,
                         values.type.value,
-                        values.desc.value
+                        values.desc.value,
+                        values.status.value
                     )
                         .catch(err => {
                             console.log(err)
@@ -133,6 +136,7 @@ function ProfileStreamPageContainer({
         topHeight={headerHei}
         streamsSortingTypes={streamsSortingTypes}
         streamsSortingOrders={streamsSortingOrders}
+        streamsSortingStatuses={streamsSortingStatuses}
         values={values}
         setValues={setValues}
         onMore={onMore}
@@ -149,6 +153,7 @@ function mapStateToProps(state) {
         categoriesList: selectCategoriesList(state),
         streamsSortingTypes: selectStreamsSortingTypes(state),
         streamsSortingOrders: selectStreamsSortingOrders(state),
+        streamsSortingStatuses: selectSortStatuses(state),
         appLoading: selectAppLoading(state),
         profile:state.profilePage.profile
     }

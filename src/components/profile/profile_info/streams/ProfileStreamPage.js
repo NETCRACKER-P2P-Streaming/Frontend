@@ -7,8 +7,9 @@ export default function ProfileStreamPage({
                                        categoriesList, windowHeight, streamsList,
                                        streamsSortingTypes, streamsSortingOrders,
                                        topHeight, values, setValues, onMore, hasMore,
-                                       size, appLoading,profile
+                                       size, appLoading,profile, streamsSortingStatuses
 }) {
+    debugger
     return (
         <Box
             direction={'row'}
@@ -21,6 +22,7 @@ export default function ProfileStreamPage({
                 componentHeight={windowHeight}
                 values={values}
                 setValues={setValues}
+                streamsSortingStatuses={streamsSortingStatuses}
             />
             <ProfileStreamsList
                 onMore={onMore}
