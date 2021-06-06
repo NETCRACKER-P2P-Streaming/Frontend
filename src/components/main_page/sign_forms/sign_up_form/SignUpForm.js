@@ -87,7 +87,7 @@ export default function SignUpForm({
                                 <SignUpFormFirstPage />
                                 <FileInput
                                     accept={'image/*'}
-                                    onChange={event =>  setValue({
+                                    onChange={event => setValue({
                                         ...value,
                                         linkImage: event.target.files[0]
                                     })}

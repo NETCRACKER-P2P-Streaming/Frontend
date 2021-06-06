@@ -3,14 +3,20 @@ import {connect} from 'react-redux'
 import Stream from './Stream'
 import * as Stomp from 'stomp-websocket'
 import useWindowDimensions from '../../../utils/useWindowDimention'
-import {selectStreamsList, selectUserData, selectViewerStreamStates} from '../../../../redux/selectors/selectors'
+import {
+    selectActualStream,
+    selectStreamsList,
+    selectUserData,
+    selectViewerStreamStates
+} from '../../../../redux/selectors/selectors'
 import {
     increaseViewsOnServ,
     increaseViewersOnServ,
-    decreaseViewersOnServ
+    decreaseViewersOnServ,
+    setActualStream, getSingleStreamFromServ
 } from '../../../../redux/reducers/stream_reducer'
 import ReactPlayer from 'react-player'
-import {Redirect} from 'react-router-dom'
+import {Redirect, useHistory} from 'react-router-dom'
 import {config} from '../../../../config/config'
 
 let tracks = null
@@ -42,7 +48,8 @@ const MyPlayer = () => {
 
 function StreamContainer({
                              streamsList, watcherId, streamStates, increaseViewsOnServ,
-                             increaseViewersOnServ,
+                             increaseViewersOnServ, setActualStream, actualStream,
+                             getSingleStreamFromServ,
                              decreaseViewersOnServ, ...props
                          }) {
 
@@ -117,7 +124,7 @@ function StreamContainer({
                             JSON.stringify({id: streamId})
                         )
                     })
-            }, 500)
+            }, 1000)
         }
         if (ws.readyState === WebSocket.OPEN) {
             onConnect()
@@ -127,12 +134,11 @@ function StreamContainer({
     }
 
     const actualStreamId = props.match.params.streamId
-    const actualStream = streamsList.filter(s => s.id === actualStreamId)[0]
     const {height, width} = useWindowDimensions()
     const [headerHei, setHeaderHei] = useState(document.querySelector('header')?.clientHeight)
-
+    const history = useHistory()
     const [avatarImage, setAvatarImage] = useState(null)
-    const streamUserAttributes = actualStream.user
+    const streamUserAttributes = actualStream?.user
 
     useEffect(() => {
         // Если у пользователя существует поле аватарки -
@@ -157,8 +163,19 @@ function StreamContainer({
     )
 
     useEffect(() => {
-        connectToStream(actualStreamId)
-            .catch(e => console.log(e.message))
+        getSingleStreamFromServ(actualStreamId)
+            .then(stream => {
+                setActualStream(stream)
+                return stream
+            })
+            .then(stream => {
+                debugger
+                return connectToStream(stream.id)
+            })
+            .catch(e => {
+                console.log(e.message)
+                history.push('/')
+            })
 
         return () => {
             decreaseViewersOnServ(actualStreamId)
@@ -184,14 +201,17 @@ function StreamContainer({
             to={`/start-stream/${actualStream.id}`}
         />
     }
+    if(!actualStream) {
+        return <div></div>
+    }
     return <Stream
-        streamTitle={actualStream.streamDesc.title}
-        fullCategories={actualStream.streamDesc.fullCategories}
-        countViewers={actualStream.information.countViewers}
-        streamDesc={actualStream.streamDesc.description}
-        userId={actualStream.userId}
+        streamTitle={actualStream?.streamDesc.title}
+        fullCategories={actualStream?.streamDesc.fullCategories}
+        countViewers={actualStream?.information.countViewers}
+        streamDesc={actualStream?.streamDesc.description}
+        userId={actualStream?.userId}
         avatarImage={avatarImage}
-        streamUserAttributes={actualStream.user}
+        streamUserAttributes={actualStream?.user}
         height={height - headerHei + 'px'}
         isStreamCommonInfoOpened={isStreamCommonInfoOpened}
         openStreamCommonInfo={openStreamCommonInfo}
@@ -206,12 +226,15 @@ function mapStateToProps(state) {
     return {
         streamsList: selectStreamsList(state),
         watcherId: selectUserData(state)?.username,
-        streamStates: selectViewerStreamStates(state)
+        streamStates: selectViewerStreamStates(state),
+        actualStream: selectActualStream(state)
     }
 }
 
 export default connect(mapStateToProps, {
     increaseViewsOnServ,
     increaseViewersOnServ,
-    decreaseViewersOnServ
+    decreaseViewersOnServ,
+    setActualStream,
+    getSingleStreamFromServ
 })(StreamContainer)

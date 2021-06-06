@@ -153,9 +153,11 @@ function StartStreamPageContainer({
                         linkImage: response.streamDesc.linkImage,
                         categories: response.streamDesc.categories
                     })
+                    if(response.status === 'RUNNING') {
+                        return openStreamerConnection(response.id)
+                    }
                     return response.id
                 })
-                .then(id => openStreamerConnection(id))
                 .catch(err => {
                     alert(err.message)
                     console.log(err)

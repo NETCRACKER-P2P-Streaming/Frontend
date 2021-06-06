@@ -130,7 +130,6 @@ export function getSingleStreamFromServ(streamId) {
     return async dispatch => {
         try {
             const response = await getSingleStream(streamId)
-            debugger
             const streamer = await getUser(response.userId)
             response.user = streamer.userAttributes.reduce((acc, item) => {
                 acc[item.name] = item.value

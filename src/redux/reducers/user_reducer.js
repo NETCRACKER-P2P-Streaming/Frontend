@@ -55,7 +55,7 @@ export function regUser(userData) {
                     },
                     {
                         name: "custom:linkImage",
-                        value: userData.linkImage.name
+                        value: userData.linkImage?.name
                     },
                     {
                         name: "custom:description",
