@@ -22,11 +22,11 @@ export default function UserActions({userAvatar, logoutUserAction, userData}) {
                 items={userData.role[0]==="ADMIN"
                     ?[
                         {label: 'Profile', gap: 'large', onClick: () => openProfile()},
-                        {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
                         {label: 'Users', gap: 'large', onClick: () => openUsers()},
                         {label: 'Start stream', gap: 'large', onClick: () => openStartStreamPage()},
                         {label: 'Manage streams', gap: 'large', onClick: () => openStreams()},
                         {label: 'Сategories', gap: 'large', onClick: () => openCategories()},
+                        {label: 'Logout', gap: 'large', onClick: () => logoutUserAction()},
                     ]
                     :[
                         {label: 'Profile', gap: 'large', onClick: () => openProfile()},

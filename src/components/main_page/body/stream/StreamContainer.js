@@ -169,8 +169,10 @@ function StreamContainer({
                 return stream
             })
             .then(stream => {
-                debugger
-                return connectToStream(stream.id)
+                if(stream && stream.information.status === 'RUNNING') {
+                    return connectToStream(stream.id)
+                }
+                return Promise.resolve()
             })
             .catch(e => {
                 console.log(e.message)
@@ -210,6 +212,7 @@ function StreamContainer({
         countViewers={actualStream?.information.countViewers}
         streamDesc={actualStream?.streamDesc.description}
         userId={actualStream?.userId}
+        status={actualStream?.information.status}
         avatarImage={avatarImage}
         streamUserAttributes={actualStream?.user}
         height={height - headerHei + 'px'}

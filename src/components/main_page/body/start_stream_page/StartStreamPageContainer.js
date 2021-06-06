@@ -18,7 +18,7 @@ import {
 import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
 import Notification from '../../../util_components/Notification'
 import * as Stomp from 'stomp-websocket'
-import {useHistory, useParams} from 'react-router-dom'
+import {Redirect, useHistory, useParams} from 'react-router-dom'
 import {config} from "../../../../config/config";
 
 export let stream = null
@@ -251,10 +251,15 @@ function StartStreamPageContainer({
 
     function onDeleteStream() {
         try {
+            setLoading(true)
             deleteStreamOnServ(actualStream.id)
                 .then(() => onStopSharing())
                 .then(() => history.push('/'))
                 .then(() => setActualStream(null))
+                .catch(err => {
+                    alert(err.message)
+                    setLoading(false)
+                })
         } catch (err) {
             alert(err)
         }
@@ -262,16 +267,22 @@ function StartStreamPageContainer({
 
     function onCloseStream() {
         try {
+            setLoading(true)
             closeStreamOnServ(actualStream.id)
                 .then(() => onStopSharing())
                 .then(() => history.push('/'))
                 .then(() => setActualStream(null))
+                .catch(err => {
+                    alert(err.message)
+                    setLoading(false)
+                })
         } catch (err) {
             alert(err)
         }
     }
 
     function onEditStream(initialValues) {
+        setLoading(true)
         return editStreamOnServ(
             actualStream.id,
             initialValues.categories,
@@ -280,11 +291,15 @@ function StartStreamPageContainer({
             initialValues.title
         )
             .then(() => setIsEditable(false))
-            .catch(err => alert(err))
+            .catch(err => {
+                alert(err.message)
+                setLoading(false)
+            })
     }
 
     function onSubmit(values) {
         if (stream) {
+            setLoading(true)
             addStreamOnServ({
                 ...values,
                 categories: values.categories.filter(c => !!c)
@@ -303,10 +318,17 @@ function StartStreamPageContainer({
                 .catch(err => {
                     alert(err.message)
                     console.log(err)
+                    setLoading(false)
                 })
         } else {
             showNotification()
         }
+    }
+
+    if(actualStream && actualStream.information.status !== 'RUNNING') {
+        return <Redirect
+            to={'/stream/' + actualStream.id}
+        />
     }
 
     return <StartStreamPage

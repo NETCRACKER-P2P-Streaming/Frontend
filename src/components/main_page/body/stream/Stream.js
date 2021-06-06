@@ -6,7 +6,7 @@ import {User} from 'grommet-icons'
 export default function Stream({
                                    height, isStreamCommonInfoOpened, closeStreamCommonInfo, openStreamCommonInfo,
                                    avatarImage, countViewers, fullCategories, streamTitle, streamUserAttributes,
-                                   userId, streamDesc, MyPlayer, isStreamInit, streamStates
+                                   userId, streamDesc, MyPlayer, isStreamInit, streamStates, status
                                }) {
     const streamRef = useRef()
     const chatRef = useRef()
@@ -36,7 +36,7 @@ export default function Stream({
                             modal={false}
                         >
                         {
-                            isStreamInit === streamStates.SUSPENDED
+                            isStreamInit === streamStates.SUSPENDED || status !== 'RUNNING'
                                 ? <Text>This translation has been closed</Text>
                                 : <Spinner size={'medium'}/>
                         }
