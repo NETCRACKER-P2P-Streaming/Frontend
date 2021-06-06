@@ -196,7 +196,7 @@ function StreamContainer({
         setTimeout(() => mustBeClosed ? setStreamCommonInfoOpened(false) : null, 500)
     }
 
-    if (watcherId && watcherId === actualStream.userId) {
+    if (watcherId && actualStream && watcherId === actualStream?.userId) {
         return <Redirect
             to={`/start-stream/${actualStream.id}`}
         />
