@@ -274,8 +274,8 @@ function StartStreamPageContainer({
                 .then(() => setActualStream(null))
                 .catch(err => {
                     alert(err.message)
-                    setLoading(false)
                 })
+                .finally(() => setLoading(false))
         } catch (err) {
             alert(err)
         }
@@ -293,8 +293,8 @@ function StartStreamPageContainer({
             .then(() => setIsEditable(false))
             .catch(err => {
                 alert(err.message)
-                setLoading(false)
             })
+            .finally(() => setLoading(false))
     }
 
     function onSubmit(values) {
@@ -318,8 +318,8 @@ function StartStreamPageContainer({
                 .catch(err => {
                     alert(err.message)
                     console.log(err)
-                    setLoading(false)
                 })
+                .finally(() => setLoading(false))
         } else {
             showNotification()
         }
