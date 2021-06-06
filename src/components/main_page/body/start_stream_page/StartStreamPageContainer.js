@@ -19,6 +19,7 @@ import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
 import Notification from '../../../util_components/Notification'
 import * as Stomp from 'stomp-websocket'
 import {useHistory, useParams} from 'react-router-dom'
+import {config} from "../../../../config/config";
 
 export let stream = null
 const connections = new Map()
@@ -29,6 +30,7 @@ const peerConnectionConfig = {
     iceServers: [
         {
             'urls': [
+                'stun:stun.sipgate.net',
                 'stun:stun.l.google.com:19302',
                 'stun:stun1.l.google.com:19302',
                 'stun:stun2.l.google.com:19302',
@@ -39,7 +41,7 @@ const peerConnectionConfig = {
 }
 
 export async function openStreamerConnection(streamId) {
-    const ws = new WebSocket('ws://localhost:8081/signaling')
+    const ws = new WebSocket(config.signalingSocketAddress)
     const client = Stomp.over(ws)
 
     client.connect({}, frame => {
