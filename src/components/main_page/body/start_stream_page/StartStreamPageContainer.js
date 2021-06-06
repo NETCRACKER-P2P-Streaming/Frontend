@@ -87,7 +87,7 @@ export async function openStreamerConnection(streamId) {
         client.subscribe(`/queue/${streamId}/streamer/candidate`, message => {
             const messageParsed = JSON.parse(message.body)
             connections[messageParsed.senderId]
-                .addIceCandidate(new RTCIceCandidate(messageParsed.candidate))
+                .addIceCandidate(new RTCIceCandidate())
 
         })
     })
