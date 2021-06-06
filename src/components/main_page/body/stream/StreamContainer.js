@@ -117,7 +117,7 @@ function StreamContainer({
                             JSON.stringify({id: streamId})
                         )
                     })
-            }, 3000)
+            }, 500)
         }
         if (ws.readyState === WebSocket.OPEN) {
             onConnect()
@@ -139,15 +139,15 @@ function StreamContainer({
         // идет проверка на валидность используемого изображения. Если изображение
         // не может быть загружено, тогда идет установка изображения в null
         // -> будет отображена заглушка
-        if (streamUserAttributes && streamUserAttributes.avatar) {
+        if (streamUserAttributes && streamUserAttributes['custom:linkImage']) {
             const img = new Image()
             img.onload = () => {
-                setAvatarImage(streamUserAttributes.avatar)
+                setAvatarImage(streamUserAttributes['custom:linkImage'])
             }
             img.onerror = () => {
                 setAvatarImage(null)
             }
-            img.src = streamUserAttributes.avatar
+            img.src = streamUserAttributes['custom:linkImage']
         }
     }, [streamUserAttributes])
 

@@ -19,7 +19,6 @@ import {setLoadingAC} from '../../../../redux/reducers/app_reducer'
 import Notification from '../../../util_components/Notification'
 import * as Stomp from 'stomp-websocket'
 import {useHistory, useParams} from 'react-router-dom'
-import {config} from "../../../../config/config";
 
 export let stream = null
 const connections = new Map()
@@ -40,7 +39,7 @@ const peerConnectionConfig = {
 }
 
 export async function openStreamerConnection(streamId) {
-    const ws = new WebSocket(config.signalingSocketAddress)
+    const ws = new WebSocket('ws://localhost:8081/signaling')
     const client = Stomp.over(ws)
 
     client.connect({}, frame => {
@@ -88,7 +87,6 @@ export async function openStreamerConnection(streamId) {
             const messageParsed = JSON.parse(message.body)
             connections[messageParsed.senderId]
                 .addIceCandidate(new RTCIceCandidate(messageParsed.candidate))
-
         })
     })
 }
