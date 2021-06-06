@@ -88,6 +88,7 @@ export async function openStreamerConnection(streamId) {
             const messageParsed = JSON.parse(message.body)
             connections[messageParsed.senderId]
                 .addIceCandidate(new RTCIceCandidate(messageParsed.candidate))
+
         })
     })
 }

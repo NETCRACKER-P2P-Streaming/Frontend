@@ -39,6 +39,7 @@ const MyPlayer = () => {
     </ReactPlayer>
 }
 
+
 function StreamContainer({
                              streamsList, watcherId, streamStates, increaseViewsOnServ,
                              increaseViewersOnServ,
