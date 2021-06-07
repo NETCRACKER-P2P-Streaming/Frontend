@@ -163,7 +163,11 @@ function StreamContainer({
         [height, width]
     )
 
+
     useEffect(() => {
+        window.onunload = () => {
+            decreaseViewersOnServ(actualStreamId)
+        }
         getSingleStreamFromServ(actualStreamId)
             .then(stream => {
                 setActualStream(stream)
