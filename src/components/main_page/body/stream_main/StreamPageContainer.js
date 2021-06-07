@@ -38,7 +38,7 @@ function StreamPageContainer({
 
     useEffect(() => {
         setLoading(true)
-
+        setHasMore(false)
         // Получение стримов и категорий при монтировании компоненты
         // Promise.all([
             // getStreamsFromServ(

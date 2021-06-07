@@ -1,7 +1,7 @@
 import {
     addStream,
-    closeStream, decreaseViewers,
-    deleteStream,
+    closeStream, closeStreamAdmin, decreaseViewers,
+    deleteStream, deleteStreamAdmin,
     editStream,
     getSingleStream,
     getStreams,
@@ -274,12 +274,13 @@ export function deleteOneStreamOnServ(streamId) {
 
         try {
             const cookies = new Cookies()
-            await deleteStream(streamId, cookies.get('accessToken'))
+            await deleteStreamAdmin(streamId, cookies.get('accessToken'))
             const res=await getStreams({
                 desc: true,
                 type: 'DATE',
                 page: 0,
-                count: pageSize})
+                count: pageSize
+            })
             dispatch(setStreamsAC(res))    
             return Promise.resolve()
         } catch (err) {
@@ -292,7 +293,7 @@ export function closeOneStreamOnServ(streamId) {
     return async dispatch => {
         try {
             const cookies = new Cookies()
-            const response = await closeStream(streamId, cookies.get('accessToken'))
+            const response = await closeStreamAdmin(streamId, cookies.get('accessToken'))
             //dispatch(getStreamsToSearch())
             return Promise.resolve()
         } catch (err) {

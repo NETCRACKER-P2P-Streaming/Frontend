@@ -73,8 +73,40 @@ export function deleteStream(streamId, accessToken) {
         })
 }
 
+export function deleteStreamAdmin(streamId, accessToken) {
+    return streamsAndCategoriesRequest.delete(`/api/v1/admin/stream`, {
+        method: 'DELETE',
+        headers: {'Authorization' : `Bearer ${accessToken}`},
+        data: {id: streamId}
+    })
+        .then(response => response.data)
+        .catch(err => {
+            if(err.response) {
+                throw new Error(err.response.data.message)
+            } else {
+                throw err
+            }
+        })
+}
+
 export function closeStream(streamId, accessToken) {
     return streamsAndCategoriesRequest.put('/api/v1/stream/close', {
+        id: streamId,
+    }, {
+        headers: {'Authorization' : `Bearer ${accessToken}`},
+    })
+        .then(response => response.data)
+        .catch(err => {
+            if(err.response) {
+                throw new Error(err.response.data.message)
+            } else {
+                throw err
+            }
+        })
+}
+
+export function closeStreamAdmin(streamId, accessToken) {
+    return streamsAndCategoriesRequest.put('/api/v1/stream/admin/close', {
         id: streamId,
     }, {
         headers: {'Authorization' : `Bearer ${accessToken}`},
