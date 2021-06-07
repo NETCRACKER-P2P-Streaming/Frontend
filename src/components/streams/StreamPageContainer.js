@@ -46,7 +46,10 @@ function StreamPageContainer({
 
     useEffect(() => {
         setLoading(true)
-
+        window.onunload = () => {
+            setHasMore(false)
+        }
+        setHasMore(false)
         // Получение стримов и категорий при монтировании компоненты
         Promise.all([
             getStreamsFromServ(
@@ -64,7 +67,7 @@ function StreamPageContainer({
             })
             .finally(() => {
                 setLoading(false)
-                if(Array.isArray(streamsList) && streamsList.length > 0) {
+                if (Array.isArray(streamsList) && streamsList.length > 0) {
                     setHasMore(true)
                 }
             })
