@@ -9,7 +9,6 @@ export default function ProfileStreamPage({
                                        topHeight, values, setValues, onMore, hasMore,
                                        size, appLoading,profile, streamsSortingStatuses
 }) {
-    debugger
     return (
         <Box
             direction={'row'}
@@ -32,7 +31,6 @@ export default function ProfileStreamPage({
                 size={size}
                 appLoading={appLoading}
                 profile={profile}
-
             />
         </Box>
     )

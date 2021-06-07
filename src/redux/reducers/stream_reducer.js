@@ -150,7 +150,8 @@ export function getStreamsFromServ(
     categoriesColl,
     type,
     desc,
-    status
+    status,
+    userId
 ) {
     return async (dispatch, getState) => {
         try {
@@ -165,7 +166,8 @@ export function getStreamsFromServ(
                 type: type,
                 page: withReplace ? 0 : Math.ceil(streamsTotalCount / pageSize),
                 count: pageSize,
-                status: status === 'ALL' ? undefined : status
+                status: status === 'ALL' ? undefined : status,
+                userId: userId
             })
             dispatch(appendStreams(response))
             return Promise.resolve()

@@ -120,7 +120,7 @@ export function userLogout() {
 
             deleteTokensCookies()
             dispatch(setUserDataAC(null))
-
+            return Promise.resolve()
         } catch (err) {
             return Promise.reject(err)
         }

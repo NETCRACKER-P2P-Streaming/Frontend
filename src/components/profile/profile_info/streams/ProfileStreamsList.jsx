@@ -5,9 +5,6 @@ import {InProgress} from 'grommet-icons'
 import ProfileStreamListItemContainer from './ProfileStreamListItemContainer'
 
 export default function ProfileStreamsList({streamsList, height, onMore, hasMore, size, appLoading, profile}) {
-    let streams = streamsList.filter(function(streamsList) {
-        return streamsList.userId==profile.username
-    })
     return <Box
         margin={{vertical: '0', horizontal: 'auto'}}
         basis={size === 'small' ? 'full' : '3/4'}
@@ -35,7 +32,7 @@ export default function ProfileStreamsList({streamsList, height, onMore, hasMore
                     style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}
                 >
                     {
-                        streams.map((s) => <ProfileStreamListItemContainer
+                        streamsList.map((s) => <ProfileStreamListItemContainer
                             key={s.userId}
                             userId={s.userId}
                             streamTitle={s.streamDesc.title}

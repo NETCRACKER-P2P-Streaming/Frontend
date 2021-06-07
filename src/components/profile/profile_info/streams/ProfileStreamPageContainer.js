@@ -46,8 +46,11 @@ function ProfileStreamPageContainer({
     const [hasMore, setHasMore] = useState(false)
 
     useEffect(() => {
+        console.log(hasMore)
+    }, [hasMore])
+    useEffect(() => {
         setLoading(true)
-
+        setHasMore(false)
         // Получение стримов и категорий при монтировании компоненты
         Promise.all([
             getStreamsFromServ(
@@ -56,7 +59,8 @@ function ProfileStreamPageContainer({
                 [],
                 streamsSortingTypes[0].value,
                 streamsSortingOrders[0].value,
-                values.status.value
+                values.status.value,
+                profile.username
             ),
             getCategoriesToSearchFromServ()
         ])
@@ -96,7 +100,8 @@ function ProfileStreamPageContainer({
                         values.categories,
                         values.type.value,
                         values.desc.value,
-                        values.status.value
+                        values.status.value,
+                        profile.username
                     )
                         .catch(err => {
                             console.log(err)
@@ -120,7 +125,8 @@ function ProfileStreamPageContainer({
             title,
             values.categories,
             values.type.value,
-            values.desc.value
+            values.desc.value,
+            profile.username
         )
             .catch(err => {
                 console.log(err)
@@ -163,6 +169,6 @@ export default connect(mapStateToProps, {
     getStreamsFromServ,
     getCategoriesToSearchFromServ,
     setLoading: setLoadingAC
-})(ProfileStreamPageContainer)
+})(React.memo(ProfileStreamPageContainer))
 
 
