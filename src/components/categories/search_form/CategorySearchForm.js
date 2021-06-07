@@ -57,7 +57,7 @@ export default function CategorySearchForm({
                     <Box
                         width="large">
                         <FormField
-                            label={'Name'}
+                            label={'Name *'}
                             name={'name'}
                         >
                             <TextInput

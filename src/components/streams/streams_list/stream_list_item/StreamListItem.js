@@ -56,8 +56,6 @@ export default function StreamListItem ({
                     </Text>
                 </Box>
             </Stack>
-
-
             <Box
                 direction={'row'}
                 justify={'around'}
@@ -150,28 +148,54 @@ export default function StreamListItem ({
                         >...{fullCategories.length - 5} more</Text>
                     </Box>
                 }
-                <Box
+            </Box>
+            {status === 'RUNNING'
+                ?<Box
                     border={{ side: 'top', color: 'silver', size: 'xsmall' }}
                     pad={'small'}
                     direction={'row'}
                     justify={'center'}
-                >
-                    <Button
+                ><Button
+                    label={'Close stream'}
+                    size={'small'} 
+                    color={'Silver'}
+                    onClick={()=>{closeOneStreamOnServ(streamId)}}
+                />&nbsp;&nbsp;&nbsp;
+                <Button 
+                    color={'Maroon'}
+                    size={'small'} 
+                    label={'Delete stream'}
+                    onClick={()=>{deleteOneStreamOnServ(streamId)}}
+                /></Box>
+                : status === 'PAUSED'
+                    ?<Box
+                        border={{ side: 'top', color: 'silver', size: 'xsmall' }}
+                        pad={'small'}
+                        direction={'row'}
+                        justify={'center'}
+                    ><Button
                         label={'Close stream'}
                         size={'small'} 
                         color={'Silver'}
                         onClick={()=>{closeOneStreamOnServ(streamId)}}
-
                     />&nbsp;&nbsp;&nbsp;
-                    <Button 
+                        <Button 
+                            color={'Maroon'}
+                            size={'small'} 
+                            label={'Delete stream'}
+                            onClick={()=>{deleteOneStreamOnServ(streamId)}}
+                        /></Box>
+                    : <Box
+                        border={{ side: 'top', color: 'silver', size: 'xsmall' }}
+                        pad={'small'}
+                        direction={'row'}
+                        justify={'center'}
+                    ><Button 
                         color={'Maroon'}
                         size={'small'} 
                         label={'Delete stream'}
                         onClick={()=>{deleteOneStreamOnServ(streamId)}}
-
-                    />
-                </Box>
-            </Box>
+                    /></Box>}
         </Box>
-    )
-}
+        )
+    }
