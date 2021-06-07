@@ -50,7 +50,7 @@ export default function Chat({
             isStreamInfoOpened={isStreamInfoOpened}
             setStreamInfoOpened={setStreamInfoOpened}
             streamDesc={streamDesc}
-            countViewers={countViewers}
+            countViewers={countViewers + 1}
         />
         {/*: <>*/}
         {/*    <Box*/}

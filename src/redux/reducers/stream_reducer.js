@@ -46,7 +46,8 @@ const defaultState = {
     statuses: [
         {title: 'Active', value: 'RUNNING'},
         {title: 'Paused', value: 'PAUSED'},
-        {title: 'Closed', value: 'CLOSED'}
+        {title: 'Closed', value: 'CLOSED'},
+        {title: 'All', value: 'ALL'}
     ],
     viewerStreamStates: {
         NON_INITIALIZED: 'NON_INITIALIZED',
@@ -164,7 +165,7 @@ export function getStreamsFromServ(
                 type: type,
                 page: withReplace ? 0 : Math.ceil(streamsTotalCount / pageSize),
                 count: pageSize,
-                status: status
+                status: status === 'ALL' ? undefined : status
             })
             dispatch(appendStreams(response))
             return Promise.resolve()
