@@ -33,7 +33,7 @@ export default function ProfileStreamsList({streamsList, height, onMore, hasMore
                 >
                     {
                         streamsList.map((s) => <ProfileStreamListItemContainer
-                            key={s.userId}
+                            key={s.id}
                             userId={s.userId}
                             streamTitle={s.streamDesc.title}
                             fullCategories={s.streamDesc.fullCategories}

@@ -170,7 +170,7 @@ export function getStreamsFromServ(
                 userId: userId
             })
             dispatch(appendStreams(response))
-            return Promise.resolve()
+            return response
         } catch (err) {
             return Promise.reject(err)
         }

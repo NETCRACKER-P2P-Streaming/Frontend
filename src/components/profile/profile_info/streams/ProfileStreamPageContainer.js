@@ -70,9 +70,7 @@ function ProfileStreamPageContainer({
             })
             .finally(() => {
                 setLoading(false)
-                if(Array.isArray(streamsList) && streamsList.length > 0) {
-                    setHasMore(true)
-                }
+                setHasMore(false)
             })
     }, [])
 
@@ -103,6 +101,11 @@ function ProfileStreamPageContainer({
                         values.status.value,
                         profile.username
                     )
+                        .then(res => {
+                            if(Array.isArray(res) && res.length > 0) {
+                                setHasMore(true)
+                            }
+                        })
                         .catch(err => {
                             console.log(err)
                             alert(err.message)

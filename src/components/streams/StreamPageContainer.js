@@ -67,9 +67,7 @@ function StreamPageContainer({
             })
             .finally(() => {
                 setLoading(false)
-                if (Array.isArray(streamsList) && streamsList.length > 0) {
-                    setHasMore(true)
-                }
+                setHasMore(false)
             })
     }, [])
 
@@ -82,6 +80,7 @@ function StreamPageContainer({
     useEffect(() => manageRequests(), [values])
 
     function manageRequests() {
+        setHasMore(false)
         clearTimeout(requestTimeOut)
         setRequestTimeOut(
             setTimeout(
@@ -98,11 +97,18 @@ function StreamPageContainer({
                         values.type.value,
                         values.desc.value
                     )
+                        .then(res => {
+                            if(Array.isArray(res) && res.length > 0) {
+                                setHasMore(true)
+                            }
+                        })
                         .catch(err => {
                             console.log(err)
                             alert(err.message)
                         })
-                        .finally(() => setLoading(false))
+                        .finally(() => {
+                            setLoading(false)
+                        })
                 },
                 1000
             )
