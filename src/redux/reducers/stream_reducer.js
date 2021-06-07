@@ -286,11 +286,17 @@ export function deleteOneStreamOnServ(streamId) {
 }
 
 export function closeOneStreamOnServ(streamId) {
-    return async dispatch => {
+    return async (dispatch, getState) => {
+        const pageSize = selectStreamPageSize(getState())
         try {
             const cookies = new Cookies()
             const response = await closeStream(streamId, cookies.get('accessToken'))
-            //dispatch(getStreamsToSearch())
+            const res=await getStreams({
+                desc: true,
+                type: 'DATE',
+                page: 0,
+                count: pageSize})
+            dispatch(setStreamsAC(res))    
             return Promise.resolve()
         } catch (err) {
             return Promise.reject(err)
