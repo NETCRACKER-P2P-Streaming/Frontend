@@ -37,7 +37,7 @@ function ProfileStreamPageContainer({
         categories: [],
         type: streamsSortingTypes[0],
         desc: streamsSortingOrders[0],
-        status: streamsSortingStatuses[0]
+        status: streamsSortingStatuses[3]
     })
 
     // Флаг, показывающий наличие элементов на сервере
